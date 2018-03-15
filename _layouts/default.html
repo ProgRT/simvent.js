@@ -1,0 +1,12 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no"/>
+<link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl}}" />
+<script src="{{ "/dist/simvent.min.js" | prepend: site.baseurl}}"></script>
+<script src="{{ "/dist/graphsimple.min.js" | prepend: site.baseurl}}"></script>
+<script src="{{ "/dist/ventyaml.min.js" | prepend: site.baseurl}}"></script>
+<div id="content">
+	{{ content }}
+</div>
+<script>
+ventyamlEverything("code");
+</script>
