@@ -1,0 +1,18 @@
+@mixin grid
+  .axe
+    visibility: hidden
+
+  path
+    stroke: black
+    fill: none
+
+  .gridX line, .gridY line
+    stroke-width: 1px
+    stroke: silver
+    stroke-dasharray: 5 5
+
+  .gridX text
+    transform: translate(0, 8px)
+
+  .gridY text
+    transform: translate(-8px, 0)
