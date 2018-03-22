@@ -4,7 +4,14 @@
 <script src="{{ "/dist/simvent.min.js" | prepend: site.baseurl}}"></script>
 <script src="{{ "/dist/graphsimple.min.js" | prepend: site.baseurl}}"></script>
 <script src="{{ "/dist/ventyaml.min.js" | prepend: site.baseurl}}"></script>
-<div id="controls">Ventilo</div>
+<div id="controls">
+	<a><img src="{{ "/Icones/menu.svg" | prepend: site.baseurl}}"/></a>
+</div>
+<div id="menu">
+	<a href="{{ "simulateur.html" | prepend: site.baseurl}}"/>Simulateur</a>
+	<a href="{{ "documentation.html" | prepend: site.baseurl}}"/>Documentation</a>
+	<a href="{{ "carnet.html" | prepend: site.baseurl}}"/>Carnet</a>
+</div>
 <div id="content">
 	<h1>{{ page.title }}</h1>
 	{{ content }}
