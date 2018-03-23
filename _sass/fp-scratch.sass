@@ -1,0 +1,116 @@
+$defaultTransition: .5s
+
+@import fp-progress
+
+body
+  font-family: sans-serif
+  overflow-x: hidden
+  padding: 0px
+  margin: 0px
+
+a
+  cursor: pointer
+  text-decoration: underline
+
+
+
+.fpShadow
+  background-color: hsla(0, 0%, 0%, .5)
+  position: fixed
+  top: 0px
+  left: 0px
+  height: 100%
+  width: 100vw
+  z-index: 99
+  display: none
+
+.fpShadow.visible
+  display: block
+
+#fpGraphics
+  padding-top: 3em
+  margin-right: 30px
+
+div.graph
+  width: 100%
+  height: 180px
+  border: 0px dashed hsl(0, 0%, 80%)
+  padding-right: 100px
+
+.dygraph-title
+  font-size: small
+  margin-top: 20px
+  text-align: center
+  padding-left: 15px
+
+#fpControls
+  float: right
+  margin: 0px
+  list-style-type: none
+
+.fpPanelTitle
+  background-color: hsl(0, 0%, 30%)
+  color: white
+  font-size: medium
+  padding-left: 6px
+  padding-top: 5px
+  padding-bottom: 5px
+  text-align: left
+  font-weight: 500
+  letter-spacing: 1px
+
+#panel
+  padding: 2px
+
+  transition: $defaultTransition
+  background-color: white
+  box-shadow: 0px 0px 10px 2px black
+  position: fixed
+  top: 0px
+  right: -100%
+  height: 100%
+  z-index: +100
+  overflow: auto
+
+  select, button
+    display: block
+    margin-top: 3px
+    margin-bottom: 5px
+
+  select
+    width: 100%
+  
+  table
+    margin-left: 5px
+    margin-right: 5px
+    border: none
+
+    tr, td
+      height: 2em
+      border-bottom: 1px solid silver
+
+    td:not(:last-child)
+      white-space: nowrap
+
+    td:last-child
+      width: 100%
+  
+  button
+    margin-top: 10px
+    text-align: center
+    margin-left: auto
+    margin-right: auto
+
+  input
+    width: 50px
+
+#panel.visible
+  right: 0px
+
+
+#fp-controls img
+  height: 1.5em
+  opacity: 0.7
+
+#fp-controls img:hover
+  opacity: 1

@@ -86,3 +86,5 @@ Modèle de poumon présentant une respiration spontanée et une compliance liné
     Poumon: SptLung
     Courbes: 
        - Pmus
+
+<script> ventyamlEverything("pre"); </script>

@@ -1,26 +1,34 @@
-<meta charset="utf-8">
+<meta charset="utf-8"t
 <meta name="viewport" content="width=device-width, user-scalable=no"/>
-<link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl}}" />
+
 <script src="{{ "/dist/simvent.min.js" | prepend: site.baseurl}}"></script>
 <script src="{{ "/dist/graphsimple.min.js" | prepend: site.baseurl}}"></script>
 <script src="{{ "/dist/ventyaml.min.js" | prepend: site.baseurl}}"></script>
-<div id="controls">
-	<a><img src="{{ "/Icones/menu.svg" | prepend: site.baseurl}}"/></a>
-</div>
-<div id="menu">
-	<a href="{{ "simulateur.html" | prepend: site.baseurl}}"/>Simulateur</a>
-	<a href="{{ "documentation.html" | prepend: site.baseurl}}"/>Documentation</a>
-	<a href="{{ "carnet.html" | prepend: site.baseurl}}"/>Carnet</a>
-</div>
-<div id="content">
-	<h1>{{ page.title }}</h1>
-	{{ content }}
-</div>
+
+<link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl}}" />
+
 <script>
 gs.defaults["margeG"]=75;
 gs.defaults["margeD"]=2;
 gs.defaults["margeH"]=10;
 gs.defaults["margeB"]=55;
 gs.defaults.padH = .1;
-ventyamlEverything("pre");
 </script>
+
+<div id="controls">
+	<a onclick="document.querySelector('#menu').classList.toggle('visible')">
+		<img src="{{ "/Icones/menu.svg" | prepend: site.baseurl}}"/>
+	</a>
+	<div id="fpControls"></div>
+</div>
+
+<div id="menu">
+	<a href="{{ "/index.html" | prepend: site.baseurl}}"/>Simulateur</a>
+	<a href="{{ "/documentation.html" | prepend: site.baseurl}}"/>Documentation</a>
+	<a href="{{ "/carnet.html" | prepend: site.baseurl}}"/>Carnet</a>
+</div>
+
+<div id="content">
+	<!--h1>{{ page.title }}</h1-->
+	{{ content }}
+</div>

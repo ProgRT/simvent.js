@@ -1,11 +1,10 @@
 defaults:
   -
-
     scope:
       path: ""
-      type: "pages"
     values:
       layout: "default"
+
 markdown: kramdown
 kramdown:
   syntax_highlighter_opts:

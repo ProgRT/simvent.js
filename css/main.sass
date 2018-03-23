@@ -1,13 +1,14 @@
 ---
 ---
+$controlsHeight: 50px
 @import table
 @import ventyaml
 @import controls
 @import numerotation
 @import mix-blackLines
 @import mix-grid
+@import fp-scratch
 
-$controlsHeight: 50px
 
 body
   padding: 0px
@@ -18,6 +19,8 @@ body
   margin-left: auto
   margin-right: auto
   margin-top: 50px
+  padding: 12px
+  background-color: white
 
 .gs
   @include blackLines
@@ -33,9 +36,6 @@ figure
 table
   margin-left: auto
   margin-right: auto
-
-#menu
-  position: fixed
-  top: $controlsHeight
-  a
-    display: block
+ 
+ul
+  line-height: 1.8em

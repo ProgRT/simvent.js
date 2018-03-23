@@ -7,14 +7,14 @@ title: Trigger asynchrony
 <script>
 
 	var lung = new sv.SptLung();
-	lung.Raw = 35;
+	lung.Raw = 25;
 	lung.Pmax=4;
 	lung.Fspt=40;
 
 	var ventilator = new sv.PressureAssistor();
 	ventilator.nbcycles=3;
 	ventilator.Cycling=30;
-	ventilator.Passist=20;
+	ventilator.Passist=15;
 	ventilator.Ftrig=0.05;	
 
 	var data = ventilator.ventilate(lung).timeData;
