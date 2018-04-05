@@ -1,5 +1,5 @@
 ---
-title: Time based capnogram
+title: Capnogramme pression-temps
 ---
 <svg id="svg1{{ page.id | replace: "/", "" }}" class="graphcurve surface"></svg>
 <svg id="svg2{{ page.id | replace: "/", "" }}" class="graphcurve surface"></svg>

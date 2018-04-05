@@ -1,5 +1,5 @@
 ---
-title: Volumetric capnogram
+title: Capnogramme volumétrique
 ---
 <svg id="svg{{ page.id | replace: "/", "" }}" class="square"></svg>
 

@@ -1,5 +1,5 @@
 ---
-title: HIsteresis of the lung presure volume waveform
+title: Histérèse de la courbe pression-volume de poumon
 ---
 <svg id="svg1{{ page.id | replace: "/", "" }}" class="square"></svg>
 
