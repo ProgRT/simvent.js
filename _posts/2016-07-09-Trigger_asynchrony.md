@@ -1,5 +1,5 @@
 ---
-title: Trigger asynchrony
+title: Asynchronie de déclenchement
 ---
 <svg id="svg1{{ page.id | replace: "/", "" }}" class="graphcurve surface"></svg>
 <svg id="svg2{{ page.id | replace: "/", "" }}" class="graphcurve surface"></svg>

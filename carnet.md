@@ -1,11 +1,11 @@
 ---
 ---
-  <ul class="post-list">
+  <dl class="post-list">
     {% for post in site.posts %}
-      <li>
-        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+        <dt class="post-meta">{{ post.date | date: "%Y-%m-%d" }}</dt>
 
+      <dd>
           <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-      </li>
+      </dd>
     {% endfor %}
-  </ul>
+  </dl>

@@ -1,5 +1,5 @@
 ---
-title: Flow control ventilator waveform
+title: Courbe débit-temps d'une ventilation en débit contrôlé
 ---
 <svg id="svg1{{ page.id | replace: "/", "" }}" class="graphcurve surface"></svg>
 
