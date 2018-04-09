@@ -1,9 +1,10 @@
 ---
 title: Asynchronie de déclenchement
 ---
+<!--
 <svg id="svg1{{ page.id | replace: "/", "" }}" class="graphcurve surface"></svg>
 <svg id="svg2{{ page.id | replace: "/", "" }}" class="graphcurve surface"></svg>
-
+-->
 <script>
 
 	var lung = new sv.SptLung();
@@ -23,11 +24,13 @@ title: Asynchronie de déclenchement
 	fy1 = function(d){return d.Flung};
 	fy2 = function(d){return d.PCO2};
 
-	var graph1 = gs.quickGraph( "#svg1{{ page.id | replace: "/", "" }}", data, fx, fy1)
+	var graph1 = gs.quickGraph( null, data, fx, fy1)
+	//var graph1 = gs.quickGraph( "#svg1{{ page.id | replace: "/", "" }}", data, fx, fy1)
 		.setidx("Time")
 		.setidy("Flung");
 
-	var graph2 = gs.quickGraph( "#svg2{{ page.id | replace: "/", "" }}", data, fx, fy2)
+	var graph2 = gs.quickGraph(null, data, fx, fy2)
+	//var graph2 = gs.quickGraph( "#svg2{{ page.id | replace: "/", "" }}", data, fx, fy2)
 		.setidx("Time")
 		.setidy("PCO₂");
 </script>
