@@ -4,6 +4,12 @@ defaults:
       path: ""
     values:
       layout: "default"
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "posts"
 
 markdown: kramdown
 kramdown:

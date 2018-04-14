@@ -488,6 +488,7 @@ fp.initControls = function(){
 	cDiv.textContent = null;
 	var cImg = document.createElement("img");
 	cImg.src = "https://progrt.github.io/simvent.js/Icones/sliders.svg";
+	cImg.alt = "Paramètres";
 	var pCtl = document.createElement("a");
 	pCtl.appendChild(cImg);
 	pCtl.onclick = fp.panelActivate;
@@ -495,60 +496,63 @@ fp.initControls = function(){
 }
 
 fp.init = function(){
-	if(typeof fp.ventilator == "undefined"){fp.ventilator = new sv[fp.ventModel]();}
-	if(typeof fp.lung == "undefined"){fp.lung = new sv[fp.lungModel]();}
+		  if(typeof fp.ventilator == "undefined"){fp.ventilator = new sv[fp.ventModel]();}
+		  if(typeof fp.lung == "undefined"){fp.lung = new sv[fp.lungModel]();}
 
-	fp.initControls();
-	$(fp.paramContainer).children().remove();
-	
-	
-	var title = document.createElement("h2");
-	title.textContent = "Ventilateur";
-	title.className = "fpPanelTitle";
-	document.querySelector("#panel").appendChild(title);
+		  fp.initControls();
+		  $(fp.paramContainer).children().remove();
 
-	fp.ventMenu();
-	fp.paramTable(fp.ventilator, "ventParams", fp.paramContainer, "Ventilateur"); 
 
-	var title = document.createElement("h2");
-	title.textContent = "Poumon";
-	title.className = "fpPanelTitle";
-	document.querySelector("#panel").appendChild(title);
+		  var title = document.createElement("h2");
+		  title.textContent = "Ventilateur";
+		  title.className = "fpPanelTitle";
+		  title.id = "fpH2PanelVent";
+		  document.querySelector("#panel").appendChild(title);
 
-	fp.lungMenu();
-	fp.paramTable(fp.lung, "mechParams", fp.paramContainer, "Poumon"); 
+		  fp.ventMenu();
+		  fp.paramTable(fp.ventilator, "ventParams", fp.paramContainer, "Ventilateur"); 
 
-	var title = document.createElement("h2");
-	title.textContent = "Simulation";
-	title.className = "fpPanelTitle";
-	document.querySelector("#panel").appendChild(title);
+		  var title = document.createElement("h2");
+		  title.textContent = "Poumon";
+		  title.className = "fpPanelTitle";
+		  title.id = "fpH2PanelLung";
+		  document.querySelector("#panel").appendChild(title);
 
-	fp.paramTable(fp.ventilator, 'simParams', fp.paramContainer, "Simulation"); 
+		  fp.lungMenu();
+		  fp.paramTable(fp.lung, "mechParams", fp.paramContainer, "Poumon"); 
 
-	//
-	//fp.paramTable(fp.ventilator, "ventParams", fp.paramContainer, fp.translate1("Parameters", "long")); 
-	//fp.paramTable(fp.ventilator, 'simParams', fp.paramContainer, fp.translate1("Simulator", "long")); 
-	//fp.paramTable(fp.lung, "mechParams", fp.paramContainer, fp.translate1("Lung", "long")); 
+		  var title = document.createElement("h2");
+		  title.textContent = "Simulation";
+		  title.className = "fpPanelTitle";
+		  title.id = "fpH2PanelSim";
+		  document.querySelector("#panel").appendChild(title);
 
-	$(fp.paramContainer).append('<button id="ventiler" value="ventiler" onClick="maj()">&#x25b6; Ventiler</button>');
+		  fp.paramTable(fp.ventilator, 'simParams', fp.paramContainer, "Simulation"); 
 
-	fp.initShadow();
-	fp.graphics = [];
-	fp.initDyGraph()
-	maj();
-	
-	// Gestion des racourcis clavier
-	$("#panel input").keypress(function(event){
-		if (event.which == 13){ $("#ventiler").click(); }
-	});
+		  //
+		  //fp.paramTable(fp.ventilator, "ventParams", fp.paramContainer, fp.translate1("Parameters", "long")); 
+		  //fp.paramTable(fp.ventilator, 'simParams', fp.paramContainer, fp.translate1("Simulator", "long")); 
+		  //fp.paramTable(fp.lung, "mechParams", fp.paramContainer, fp.translate1("Lung", "long")); 
 
-	$("input").change(function(){
-		fp.updateModels();
-	});
+		  $(fp.paramContainer).append('<button id="ventiler" value="ventiler" onClick="maj()">&#x25b6; Ventiler</button>');
 
-	$("input").keyup(function(){
-		fp.updateModels();
-	});
+		  fp.initShadow();
+		  fp.graphics = [];
+		  fp.initDyGraph()
+		  maj();
+
+		  // Gestion des racourcis clavier
+		  $("#panel input").keypress(function(event){
+					 if (event.which == 13){ $("#ventiler").click(); }
+		  });
+
+		  $("input").change(function(){
+					 fp.updateModels();
+		  });
+
+		  $("input").keyup(function(){
+					 fp.updateModels();
+		  });
 };
 
 fp.togglePanel = function(){
