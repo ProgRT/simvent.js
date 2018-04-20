@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<meta charset="utf-8"/>
+
+<script src="../lib/d3.v3.min.js" charset="utf-8"></script>
+<!--
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="/home/user1/Librairies JavaScript/js/d3.min.js" ></script>
+-->
+<script src="../src/graphsimple.js" charset="utf-8"></script>
+<script src="../src/simvent.js" charset="utf-8"></script>
+<!--script src="../frontpaneljs/dict.js" charset="utf-8"></script-->
+
+<link rel="stylesheet" href="../css/gs-grid-clear-rainbow.css"/>
+<link rel="stylesheet" href="../css/gs-annotate.css"/>
+
+<style>
+body {
+	box-sizing: border-box;
+	height: 100%;
+	padding: none;
+	margin-top: none;
+}
+html {
+	box-sizing: border-box;
+	height: 100%;
+	padding-top: none;
+	margin: none;
+}
+.gs {
+	width: 100%;
+	height: 100%;
+}
+</style>
+<body>
+	<svg id="svg1"></svg>
+	<script>
+gs.defaults["margeG"]=40;
+gs.defaults["margeD"]=20;
+gs.defaults["margeH"]=20;
+gs.defaults["margeB"]=100;
+gs.defaults.padH=.05;
+gs.defaults.padB=.1;
+gs.defaults.padPlage=12;
+
+var lung1 = new sv.SimpleLung();
+var vent = new sv.VDR();	
+vent.Tvent = 7;
+var dat1 = vent.ventilate(lung1).timeData;
+
+function fx(d){return d.time;}
+function fy(d){return d.Pao;}
+
+var plot = new gs.graph("#svg1");
+plot.setscale(dat1,fx,fy);
+plot.tracer(dat1,fx,fy);
+plot.plagex(vent.Tec, vent.Tcc, 'Inspiration');
+plot.plagex(vent.Tcc ,  vent.Tcc + vent.Tec, 'Expiration');
+
+var cyclep = vent.Tip + vent.Tep;
+for(var i = 14; i < 17; i++){
+	var offset = i * cyclep;
+	plot.texte(offset + vent.Tip/2, 10, 'i');
+	plot.texte(offset + vent.Tip + vent.Tep/2, 10, 'e');
+}
+
+	</script>
+</body>
