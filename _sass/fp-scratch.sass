@@ -12,23 +12,6 @@ a
   cursor: pointer
   text-decoration: underline
 
-#panel
-  transition: $defaultTransition
-  background-color: white
-  box-shadow: 0px 0px 10px 2px black
-  position: fixed
-  top: 0px
-  right: -100%
-  height: 100%
-  z-index: +100
-  overflow: auto
-
-#panel.visible
-  right: 0px
-
-#panel input
-  width: 50px
-
 .fpShadow
   background-color: hsla(0, 0%, 0%, .5)
   position: fixed
@@ -46,11 +29,11 @@ a
   padding-top: 3em
   margin-right: 30px
 
-  div.graph
-    width: 100%
-    height: 180px
-    border: 0px dashed hsl(0, 0%, 80%)
-    padding-right: 100px
+div.graph
+  width: 100%
+  height: 180px
+  border: 0px dashed hsl(0, 0%, 80%)
+  padding-right: 100px
 
 .dygraph-title
   font-size: small
@@ -58,35 +41,13 @@ a
   text-align: center
   padding-left: 15px
 
-#controls
-  position: fixed
-  width: 100%
-  text-align: right
+#fpControls
+  float: right
   margin: 0px
-  margin-bottom: 20px
-  z-index: 40
-  padding-top: 5px
-  padding-bottom: 5px
-  padding-left: 5px
-  padding-right: 5px
-  background-color: white
-  box-shadow: 0px 0px 0px 0px silver
+  list-style-type: none
 
-  #fpControls
-    float: right
-    margin: 0px
-    margin-right: 15px
-    list-style-type: none
-
-    a
-      opacity: 0.4
-      margin-left: 5px
-      margin-right: 5px
-      transition: all .3s
-
-    a:hover
-      opacity: 1
-
+  a
+    margin-left: 10px
 
 .fpPanelTitle
   background-color: hsl(0, 0%, 30%)
@@ -99,8 +60,40 @@ a
   font-weight: 500
   letter-spacing: 1px
 
+.fpPanelTitle:before
+  vertical-align: middle
+  margin-right: .3em
+  display: inline-block
+  transform: scale(0.8)
+
+#fpH2PanelVent:before
+  //content: url("/Icones/souflet-blanc.svg")
+  content: url("/simvent.js/Icones/souflet-blanc.svg")
+
+#fpH2PanelLung:before
+  //content: url("/Icones/poumons-blanc.svg")
+  content: url("/simvent.js/Icones/poumons-blanc.svg")
+
+#fpH2PanelSim:before
+  //content: url("/Icones/configuration-blanc.svg")
+  content: url("/simvent.js/Icones/configuration-blanc.svg")
+
+#fpH2PanelDownload:before
+  //content: url("/Icones/telecharger-blanc.svg")
+  content: url("/simvent.js/Icones/configuration-blanc.svg")
+
 #panel
   padding: 2px
+
+  transition: $defaultTransition
+  background-color: white
+  box-shadow: 0px 0px 10px 2px black
+  position: fixed
+  top: 0px
+  right: -100%
+  height: 100%
+  z-index: +100
+  overflow: auto
 
   select, button
     display: block
@@ -111,15 +104,38 @@ a
     width: 100%
   
   table
-    white-space: nowrap
     margin-left: 5px
     margin-right: 5px
+    border: none
+    width: 100%
+    tr, td
+      height: 2em
+      border-bottom: 1px solid silver
+
+    td:not(:last-child)
+      white-space: nowrap
   
   button
-    margin-top: 10px
+    margin-top: 25px
+    margin-bottom: 25px
     text-align: center
     margin-left: auto
     margin-right: auto
+
+  input
+    width: 50px
+
+#panel.visible
+  right: 0px
+
+#fpDownloadDiv a:before
+  vertical-align: middle
+  margin-right: .2em
+  display: inline-block
+  transform: scale(0.6)
+  //content: url("/Icones/telecharger.svg")
+  content: url("/simvent.js/Icones/telecharger.svg")
+
 
 #fp-controls img
   height: 1.5em
@@ -127,31 +143,3 @@ a
 
 #fp-controls img:hover
   opacity: 1
-
-#fpTselect
-  transition: $defaultTransition
-  position: fixed
-  top: -100%
-  left: 50%
-  transform: translateX(-50%)
-  z-index: +60
-  box-shadow: 0px 0px 10px 0px black
-  background-color: white
-  padding: 10px
-  width: auto
-
-  #fpTselectList
-    column-count: 2
-    margin-bottom: 10px
-
-  #fpTselectButtons
-    direction: rtl
-
-  label
-    display: block
-
-  button
-    display: block
-
-#fpTselect.visible
-  top: 0px
