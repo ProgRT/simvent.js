@@ -46,6 +46,9 @@ div.graph
   margin: 0px
   list-style-type: none
 
+  a
+    margin-left: 10px
+
 .fpPanelTitle
   background-color: hsl(0, 0%, 30%)
   color: white
@@ -64,12 +67,19 @@ div.graph
   transform: scale(0.8)
 
 #fpH2PanelVent:before
+  //content: url("/Icones/souflet-blanc.svg")
   content: url("/simvent.js/Icones/souflet-blanc.svg")
 
 #fpH2PanelLung:before
+  //content: url("/Icones/poumons-blanc.svg")
   content: url("/simvent.js/Icones/poumons-blanc.svg")
 
 #fpH2PanelSim:before
+  //content: url("/Icones/configuration-blanc.svg")
+  content: url("/simvent.js/Icones/configuration-blanc.svg")
+
+#fpH2PanelDownload:before
+  //content: url("/Icones/telecharger-blanc.svg")
   content: url("/simvent.js/Icones/configuration-blanc.svg")
 
 #panel
@@ -106,7 +116,8 @@ div.graph
       white-space: nowrap
   
   button
-    margin-top: 10px
+    margin-top: 25px
+    margin-bottom: 25px
     text-align: center
     margin-left: auto
     margin-right: auto
@@ -116,6 +127,14 @@ div.graph
 
 #panel.visible
   right: 0px
+
+#fpDownloadDiv a:before
+  vertical-align: middle
+  margin-right: .2em
+  display: inline-block
+  transform: scale(0.6)
+  //content: url("/Icones/telecharger.svg")
+  content: url("/simvent.js/Icones/telecharger.svg")
 
 
 #fp-controls img

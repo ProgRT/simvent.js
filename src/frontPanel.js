@@ -591,12 +591,16 @@ fp.init = function(){
 		  title.id = "fpH2PanelDownload";
 		  document.querySelector("#panel").appendChild(title);
 
+		  var downloadDiv  = document.createElement("div");
+		  downloadDiv.id = "fpDownloadDiv";
+		  document.querySelector("#panel").appendChild(downloadDiv);
+
 		  var link  = document.createElement("a");
 		  link.text = "simvent_timedata.dat";
 		  link.onclick = function(){
 					 fp.download(fp.timeData);
 		  };
-		  document.querySelector("#panel").appendChild(link);
+		  document.querySelector("#fpDownloadDiv").appendChild(link);
 
 		  fp.initShadow();
 		  fp.graphics = [];
