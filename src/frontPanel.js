@@ -55,7 +55,6 @@ fp.ventModels = [
 	"PressureControler",
 	"PressureAssistor",
 	"VDR",
-		  "IPV",
 	"PVCurve"
 	];
 
@@ -68,9 +67,9 @@ fp.languages = {
 	short: navigator.language.substr(0,2),
 	fallback: "en"
 	};
-//for (var language in fp.languages){
-//	console.log(language + ": " + fp.languages[language]);
-//}
+for (var language in fp.languages){
+	console.log(language + ": " + fp.languages[language]);
+}
 // **********************************
 // Translation of the user interface
 // **********************************
@@ -300,16 +299,14 @@ fp.initDyGraph = function(){
 
 		fp.graphics.push(new Dygraph(div, [[0,0]], fp.dygraphConf));
 	}
-	if(fp.graphics.length > 1){
-			  fp.sync = Dygraph.synchronize(
-						 fp.graphics,
-						 {
-									selection: true,
-									zoom: true,
-									range: false
-						 }
-			  );
-	}
+	fp.sync = Dygraph.synchronize(
+		fp.graphics,
+		{
+			selection: true,
+			zoom: true,
+			range: false
+		}
+	);
 
 }
 
@@ -317,77 +314,34 @@ fp.initDyGraph = function(){
 // Paneau de sélection des graphiques
 // **********************************
 
-fp.updateTsSelect = function(){
-		  fp.TsSelectDesactivate();
-		  fp.timeSeries = [];
-		  var params = document.querySelectorAll(".TsSelect");
-		  for(var i = 0; i < params.length; i ++){
-					 p = params[i];
-					 if(p.checked == true){
-								fp.timeSeries.push(p.id);
-					 }
-		  }
-		  fp.graphics = [];
-		  fp.initDyGraph();
-		  fp.initProgress();
-		  fp.plotDygraph(0);
+fp.updateTSParam = function(){
+	console.log(this.checked);
 }
 
 fp.mkTsSelect = function(){
+	var keys = [];
+	var params = sv.log(fp.lung, fp.ventilator);
+	delete params.time;
 
-		  if(document.querySelectorAll("#fpTselect").length > 0){
-					 var Tselect = document.querySelector("#fpTselect");
-					 TsSelect.parentNode.removeChild(TsSelect);
-		  }
+	for(var key in params){keys.push(key)};
 
-		  var keys = [];
-		  var params = sv.log(fp.lung, fp.ventilator);
-		  delete params.time;
-
-		  for(var key in params){keys.push(key)};
-
-		  keys = keys.sort(
-					 function (a, b) {
-								return a.toLowerCase().localeCompare(b.toLowerCase());
-					 }
-		  );
-
-		  var div = document.createElement("div");
-		  div.id = "fpTselect";
-		  document.body.appendChild(div);
-
-		  var divList = document.createElement("div");
-		  divList.id = "fpTselectList";
-		  div.appendChild(divList);
-
-
-		  for(var i in keys){
-					 var para = document.createElement("label");
-					 para.for = keys[i];
-					 var checkbox = document.createElement("input");
-					 checkbox.type = "checkbox";
-					 checkbox.className = 'TsSelect';
-					 checkbox.id = keys[i];
-
-					 if(fp.timeSeries.includes(keys[i])){
-								checkbox.checked = true;
-					 }
-
-					 para.appendChild(checkbox);
-					 var text = document.createTextNode(" " + keys[i]);
-					 para.appendChild(text);
-					 divList.appendChild(para);
-		  }
-
-		  var divButtons = document.createElement("div");
-		  divButtons.id = "fpTselectButtons";
-		  div.appendChild(divButtons);
-
-		  var valider  = document.createElement("button");
-		  var text = document.createTextNode("Valider");
-		  valider.appendChild(text);
-		  valider.onclick = fp.updateTsSelect;
-		  divButtons.appendChild(valider);
+	keys = keys.sort(function (a, b) {
+    return a.toLowerCase().localeCompare(b.toLowerCase());
+});
+	for(var i in keys){
+		var para = document.createElement("span");
+		var checkbox = document.createElement("input");
+		checkbox.type = "checkbox";
+		checkbox.onChange = fp.updateTSParam;
+		if(fp.timeSeries.includes(keys[i])){
+			checkbox.checked = true;
+		}
+		para.appendChild(checkbox);
+		var node = document.createTextNode(" " + keys[i]);
+		para.appendChild(node);
+		document.body.appendChild(para);
+		
+	}
 }
 
 // *****************************
@@ -396,7 +350,9 @@ fp.mkTsSelect = function(){
 
 fp.plotDygraph = function(index){
 
-		var id = fp.timeSeries[index];
+		var param = fp.timeSeries[index];
+		var id = param;
+		//var label = fp.translate(dict[id].long);
 
 		function f1(d, i, a){ return [ d["time"], d[id] ]; }
 		
@@ -411,7 +367,10 @@ fp.plotDygraph = function(index){
 				fp.plotDygraph(index)
 			}, 10);
 		}
-		else{setTimeout(function(){fp.stopProgress();},50);}
+		else{
+			//fp.stopProgress();
+			setTimeout(function(){fp.stopProgress();},50);
+		}
 		fp.graphics[0].resetZoom();
 }
 
@@ -482,13 +441,14 @@ fp.ventMenu = function(){
 	select.onchange = fp.ventChange;
 	container.appendChild(select);
 
-	for (var i in fp.ventModels){
-		var option = document.createElement("option");
-		option.value = fp.ventModels[i];
-		option.textContent = fp.ventModels[i];
-		select.appendChild(option);
+	for (var vent of sv.ventilators){
+			  var ventName = vent.vame
+			  var option = document.createElement("option");
+			  option.value = ventName;
+			  option.textContent = ventName;
+			  select.appendChild(option);
 	}
-	select.selectedIndex = fp.ventModels.indexOf(fp.ventModel);
+	//select.selectedIndex = fp.ventModels.indexOf(fp.ventModel);
 }
 
 fp.lungChange = function(){
@@ -527,111 +487,73 @@ fp.hideShadow = function(){
 fp.initControls = function(){
 	var cDiv = document.querySelector("#fpControls");
 	cDiv.textContent = null;
-
-	var cImg = document.createElement("img");
-	cImg.src = "https://progrt.github.io/simvent.js/Icones/Courbes.svg";
-	//cImg.src = "../Icones/Courbes.svg";
-	cImg.alt = "Courbes";
-	var pCtl = document.createElement("a");
-	pCtl.appendChild(cImg);
-	pCtl.onclick = fp.TsSelectActivate;
-	cDiv.appendChild(pCtl);
-
 	var cImg = document.createElement("img");
 	cImg.src = "https://progrt.github.io/simvent.js/Icones/sliders.svg";
-	//cImg.src = "../Icones/sliders.svg";
-	cImg.alt = "Paramètres";
 	var pCtl = document.createElement("a");
 	pCtl.appendChild(cImg);
 	pCtl.onclick = fp.panelActivate;
 	cDiv.appendChild(pCtl);
-
 }
 
 fp.init = function(){
-		  if(typeof fp.ventilator == "undefined"){fp.ventilator = new sv[fp.ventModel]();}
-		  if(typeof fp.lung == "undefined"){fp.lung = new sv[fp.lungModel]();}
+	if(typeof fp.ventilator == "undefined"){fp.ventilator = new sv[fp.ventModel]();}
+	if(typeof fp.lung == "undefined"){fp.lung = new sv[fp.lungModel]();}
 
-		  fp.initControls();
+	fp.initControls();
+	$(fp.paramContainer).children().remove();
+	
+	
+	var title = document.createElement("h2");
+	title.textContent = "Ventilateur";
+	title.className = "fpPanelTitle";
+	document.querySelector("#panel").appendChild(title);
 
-		  $(fp.paramContainer).children().remove();
+	fp.ventMenu();
+	fp.paramTable(fp.ventilator, "ventParams", fp.paramContainer, "Ventilateur"); 
 
+	var title = document.createElement("h2");
+	title.textContent = "Poumon";
+	title.className = "fpPanelTitle";
+	document.querySelector("#panel").appendChild(title);
 
-		  var title = document.createElement("h2");
-		  title.textContent = "Ventilateur";
-		  title.className = "fpPanelTitle";
-		  title.id = "fpH2PanelVent";
-		  document.querySelector("#panel").appendChild(title);
+	fp.lungMenu();
+	fp.paramTable(fp.lung, "mechParams", fp.paramContainer, "Poumon"); 
 
-		  fp.ventMenu();
-		  fp.paramTable(fp.ventilator, "ventParams", fp.paramContainer, "Ventilateur"); 
+	var title = document.createElement("h2");
+	title.textContent = "Simulation";
+	title.className = "fpPanelTitle";
+	document.querySelector("#panel").appendChild(title);
 
-		  var title = document.createElement("h2");
-		  title.textContent = "Poumon";
-		  title.className = "fpPanelTitle";
-		  title.id = "fpH2PanelLung";
-		  document.querySelector("#panel").appendChild(title);
+	fp.paramTable(fp.ventilator, 'simParams', fp.paramContainer, "Simulation"); 
 
-		  fp.lungMenu();
-		  fp.paramTable(fp.lung, "mechParams", fp.paramContainer, "Poumon"); 
+	//
+	//fp.paramTable(fp.ventilator, "ventParams", fp.paramContainer, fp.translate1("Parameters", "long")); 
+	//fp.paramTable(fp.ventilator, 'simParams', fp.paramContainer, fp.translate1("Simulator", "long")); 
+	//fp.paramTable(fp.lung, "mechParams", fp.paramContainer, fp.translate1("Lung", "long")); 
 
-		  var title = document.createElement("h2");
-		  title.textContent = "Simulation";
-		  title.className = "fpPanelTitle";
-		  title.id = "fpH2PanelSim";
-		  document.querySelector("#panel").appendChild(title);
+	$(fp.paramContainer).append('<button id="ventiler" value="ventiler" onClick="maj()">&#x25b6; Ventiler</button>');
 
-		  fp.paramTable(fp.ventilator, 'simParams', fp.paramContainer, "Simulation"); 
+	fp.initShadow();
+	fp.graphics = [];
+	fp.initDyGraph()
+	maj();
+	
+	// Gestion des racourcis clavier
+	$("#panel input").keypress(function(event){
+		if (event.which == 13){ $("#ventiler").click(); }
+	});
 
-		  $(fp.paramContainer).append('<button id="ventiler" value="ventiler" onClick="maj()">&#x25b6; Ventiler</button>');
+	$("input").change(function(){
+		fp.updateModels();
+	});
 
-		  var title = document.createElement("h2");
-		  title.textContent = "Téléchargements";
-		  title.className = "fpPanelTitle";
-		  title.id = "fpH2PanelDownload";
-		  document.querySelector("#panel").appendChild(title);
-
-		  var downloadDiv  = document.createElement("div");
-		  downloadDiv.id = "fpDownloadDiv";
-		  document.querySelector("#panel").appendChild(downloadDiv);
-
-		  var link  = document.createElement("a");
-		  link.text = "simvent_timedata.dat";
-		  link.onclick = function(){
-					 fp.download(fp.timeData);
-		  };
-		  document.querySelector("#fpDownloadDiv").appendChild(link);
-
-		  fp.initShadow();
-		  fp.graphics = [];
-		  fp.initDyGraph()
-		  maj();
-
-		  // Gestion des racourcis clavier
-		  $("#panel input").keypress(function(event){
-					 if (event.which == 13){ $("#ventiler").click(); }
-		  });
-
-		  $("input").change(function(){
-					 fp.updateModels();
-		  });
-
-		  $("input").keyup(function(){
-					 fp.updateModels();
-		  });
-
-		  fp.mkTsSelect();
+	$("input").keyup(function(){
+		fp.updateModels();
+	});
 };
 
-fp.TsSelectActivate = function(){
-	document.querySelector("#fpTselect").scrollTop = 0;
-	document.querySelector("#fpTselect").classList.add('visible');
-	//document.querySelector(".fpShadow").classList.add('visible');
-}
-
-fp.TsSelectDesactivate = function(){
-	document.querySelector("#fpTselect").classList.remove('visible');
-	//document.querySelector(".fpShadow").classList.remove('visible');
+fp.togglePanel = function(){
+	document.querySelector(fp.paramContainer).classList.toggle('hidden');
 }
 
 fp.panelActivate = function(){
@@ -641,6 +563,7 @@ fp.panelActivate = function(){
 }
 
 fp.panelDesactivate = function(){
+	console.log("panelDesactivate");
 	document.querySelector(fp.paramContainer).classList.remove('visible');
 	//document.querySelector(".fpShadow").classList.remove('visible');
 }
