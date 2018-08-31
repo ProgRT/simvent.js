@@ -441,8 +441,8 @@ fp.ventMenu = function(){
 	select.onchange = fp.ventChange;
 	container.appendChild(select);
 
-	for (var vent of sv.ventilators){
-			  var ventName = vent.vame
+	for (var vent of fp.ventModels){
+			  var ventName = vent;
 			  var option = document.createElement("option");
 			  option.value = ventName;
 			  option.textContent = ventName;
