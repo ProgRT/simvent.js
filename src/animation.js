@@ -127,15 +127,15 @@ class graph {
 
 class simulator {
 		  constructor(){
-					 this.target = d3.select(document.body);
 
+					 this.target = d3.select(document.body);
+					 this.timePerScreen = 12;
 					 this.datasets = [
 								{name: 'Pao'},
 								{name: 'Flung'},
 								{name: 'PCO2'}
 					 ];
 
-					 this.timePerScreen = 12;
 					 this.graphData = [];
 					 this.data = [];
 					 this.graphData = [];
@@ -144,14 +144,8 @@ class simulator {
 
 					 this.lung = new sv.SimpleLung();
 					 this.vent = new sv.FlowControler();	
-
 					 this.ventUpdate();
 
-					 for(var ds of this.datasets){
-								var gr = new graph(ds.name, this.timePerScreen, this.target);
-								gr.tStart = 0;
-								this.graphStack.push(gr);
-					 }
 		  }
 
 		  panelTitle(content){
@@ -398,6 +392,11 @@ class simulator {
 		  }
 
 		  start(){
+					 for(var ds of this.datasets){
+								var gr = new graph(ds.name, this.timePerScreen, this.target);
+								gr.tStart = 0;
+								this.graphStack.push(gr);
+					 }
 					 this.ventLoop();
 					 this.setYscale();
 					 this.startLoops();
