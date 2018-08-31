@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<meta charset="utf-8"/>
+
+<!--
+<script src="../lib/d3.v3.min.js" charset="utf-8"></script>
+<script src="../src/graphsimple.js" charset="utf-8"></script>
+-->
+<script src="../dist/graphsimple.min.js"></script>
+<script src="../src/simvent.js" charset="utf-8"></script>
+<!--script src="../frontpaneljs/dict.js" charset="utf-8"></script-->
+<link rel="stylesheet" type="text/css" href="../css/gs-grid-clear-rainbow.css" charset="utf-8"/>
+<!--link rel="stylesheet" type="text/css" href="../../graphsimple.js/css/test-layout.css" charset="utf-8"/-->
+
+<style>
+body {
+	box-sizing: border-box;
+	padding: none;
+	margin-top: none;
+}
+html {
+	box-sizing: border-box;
+	height: 100%;
+	padding-top: none;
+	margin: none;
+}
+svg.gs {
+		  border: 1px dashed red;
+		  display: block;
+		  width: 50vw;
+		  height: 50vh;
+}
+div {
+		  border: 1px dashed blue;
+		  width: 80vw;
+		  height: 50vh;
+}
+.gs .controlsGroup {
+	opacity: .1;
+	font-size: 36pt;
+}
+</style>
+<body>
+	<script>
+
+var lung1 = new sv.SimpleLung();
+var vent = new sv.PressureControler();	
+var dat1 = vent.ventilate(lung1).timeData;
+
+function fx(d){return d.time;}
+function fy(d){return d.Flung;}
+
+var plot2 = new gs.quickGraph(null ,dat1, d => d.time, d => d.Pao);
+
+	</script>
+<script>
+</script>
+</body>

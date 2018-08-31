@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>simvent.js ventilator front panel demonstration</title>
+	<meta 	name="viewport" 
+		content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+	<meta charset="utf-8">
+
+	<script src="../lib/jquery.min.js"></script>
+	<script src="../lib/dygraph-combined.js"></script>
+	<script src="../lib/synchronizer.js"></script>
+	<script src="../dist/frontPanel-legacy.js" ></script>
+	<script src="../src/simvent.js"></script>
+	<script src="../src/dict.js"></script>
+	<script src="../dist/frontPanel.min.js" ></script>
+
+	<link rel="stylesheet" href="../css/fp-scratch.css" />
+</head>
+
+<body>
+	<div id="controls">
+		<div class="right" id="fpControls">
+		</div>
+		<!-- to be transfered in javascript, somewere else in the interface 
+		<ul class="">
+			<li><a onClick='fp.download(fp.data.timeData)' >&#8595;</a></li>
+		</ul>
+		-->
+	</div>
+
+	<div id="panel"> 
+		<table id='fpParamTable'></table>
+	</div>
+
+
+	<div id="fpGraphics"> </div>
+
+	<script>
+		fp.timeSeries = [
+			"Pao",
+			"Flung",
+			"Vt", 
+			"PCO2"
+		];
+		fp.ventModels = [
+				  "IPV",
+			"PVCurve",
+			"PressureAssistor",
+			"PressureControler",
+			"FlowControler",
+			"VDR"
+		];
+		fp.ventModel = "IPV";
+		fp.lungModel = "SimpleLung";
+		fp.init()
+	</script>
+</body>
+</html>
