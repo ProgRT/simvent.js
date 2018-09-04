@@ -5,7 +5,7 @@ body {
   position: fixed;
   top: 47px;
   right: 0px;
-  max-height: calc(100% - 47px -30px);
+  max-height: calc(100vh - (47px + 15px));
   overflow-x: hidden; }
 
 #content {
