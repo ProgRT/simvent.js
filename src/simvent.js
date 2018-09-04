@@ -432,8 +432,8 @@ sv.RLung = class RLung extends sv.Lung {
 		this.VmaxExp=this.Vmax;
 		this.VminInsp=this.Vmin;
 		this.Vabs = this.volume(0);
-		console.log('Palv = ' + this.Palv);
-		console.log('Palv = ' + this.Palv);
+		//console.log('Palv = ' + this.Palv);
+		//console.log('Palv = ' + this.Palv);
 		this.fitInsp();
 		//console.log('Palv = ' + this.Palv);
 		this.fitExp();
@@ -441,9 +441,9 @@ sv.RLung = class RLung extends sv.Lung {
 		this.appliquer_pression(-1,3);
 		this.appliquer_pression(1,3);
 		this.appliquer_pression(-1,3);
-		console.log('Palv = ' + this.Palv);
-		console.log('VminInsp = ' + this.VminInsp);
-		console.log('VmaxExp = ' + this.VmaxExp);
+		//console.log('Palv = ' + this.Palv);
+		//console.log('VminInsp = ' + this.VminInsp);
+		//console.log('VmaxExp = ' + this.VmaxExp);
 
 		this.mechParams = {
 			Vmax: {unit: "l"},
@@ -460,13 +460,13 @@ sv.RLung = class RLung extends sv.Lung {
 	}
 
 	fitInsp(){
-		console.log('fitInsp');
+		//console.log('fitInsp');
 		var N = 1 + Math.pow(Math.E,-((this.lastPel - this.PidInsp)/this.Kid));
 		this.VminInsp = (N * this.Vabs - this.Vmax)/(N-1);
 	}
 	
 	fitExp(){
-		console.log('fitExp');
+		//console.log('fitExp');
 		var N = 1 + Math.pow(Math.E,-((this.lastPel - this.PidExp)/this.Kid));
 		this.VmaxExp = this.Vmin + (this.Vabs- this.Vmin) * N;
 	}
@@ -587,7 +587,7 @@ sv.Ventilator = class Ventilator{
 		this.timeData = [];
 
 		for ( this.simulationStop = this.time + this.Tvent; this.time <= this.simulationStop; ){
-				  console.log("simvent: starting vent cycle");
+				  //console.log("simvent: starting vent cycle");
 			this.ventilationCycle(lung);
 		}
 
