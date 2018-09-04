@@ -31,6 +31,17 @@ Générateur de pression (pression constante) déclenché et cyclé par le débi
 
 <script> new sv.PressureAssistor().defaultsTable(); </script>
 
+### sv.IPV
+
+Ventilateur à haute fréquence percussive.
+
+    Ventilateur: IPV
+    Poumon: SptLung
+    Courbe: Pao
+    Legende: "Ventilation à haute fréquence percussive superposée à une respiration spontanée."
+
+<script> new sv.IPV().defaultsTable(); </script>
+
 ### sv.VDR
 
 Ventilateur à haute fréquence percussive biphadique.
