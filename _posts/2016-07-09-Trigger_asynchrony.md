@@ -10,7 +10,8 @@ title: Asynchronie de déclenchement
 	var lung = new sv.SptLung();
 	lung.Raw = 25;
 	lung.Pmax=4;
-	lung.Fspt=40;
+	lung.Fspt=30;
+	lung.Ti=.75;
 
 	var ventilator = new sv.PressureAssistor();
 	ventilator.nbcycles=3;
