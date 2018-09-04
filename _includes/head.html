@@ -2,13 +2,15 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, user-scalable=no"/>
 
-<script src="{{ "/dist/simvent.min.js" | prepend: site.baseurl}}"></script>
-<script src="{{ "/dist/graphsimple.min.js" | prepend: site.baseurl}}"></script>
+<script src="{{ "/src/simvent.js" | prepend: site.baseurl}}"></script>
+<script src="{{ "/lib/d3.v3.min.js" | prepend: site.baseurl}}"></script>
+<script src="{{ "/src/graphsimple.js" | prepend: site.baseurl}}"></script>
 <script src="{{ "/lib/yaml.min.js" | prepend: site.baseurl}}"></script>
 <script src="{{ "/src/ventyaml.js" | prepend: site.baseurl}}"></script>
-<!--script src="{{ "/dist/ventyaml.min.js" | prepend: site.baseurl}}"></script-->
 
-<link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl}}" />
+<!--link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl}}" /-->
+<link rel="stylesheet" href="{{ "/css/controls.css" | prepend: site.baseurl}}" />
+<link rel="stylesheet" href="{{ "/css/fp-layout.css" | prepend: site.baseurl}}" />
 
 <script>
 gs.defaults["margeG"]=75;
@@ -17,3 +19,10 @@ gs.defaults["margeH"]=10;
 gs.defaults["margeB"]=55;
 gs.defaults.padH = .1;
 </script>
+
+<style>
+#content table {
+		  margin-left: auto;
+		  margin-right: auto;
+}
+</style>

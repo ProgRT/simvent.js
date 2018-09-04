@@ -1,4 +1,6 @@
 ---
+Title: Simulateur
+layout: simulateur
 ---
 <script src="{{ "/lib/jquery.min.js" | prepend: site.baseurl}}"></script>
 <script src="{{ "/lib/dygraph-combined.js" | prepend: site.baseurl}}"></script>

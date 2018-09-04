@@ -1,0 +1,26 @@
+---
+layout: simulateur
+---
+<script src="{{ "../src/swipe.js" | prepend: siter.baseurl}}" charset="utf-8"></script>
+<script src="{{ "/src/animation.js" | prepend: site.baseurl}}"></script>
+<script>
+var sim = new simulator();
+sim.ventList = [
+		  'FlowControler',
+		  'PressureControler',
+		  'VDR'
+];
+sim.lungList = [
+		  'SimpleLung',
+		  'SptLung'
+];
+sim.target = d3.select('#content');
+sim.initPanel();
+sim.start();
+onresize = ()=>sim.redraw();
+
+function swipeLeftHandler(){ document.querySelector('#fpPanel').classList.remove('hidden'); }
+function swipeRightHandler(){ document.querySelector('#fpPanel').classList.add('hidden'); }
+window.addEventListener('swiperight', swipeRightHandler, false);
+window.addEventListener('swipeleft', swipeLeftHandler, false);
+</script>

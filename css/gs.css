@@ -1,0 +1,28 @@
+.gs {
+  width: 100%;
+  height: 250px; }
+  .gs path.surface {
+    stroke: none;
+    fill: none; }
+  .gs #waveformGroup path {
+    display: visible;
+    stroke-width: 2px;
+    fill: none;
+    stroke: black; }
+  .gs .axe {
+    visibility: hidden; }
+  .gs path {
+    stroke: black;
+    fill: none; }
+  .gs .gridX line, .gs .gridY line {
+    stroke-width: 1px;
+    stroke: silver;
+    stroke-dasharray: 5 5; }
+  .gs .gridX text {
+    transform: translate(0, 8px); }
+  .gs .gridY text {
+    transform: translate(-8px, 0); }
+  .gs .ligneZero {
+    stroke: silver; }
+
+/*# sourceMappingURL=gs.css.map */

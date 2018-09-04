@@ -1,6 +1,8 @@
 ---
 title: Documentation
+layout: documentation
 ---
+
 ## Modèles de ventilateurs
 
 ### sv.PressureControler

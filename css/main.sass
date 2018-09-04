@@ -5,10 +5,8 @@ $controlsHeight: 47px
 @import ventyaml
 @import controls
 @import numerotation
-@import mix-blackLines
-@import mix-grid
+//@import gs-scratch
 @import fp-scratch
-@import fp-TsSelect
 
 
 body
@@ -23,11 +21,8 @@ body
   padding: 1px 10px 6px 10px
   background-color: white
 
-.gs
-  @include blackLines
-  @include grid
-  width: 100%
-  height: 250px
+#content.numbered
+  @include numerotation
 
 figure
   width: 100%
@@ -49,9 +44,6 @@ a
   text-decoration: none
   color: inherit
 
-article
-  margin-bottom: 30px
-
 h1
   font-size: 1.6em
 
@@ -66,10 +58,8 @@ h3
   margin-bottom: 10px
   color: hsl(0, 0%, 40%)
 
-#content.numbered
-  @include numerotation
-
 article
+  margin-bottom: 30px
   margin-top: 40px
   border-bottom: 1px solid silver
   padding-bottom: 20px

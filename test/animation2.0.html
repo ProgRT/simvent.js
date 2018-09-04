@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<meta charset="utf-8"/>
+
+<script src="../lib/d3.v3.min.js" charset="utf-8"></script>
+<script src="../src/simvent.js" charset="utf-8"></script>
+<script src="../src/animation.js" charset="utf-8"></script>
+<script src="../src/swipe.js" charset="utf-8"></script>
+
+<link rel="stylesheet" type="text/css" href="../css/gs-scratch.css" charset="utf-8"/>
+<link rel="stylesheet" type="text/css" href="../css/fp-scratch.css" charset="utf-8"/>
+
+<body>
+
+		  <script>
+
+var sim = new simulator();
+sim.ventUpdate();
+sim.initPanel();
+sim.start();
+onresize = ()=>sim.redraw();
+
+function swipeLeftHandler(){ document.querySelector('#fpPanel').classList.remove('hidden'); }
+function swipeRightHandler(){ document.querySelector('#fpPanel').classList.add('hidden'); }
+window.addEventListener('swiperight', swipeRightHandler, false);
+window.addEventListener('swipeleft', swipeLeftHandler, false);
+		  </script>
+
+</body>

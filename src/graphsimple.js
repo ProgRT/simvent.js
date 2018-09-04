@@ -228,7 +228,7 @@ gs.graph = class {
 					 this.courbe = this.waveformGroup.append("path")
 								.attr("d", coord)
 								.style("clip-path", "url(" + this.idsvg + "clip)")
-								.classed('dataPath', true);
+								.classed('gsPlotLine', true);
 					 //this.playSimb();
 					 return this;
 		  }

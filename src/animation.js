@@ -127,15 +127,24 @@ class graph {
 
 class simulator {
 		  constructor(){
-
 					 this.target = d3.select(document.body);
-					 this.timePerScreen = 12;
+
 					 this.datasets = [
 								{name: 'Pao'},
 								{name: 'Flung'},
 								{name: 'PCO2'}
 					 ];
+					 this.ventList = [
+								'FlowControler',
+								'PressureControler',
+								'VDR'
+					 ];
+					 this.lungList = [
+								'SimpleLung',
+								'SptLung'
+					 ];
 
+					 this.timePerScreen = 12;
 					 this.graphData = [];
 					 this.data = [];
 					 this.graphData = [];
@@ -144,6 +153,7 @@ class simulator {
 
 					 this.lung = new sv.SimpleLung();
 					 this.vent = new sv.FlowControler();	
+
 					 this.ventUpdate();
 
 		  }
@@ -157,19 +167,18 @@ class simulator {
 		  }
 
 		  lungMenu(){
-					 var select = document.createElement("select");
-					 select.id = "lungSelect";
-					 select.onchange = this.lungChange;
-					 this.panelDiv.appendChild(select);
+					 this.lungSelect = document.createElement("select");
+					 this.lungSelect.id = "lungSelect";
+					 this.lungSelect.onchange = ()=>this.lungChange();
+					 this.panelDiv.appendChild(this.lungSelect);
 
-					 for (var lung of sv.lungs){
-								var lungName = lung.name;
+					 for (var lung of this.lungList){
 								var option = document.createElement("option");
-								option.value = lungName;
-								option.textContent = lungName;
-								select.appendChild(option);
+								option.value = lung;
+								option.textContent = lung;
+								this.lungSelect.appendChild(option);
 					 }
-					 select.selectedIndex = sv.lungs.indexOf(sv[this.lung.constructor.name]);
+					 this.lungSelect.selectedIndex = sv.lungs.indexOf(sv[this.lung.constructor.name]);
 		  }
 
 		  ventMenu(){
@@ -178,25 +187,27 @@ class simulator {
 					 this.ventSelect.onchange = ()=>this.ventChange();
 					 this.panelDiv.appendChild(this.ventSelect);
 
-					 for (var vent of sv.ventilators){
-								var ventName = vent.name;
+					 for (var vent of this.ventList){
 								var option = document.createElement("option");
-								option.value = ventName;
-								option.textContent = ventName;
+								option.value = vent;
+								option.textContent = vent;
 								this.ventSelect.appendChild(option);
 					 }
-					 this.ventSelect.selectedIndex = sv.ventilators.indexOf(sv[this.vent.constructor.name]);
+					 this.ventSelect.selectedIndex = this.ventList.indexOf(this.vent.constructor.name);
 		  }
 
 		  ventChange(){
-					 this.nextVent = new sv.ventilators[this.ventSelect.selectedIndex];
+					 this.nextVent = new sv[this.ventList[this.ventSelect.selectedIndex]]();
 					 this.nextVent.time = this.vent.time;
 					 this.vent = this.nextVent;
 					 this.ventUpdate();
 					 this.fillParamTable(this.vent, 'ventParams', this.ventTable);
 		  }
 
-		  lungChange(){}
+		  lungChange(){
+					 this.lung = new sv[this.lungList[this.lungSelect.selectedIndex]]();
+					 this.fillParamTable(this.lung, 'mechParams', this.lungTable);
+		  }
 
 		  initPanel(){
 
