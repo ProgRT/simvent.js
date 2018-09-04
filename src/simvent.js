@@ -352,9 +352,9 @@ sv.SptLung = class SptLung extends sv.Lung{
 	get Pmus(){
 		var mTime = this.time % (60.0/this.Fspt);
 
-		if(mTime<this.Ti && this.Fspt > 0){
+		if(mTime<(2*this.Ti) && this.Fspt > 0){
 			return 0.5 * this.Pmax * (1 + Math.sin(
-						(2*Math.PI )* (mTime / this.Ti)- Math.PI/2
+						(2*Math.PI )* (mTime / (2*this.Ti))- Math.PI/2
 					));
 		}
 		else{ return 0; }
@@ -587,6 +587,7 @@ sv.Ventilator = class Ventilator{
 		this.timeData = [];
 
 		for ( this.simulationStop = this.time + this.Tvent; this.time <= this.simulationStop; ){
+				  console.log("simvent: starting vent cycle");
 			this.ventilationCycle(lung);
 		}
 

@@ -1,0 +1,29 @@
+@import gs-rainbow-lines
+$defaultLineWidth: 1.5px
+path
+  stroke-width: 2px
+.axe
+  display: none
+
+path
+  stroke: hsl(0, 0%, 50%)
+  fill: none
+
+.gridX line, .gridY line
+  stroke-width: 0px
+  stroke: hsl(0, 0%, 90%)
+  stroke-dasharray: 5 5
+
+.gridX text
+  transform: translate(0, 8px)
+
+.gridY text
+  transform: translate(-8px, 0)
+text.etiquette, text.help
+  font-size: 1.3em
+
+.gridX text, .gridY text
+  fill: hsl(0, 0%, 50%)
+
+line.help
+  stroke-width: $defaultLineWidth

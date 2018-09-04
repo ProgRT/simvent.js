@@ -137,11 +137,15 @@ class simulator {
 					 this.ventList = [
 								'FlowControler',
 								'PressureControler',
+								'PressureAssistor',
+								'IPV',
 								'VDR'
 					 ];
 					 this.lungList = [
 								'SimpleLung',
-								'SptLung'
+								'SptLung',
+								'SygLung',
+								'RLung'
 					 ];
 
 					 this.timePerScreen = 12;
@@ -343,7 +347,7 @@ class simulator {
 		  } 
 
 		  ventUpdate(){
-					 this.vent.Tvent = 60 / this.vent.Fconv;
+					 if(this.vent.Fconv){this.vent.Tvent = 60 / this.vent.Fconv};
 					 this.vent.Tsampl = 0.01;
 					 this.pointsPerScreen = this.timePerScreen / this.vent.Tsampl;
 		  }

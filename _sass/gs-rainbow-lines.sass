@@ -1,0 +1,12 @@
+path.surface
+  stroke: none
+  fill: none
+
+#waveformGroup path
+  display: visible
+  stroke-width: 2.5px
+  fill: none
+
+@for $i from 1 through 8
+  #waveformGroup path:nth-child(#{$i})
+    stroke: hsl(260 - (180 * ($i - 1)), 50%, 50%)
