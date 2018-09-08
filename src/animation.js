@@ -134,6 +134,7 @@ class simulator {
 								{name: 'Flung'},
 								{name: 'PCO2'}
 					 ];
+
 					 this.ventList = [
 								'FlowControler',
 								'PressureControler',
@@ -141,6 +142,7 @@ class simulator {
 								'IPV',
 								'VDR'
 					 ];
+
 					 this.lungList = [
 								'SimpleLung',
 								'SptLung',

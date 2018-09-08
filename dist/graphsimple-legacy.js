@@ -191,7 +191,7 @@ gs.graph = function () {
 
 									this.axes();
 
-									this.courbe = this.waveformGroup.append("path").attr("d", coord).style("clip-path", "url(" + this.idsvg + "clip)").classed('dataPath', true);
+									this.courbe = this.waveformGroup.append("path").attr("d", coord).style("clip-path", "url(" + this.idsvg + "clip)").classed('gsPlotLine', true);
 									//this.playSimb();
 									return this;
 						}

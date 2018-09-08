@@ -2,7 +2,7 @@ VPATH = css _sass src lib dist test
 LEGACYFY = babel --presets es2015 -o dist/
 MINIFY = 
 
-.PHONY: nothing css js
+.PHONY: nothing css js legacy
 
 nothing:
 	@echo Please enter a target. No default target in this makefile.
@@ -38,6 +38,9 @@ article.html: head.html article.md tail.html
 # --------------
 
 simvent-legacy.js: simvent.js
+	$(LEGACYFY)$(@F) $<
+
+animation-legacy.js: animation.js
 	$(LEGACYFY)$(@F) $<
 
 ventyaml-legacy.js: ventyaml.js
