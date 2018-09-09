@@ -74,15 +74,18 @@ var graph = function () {
 						value: function setNLf() {
 									this.lf = function (d) {
 												var l = d.length;
+												if (l == 0) {
+															throw 'graph.lf: no data to plot';
+												}
 												var point = d[l - 1];
 												if (l == 0) {
 															console.log('NLF: no data to plot');
 												} else if (l == 1) {
-															this.coord = this.coord + 'M' + this.echellex(point.time - this.tStart) + ',' + this.echelley(point[this.dataName]);
+															var string = 'M' + this.echellex(point.time - this.tStart) + ',' + this.echelley(point[this.dataName]);
 												} else {
-															this.coord = this.coord + 'L' + this.echellex(point.time - this.tStart) + ',' + this.echelley(point[this.dataName]);
+															var string = 'L' + this.echellex(point.time - this.tStart) + ',' + this.echelley(point[this.dataName]);
 												}
-												return this.coord;
+												return string;
 									};
 						}
 			}, {
@@ -142,10 +145,17 @@ var simulator = function () {
 			function simulator() {
 						_classCallCheck(this, simulator);
 
+						this.debugMode = false;
+						this.Tsampl = 20;
+						this.ventTsampl = 0.005;
 						this.target = d3.select(document.body);
 
 						this.datasets = [{ name: 'Pao' }, { name: 'Flung' }, { name: 'PCO2' }];
 						this.ventList = ['FlowControler', 'PressureControler', 'PressureAssistor', 'IPV', 'VDR'];
+						this.lungList = ['SimpleLung', 'SptLung', 'SygLung', 'RLung'];
+
+						this.ventList = ['FlowControler', 'PressureControler', 'PressureAssistor', 'IPV', 'VDR'];
+
 						this.lungList = ['SimpleLung', 'SptLung', 'SygLung', 'RLung'];
 
 						this.timePerScreen = 12;
@@ -422,7 +432,8 @@ var simulator = function () {
 									if (this.vent.Fconv) {
 												this.vent.Tvent = 60 / this.vent.Fconv;
 									};
-									this.vent.Tsampl = 0.01;
+									this.vent.Tsampl = this.ventTsampl;
+									this.pointsPerMilliseconds = .001 / this.vent.Tsampl;
 									this.pointsPerScreen = this.timePerScreen / this.vent.Tsampl;
 						}
 			}, {
@@ -492,7 +503,7 @@ var simulator = function () {
 						key: 'ventLoop',
 						value: function ventLoop() {
 									//this.spanDataMon.textContent = Math.round(this.data.length * this.vent.Tsampl * 10 )/10;
-									if (this.data.length <= 1 / this.vent.Tsampl) {
+									if (this.data.length <= 2 / this.vent.Tsampl) {
 												this.ventilate();
 									}
 						}
@@ -508,14 +519,61 @@ var simulator = function () {
 									document.activeElement.blur();
 									this.buttonValidate.disabled = true;
 						}
+						/*
+      graphLoop(){
+      	 if(this.data.length == 0){ throw 'Stoped; no more data to plot.'}
+      		 if(this.graphData.length >= this.pointsPerScreen){
+      				
+      				if(this.debugMode == true){
+      						  this.loopEndTime = new Date();
+      						  this.loopEndTime = this.loopEndTime.getTime();
+      						  this.loopDuration = this.loopEndTime - this.loopStartTime;
+      						  console.log(this.loopDuration);
+      						  this.loopStartTime = new Date();
+      						  this.loopStartTime = this.loopStartTime.getTime();
+      				}
+      				this.setYscale();
+      				this.tStart = this.data[0].time;
+      				this.tStartLoop = new Date().getTime();
+      				for(graph of this.graphStack){
+      						  graph.tStart = this.tStart;
+      						  graph.coord = '';
+      				}
+      				this.graphData = [];
+      	 }
+      		 this.curTime = new Date().getTime();
+      	 this.timeToPlot = this.curTime - this.lastTime;
+      	 this.pointsToPlot = this.timeToPlot / this.pointsPerMilliseconds;
+      		 for(var i = 0; i < this.pointsToPlot; i ++){
+      				this.graphData.push(this.data.shift());
+      				if(this.graphData.length = 0){throw 'no graph data'}
+      				for(var gr of this.graphStack){
+      						  if(gr.coord == null){gr.coord = ''}
+      						  var coord = gr.lf(this.graphData);
+      						  gr.coord = gr.coord + coord;
+      				}
+      	 }
+      	 for(var gr of this.graphStack){
+      				gr.path.attr('d', gr.coord);
+      	 }
+      }
+      */
+
 			}, {
-						key: 'graphLoop',
-						value: function graphLoop() {
+						key: 'graphLoopOld',
+						value: function graphLoopOld() {
 									if (this.data.length == 0) {
 												throw 'Stoped; no more data to plot.';
 									}
 
 									if (this.graphData.length >= this.pointsPerScreen) {
+
+												this.loopEndTime = new Date().getTime();
+												this.loopDuration = this.loopEndTime - this.loopStartTime;
+												this.loopStartTime = new Date().getTime();
+												if (this.debugMode == true) {
+															console.log(this.timePerScreen + 's plotted in ' + this.loopDuration / 1000 + 's');
+												}
 												this.setYscale();
 												this.tStart = this.data[0].time;
 												var _iteratorNormalCompletion5 = true;
@@ -547,47 +605,51 @@ var simulator = function () {
 												this.graphData = [];
 									}
 
-									this.graphData.push(this.data.shift());
-									var _iteratorNormalCompletion6 = true;
-									var _didIteratorError6 = false;
-									var _iteratorError6 = undefined;
+									this.timeInLoop = new Date().getTime() - this.loopStartTime;
+									//if(this.debugMode == true){console.log('Time in loop: ' + this.timeInLoop)}
+									this.targetNumPoints = Math.floor(this.timeInLoop * this.pointsPerMilliseconds);
+									while (this.graphData.length < this.targetNumPoints) {
+												//if(this.debugMode == true){console.log('graphdata.length: ' + this.graphData.length)}
+												//if(this.debugMode == true){console.log('Target num points: ' + this.targetNumPoints)}
+												this.graphData.push(this.data.shift());
+												var _iteratorNormalCompletion6 = true;
+												var _didIteratorError6 = false;
+												var _iteratorError6 = undefined;
 
-									try {
-												for (var _iterator6 = this.graphStack[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-															var gr = _step6.value;
-
-															var coord = gr.lf(this.graphData);
-															gr.path.attr('d', coord);
-												}
-									} catch (err) {
-												_didIteratorError6 = true;
-												_iteratorError6 = err;
-									} finally {
 												try {
-															if (!_iteratorNormalCompletion6 && _iterator6.return) {
-																		_iterator6.return();
+															for (var _iterator6 = this.graphStack[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+																		var gr = _step6.value;
+
+																		if (gr.coord == null) {
+																					gr.coord = '';
+																		}
+																		var coord = gr.lf(this.graphData);
+																		gr.coord = gr.coord + coord;
 															}
+												} catch (err) {
+															_didIteratorError6 = true;
+															_iteratorError6 = err;
 												} finally {
-															if (_didIteratorError6) {
-																		throw _iteratorError6;
+															try {
+																		if (!_iteratorNormalCompletion6 && _iterator6.return) {
+																					_iterator6.return();
+																		}
+															} finally {
+																		if (_didIteratorError6) {
+																					throw _iteratorError6;
+																		}
 															}
 												}
 									}
-						}
-			}, {
-						key: 'start',
-						value: function start() {
 									var _iteratorNormalCompletion7 = true;
 									var _didIteratorError7 = false;
 									var _iteratorError7 = undefined;
 
 									try {
-												for (var _iterator7 = this.datasets[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-															var ds = _step7.value;
+												for (var _iterator7 = this.graphStack[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+															var gr = _step7.value;
 
-															var gr = new graph(ds.name, this.timePerScreen, this.target);
-															gr.tStart = 0;
-															this.graphStack.push(gr);
+															gr.path.attr('d', gr.coord);
 												}
 									} catch (err) {
 												_didIteratorError7 = true;
@@ -600,6 +662,39 @@ var simulator = function () {
 												} finally {
 															if (_didIteratorError7) {
 																		throw _iteratorError7;
+															}
+												}
+									}
+						}
+			}, {
+						key: 'start',
+						value: function start() {
+									var _iteratorNormalCompletion8 = true;
+									var _didIteratorError8 = false;
+									var _iteratorError8 = undefined;
+
+									try {
+												for (var _iterator8 = this.datasets[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+															var ds = _step8.value;
+
+															var gr = new graph(ds.name, this.timePerScreen, this.target);
+															if (this.debugMode == true) {
+																		gr.debugMode = true;
+															}
+															gr.tStart = 0;
+															this.graphStack.push(gr);
+												}
+									} catch (err) {
+												_didIteratorError8 = true;
+												_iteratorError8 = err;
+									} finally {
+												try {
+															if (!_iteratorNormalCompletion8 && _iterator8.return) {
+																		_iterator8.return();
+															}
+												} finally {
+															if (_didIteratorError8) {
+																		throw _iteratorError8;
 															}
 												}
 									}
@@ -616,8 +711,11 @@ var simulator = function () {
 									this.ventInt = setInterval(function () {
 												return _this7.ventLoop();
 									}, 500);
+									this.loopStartTime = new Date().getTime();
+									this.tStartLoop = new Date().getTime();
+									this.lastTime = new Date().getTime();
 									this.graphInt = setInterval(function () {
-												return _this7.graphLoop();
+												return _this7.graphLoopOld();
 									}, this.vent.Tsampl * 1000);
 						}
 			}, {
@@ -625,6 +723,11 @@ var simulator = function () {
 						value: function stop() {
 									clearInterval(this.ventInt);
 									clearInterval(this.graphInt);
+									if (this.debugMode == true) {
+												this.loopEndTime = new Date().getTime();
+												this.loopDuration = this.loopEndTime - this.loopStartTime;
+												console.log(this.graphData[this.graphData.length - 1].time + 's plotted in ' + this.loopDuration / 1000 + 's');
+									}
 						}
 			}]);
 
