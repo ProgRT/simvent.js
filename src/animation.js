@@ -55,7 +55,6 @@ class graph {
 
 		  setNLf(){
 					 this.lf = function(d){
-								if(this.debugMode == true){console.log('this.coord: ' + this.coord)}
 								var l = d.length;
 								var point = d[l -1];
 								if(l == 0){
@@ -129,6 +128,7 @@ class graph {
 class simulator {
 		  constructor(){
 					 this.debugMode = false;
+					 this.Tsampl = 20;
 					 this.target = d3.select(document.body);
 
 					 this.datasets = [
@@ -350,15 +350,12 @@ class simulator {
 
 		  ventUpdate(){
 					 if(this.vent.Fconv){this.vent.Tvent = 60 / this.vent.Fconv};
-					 //this.vent.Tsampl = 0.01;
+					 this.pointsPerMilliseconds = .001 / this.vent.Tsampl
 					 this.pointsPerScreen = this.timePerScreen / this.vent.Tsampl;
 		  }
 
 		  setYscale(){
-					 if(this.debugMode == true){console.log('simulator.setYscale()')}
-					 if(this.debugMode == true){console.log('simulator.setYscale()')}
 					 var dataSet = this.data.concat(this.graphData);
-					 if(this.debugMode == true){console.log(dataSet.length + ' data used to set Y scale')}
 
 					 for(graph of this.graphStack){
 								graph.setYscale(dataSet);
@@ -377,7 +374,7 @@ class simulator {
 		  }
 		  ventLoop(){
 					 //this.spanDataMon.textContent = Math.round(this.data.length * this.vent.Tsampl * 10 )/10;
-					 if(this.data.length <= 1/this.vent.Tsampl){
+					 if(this.data.length <= 2/this.vent.Tsampl){
 								this.ventilate();
 					 }
 		  }
@@ -395,6 +392,54 @@ class simulator {
 					 if(this.data.length == 0){ throw 'Stoped; no more data to plot.'}
 
 					 if(this.graphData.length >= this.pointsPerScreen){
+								
+								if(this.debugMode == true){
+										  this.loopEndTime = new Date();
+										  this.loopEndTime = this.loopEndTime.getTime();
+										  this.loopDuration = this.loopEndTime - this.loopStartTime;
+										  console.log(this.loopDuration);
+										  this.loopStartTime = new Date();
+										  this.loopStartTime = this.loopStartTime.getTime();
+								}
+								this.setYscale();
+								this.tStart = this.data[0].time;
+								this.tStartLoop = new Date().getTime();
+								for(graph of this.graphStack){
+										  graph.tStart = this.tStart;
+										  graph.coord = '';
+								}
+								this.graphData = [];
+					 }
+
+					 this.curTime = new Date().getTime();
+					 this.timeToPlot = this.curTime - this.lastTime;
+					 this.pointsToPlot = this.timeToPlot / this.pointsPerMilliseconds;
+
+					 for(var i = 0; i < this.pointsToPlot; i ++){
+								this.graphData.push(this.data.shift());
+								if(this.graphData.length = 0){throw 'no graph data'}
+								for(var gr of this.graphStack){
+										  if(gr.coord == null){gr.coord = ''}
+										  var coord = gr.lf(this.graphData);
+										  gr.coord = gr.coord + coord;
+								}
+					 }
+					 for(var gr of this.graphStack){
+								gr.path.attr('d', gr.coord);
+					 }
+		  }
+
+		  graphLoopOld(){
+					 if(this.data.length == 0){ throw 'Stoped; no more data to plot.'}
+
+					 if(this.graphData.length >= this.pointsPerScreen){
+								
+								this.loopEndTime = new Date().getTime();
+								this.loopDuration = this.loopEndTime - this.loopStartTime;
+								this.loopStartTime = new Date().getTime();
+								if(this.debugMode == true){
+										  console.log(this.timePerScreen + 's plotted in ' +  this.loopDuration/1000 +'s');
+								}
 								this.setYscale();
 								this.tStart = this.data[0].time;
 								for(graph of this.graphStack){
@@ -404,17 +449,25 @@ class simulator {
 								this.graphData = [];
 					 }
 
-					 this.graphData.push(this.data.shift());
+					 this.timeInLoop = new Date().getTime() - this.loopStartTime;
+					 //if(this.debugMode == true){console.log('Time in loop: ' + this.timeInLoop)}
+					 this.targetNumPoints = Math.floor(this.timeInLoop * this.pointsPerMilliseconds);
+					 while(this.graphData.length < this.targetNumPoints){
+								//if(this.debugMode == true){console.log('graphdata.length: ' + this.graphData.length)}
+								//if(this.debugMode == true){console.log('Target num points: ' + this.targetNumPoints)}
+								this.graphData.push(this.data.shift());
+								for(var gr of this.graphStack){
+										  if(gr.coord == null){gr.coord = ''}
+										  var coord = gr.lf(this.graphData);
+										  gr.coord = gr.coord + coord;
+								}
+					 }
 					 for(var gr of this.graphStack){
-								if(gr.coord == null){gr.coord = ''}
-								var coord = gr.lf(this.graphData);
-								gr.coord = gr.coord + coord;
 								gr.path.attr('d', gr.coord);
 					 }
 		  }
 
 		  start(){
-					 if(this.debugMode == true){console.log('simulator.start()')}
 					 for(var ds of this.datasets){
 								var gr = new graph(ds.name, this.timePerScreen, this.target);
 								if(this.debugMode == true){gr.debugMode = true}
@@ -428,12 +481,22 @@ class simulator {
 
 		  startLoops(){
 					 this.ventInt = setInterval(()=>this.ventLoop(), 500);
-					 this.graphInt = setInterval(()=>this.graphLoop(), this.vent.Tsampl * 1000);
-					 if(this.debugMode == true){console.log('animation.js: Loops started')};
+					 if(this.debugMode == true){
+								this.loopStartTime = new Date();
+								this.loopStartTime = this.loopStartTime.getTime();
+					 }
+					 this.tStartLoop = new Date().getTime();
+					 this.lastTime = new Date().getTime();
+					 this.graphInt = setInterval(()=>this.graphLoopOld(), this.vent.Tsampl * 1000);
 		  }
 
 		  stop(){
 					 clearInterval(this.ventInt);
 					 clearInterval(this.graphInt);
+					 if(this.debugMode == true){
+								this.loopEndTime = new Date().getTime();
+								this.loopDuration = this.loopEndTime - this.loopStartTime;
+								console.log(this.graphData[this.graphData.length -1].time + 's plotted in ' +  this.loopDuration/1000 +'s');
+					 }
 		  }
 }

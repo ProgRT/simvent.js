@@ -16,12 +16,12 @@
 
 var sim = new simulator();
 sim.vent = new sv.VDR();
-sim.debugMode = false;
-sim.vent.Tsampl = 0.02;
+sim.debugMode = true;
+sim.vent.Tsampl = 0.005;
 sim.ventUpdate();
 sim.initPanel();
 sim.start();
-//setTimeout(()=>sim.stop(),10000);
+//setTimeout(()=>sim.stop(),2000);
 onresize = ()=>sim.redraw();
 
 function swipeLeftHandler(){
