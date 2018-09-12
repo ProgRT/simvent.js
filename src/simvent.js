@@ -1100,3 +1100,6 @@ sv.lungs = [
 	sv.SygLung,
 	sv.RLung
 ];
+
+exports.PressureControler = sv.PressureControler;
+exports.SimpleLung = sv.SimpleLung;
