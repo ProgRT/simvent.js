@@ -71,6 +71,9 @@ gs.graph = class {
 					 this.waveformGroup = this.svg.append("g")
 								.attr("id", "waveformGroup");
 
+					 this.annotationsGroup = this.svg.append("g")
+								.attr("id", "annotationsGroup");
+
 					 this.controlsGroup = this.svg.append("g")
 								.attr("class", "controlsGroup");
 
@@ -80,11 +83,9 @@ gs.graph = class {
 					 this.curAnim = 0;
 
 					 this.width = this.svg.style("width");
-					 //this.width = newSvg.style.width;
 					 this.width = this.width.substr(0, this.width.length-2);
 
 					 this.height = this.svg.style("height");
-					 //this.height = newSvg.style.height;
 					 this.height = this.height.substr(0, this.height.length-2);
 
 					 this.defs = this.svg.append("defs");
@@ -115,6 +116,17 @@ gs.graph = class {
 								.attr("id", "flecheg")
 								.attr("refY", "10")
 								.attr("refX", "7")
+								.attr("markerWidth", "21")
+								.attr("markerHeight", "18")
+								.attr("orient", "auto")
+								.attr("markerUnits", "userSpaceOnUse")
+								.append("path")
+								.attr("d", "M3,5 L9,10 L3,15");
+
+					 this.defs.append("marker")
+								.attr("id", "flechev")
+								.attr("refY", "10")
+								.attr("refX", "10")
 								.attr("markerWidth", "21")
 								.attr("markerHeight", "18")
 								.attr("orient", "auto")
@@ -193,12 +205,8 @@ gs.graph = class {
 								this.drawGridY();
 					 }
 
-					 if(!("iridX"in this)){
+					 if(!("gridX"in this)){
 								this.drawGridX();
-					 }
-
-					 if(!("ligneZeroX" in this)){
-								this.tracerZeroX();
 					 }
 
 					 if(!('waveformGroup' in this)){
@@ -228,7 +236,7 @@ gs.graph = class {
 					 this.courbe = this.waveformGroup.append("path")
 								.attr("d", coord)
 								.style("clip-path", "url(" + this.idsvg + "clip)")
-								.classed('gsPlotLine', true);
+								.classed('dataPath', true);
 					 //this.playSimb();
 					 return this;
 		  }
@@ -279,7 +287,7 @@ gs.graph = class {
 		  }
 
 		  tracerZeroX (){
-					 this.ligneZeroX = this.gridGroup.append("line")
+					 this.ligneZeroX = this.svg.append("line")
 								.attr("x1", this.margeG)
 								.attr("x2", this.width - this.margeD)
 								.attr("y1", this.echelley(0))
@@ -317,6 +325,40 @@ gs.graph = class {
 								.attr("d", this.lf(this.donnees));
 		  }
 
+		  vecteur ( x1, y1, x2, y2, options){
+					 var pad = this.padPlage;
+					 var vecteur = {};
+
+					 vecteur.ligne = this.annotationsGroup.append("line")
+								.attr("x1", this.echellex(x1)/* + pad*/)
+								.attr("x2", this.echellex(x2) /*- pad*/)
+								.attr("y1", this.echelley(y1))
+								.attr("y2", this.echelley(y2))
+								.attr("class", "vecteur")
+								.attr("style", "marker-end: url(#flechev);");
+
+					 //this.annotations.push(vecteur);
+
+					 return this;
+
+		  }
+
+		  etiquette ( x, y, texte, options){
+					 var pad = this.padPlage;
+					 var etiquette = {};
+
+					 etiquette.texte = this.annotationsGroup.append("text")
+								.attr("class", "etiquette")
+								.attr("x", this.echellex(x))
+								.attr("y", this.echelley(y))
+								.attr("text-anchor", "middle")
+								.text(texte);
+
+					 //this.annotations.push(etiquette);
+
+					 return this;
+
+		  }
 		  plagex (min, max, id){
 					 var pad = this.padPlage;
 					 var plage = {};
@@ -489,6 +531,9 @@ gs.graph = class {
 
 								texte.attr("x", this.width - this.margeD/2);
 					 } 
+					 else{
+								texte.attr("x", this.margeG/2);
+					 }
 
 					 this.anotations.push(texte);
 					 return this;
