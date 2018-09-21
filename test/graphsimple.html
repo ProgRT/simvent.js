@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <meta charset="utf-8"/>
 
-<!--
 <script src="../lib/d3.v3.min.js" charset="utf-8"></script>
 <script src="../src/graphsimple.js" charset="utf-8"></script>
--->
-<script src="../dist/graphsimple.min.js"></script>
 <script src="../src/simvent.js" charset="utf-8"></script>
-<!--script src="../frontpaneljs/dict.js" charset="utf-8"></script-->
-<link rel="stylesheet" type="text/css" href="../css/gs-grid-clear-rainbow.css" charset="utf-8"/>
-<!--link rel="stylesheet" type="text/css" href="../../graphsimple.js/css/test-layout.css" charset="utf-8"/-->
+
+<link rel="stylesheet" type="text/css" href="../css/gs.css" charset="utf-8"/>
 
 <style>
 body {
@@ -20,38 +16,64 @@ body {
 html {
 	box-sizing: border-box;
 	height: 100%;
-	padding-top: none;
-	margin: none;
+	padding: 0px;
+	margin: 0px;
 }
 svg.gs {
 		  border: 1px dashed red;
 		  display: block;
-		  width: 50vw;
+		  width: 90vw;
 		  height: 50vh;
-}
-div {
-		  border: 1px dashed blue;
-		  width: 80vw;
-		  height: 50vh;
+		  margin-left: auto;
+		  margin-right: auto;
 }
 .gs .controlsGroup {
 	opacity: .1;
 	font-size: 36pt;
 }
+line.help {
+		  stroke: black;
+}
 </style>
 <body>
-	<script>
+		  <script>
+gs.defaults.padH = 1;
+gs.defaults.margeG = 60;
+gs.defaults.margeB = 60;
+gs.defaults.padPlage = 1;
 
-var lung1 = new sv.SimpleLung();
-var vent = new sv.PressureControler();	
-var dat1 = vent.ventilate(lung1).timeData;
+var lung = new sv.SptLung();
+lung.Pmax = 14;
+var vent = new sv.VDR();
+var data = vent.ventilate(lung).timeData;
 
-function fx(d){return d.time;}
-function fy(d){return d.Flung;}
+fx = function(d){return d.time};
+fy = function(d){return d.Pao};
 
-var plot2 = new gs.quickGraph(null ,dat1, d => d.time, d => d.Pao);
 
-	</script>
+var graph = new gs.graph();
+
+
+graph.setscale(data, fx, fy)
+		  .tracer(data, fx, fy);
+
+graph.setidx('Temps (s)');
+graph.setidy('Pression (cmH₂O)');
+
+graph.plagex(2, 4, 'Ti', 45);
+graph.plagex(4, 6, 'Te', 45);
+
+var gr2 = new gs.graph();
+var d2 = data.filter(d=>d.time>2 && d.time < 3);
+gr2.setscale(d2, fx, fy)
+		  .tracer(d2, fx, fy);
+
+var vy = 38;
+var tStart = 2.325;
+
+gr2.plagex(tStart, tStart + vent.Tip, 'Ti', vy);
+gr2.plagex(tStart + vent.Tip, tStart + vent.Tip + vent.Tep, 'Te', vy);
+		  </script>
 <script>
 </script>
 </body>

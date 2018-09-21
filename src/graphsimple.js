@@ -40,13 +40,6 @@ gs.stat = function(iddiv, respd){
 gs.graph = class {
 		  constructor(idsvg, conf){
 
-					 if(idsvg == null){
-								this.idsvg = "#" + gs.newSvg();
-					 }
-					 else{
-								this.idsvg = idsvg;
-					 }
-					 this.donnees = [];
 
 					 for(var index in gs.defaults){
 								this[index] = gs.defaults[index];
@@ -56,6 +49,12 @@ gs.graph = class {
 								this[index] = conf[index];
 					 }
 
+					 if(idsvg == null){
+								this.idsvg = "#" + gs.newSvg();
+					 }
+					 else{
+								this.idsvg = idsvg;
+					 }
 					 this.svg = d3.select(this.idsvg)
 								.classed("gs", true);
 
@@ -77,16 +76,15 @@ gs.graph = class {
 					 this.controlsGroup = this.svg.append("g")
 								.attr("class", "controlsGroup");
 
+					 this.donnees = [];
+					 this.courbes = [];
 					 this.animations = [];
 					 this.anotations = [];
-					 this.plages = [];
+					 this.vecteurs = [];
+					 this.etiquettes = [];
+					 this.plagesx = [];
 					 this.curAnim = 0;
 
-					 this.width = this.svg.style("width");
-					 this.width = this.width.substr(0, this.width.length-2);
-
-					 this.height = this.svg.style("height");
-					 this.height = this.height.substr(0, this.height.length-2);
 
 					 this.defs = this.svg.append("defs");
 
@@ -115,18 +113,18 @@ gs.graph = class {
 					 this.defs.append("marker")
 								.attr("id", "flecheg")
 								.attr("refY", "10")
-								.attr("refX", "7")
+								.attr("refX", "3")
 								.attr("markerWidth", "21")
 								.attr("markerHeight", "18")
 								.attr("orient", "auto")
 								.attr("markerUnits", "userSpaceOnUse")
 								.append("path")
-								.attr("d", "M3,5 L9,10 L3,15");
+								.attr("d", "M9,5 L3,10 L9,15");
 
 					 this.defs.append("marker")
 								.attr("id", "flechev")
 								.attr("refY", "10")
-								.attr("refX", "10")
+								.attr("refX", "9")
 								.attr("markerWidth", "21")
 								.attr("markerHeight", "18")
 								.attr("orient", "auto")
@@ -142,9 +140,23 @@ gs.graph = class {
 										  .text('T')
 										  .on('click', function(){alert('Allo !')});
 					 }
+					 addEventListener('resize', ()=>this.redessiner());
 		  }
 
-		  setscale (d, fx, fy){
+		  setRanges () {
+					 this.width = this.svg.style("width");
+					 this.width = this.width.substr(0, this.width.length-2);
+
+					 this.height = this.svg.style("height");
+					 this.height = this.height.substr(0, this.height.length-2);
+
+					 this.rangeX = [this.margeG + this.padG, this.width - (this.margeD + this.padD)];
+					 this.rangeY = [this.height - (this.margeB + this.padB), this.margeH + this.padH];
+
+					 return this;
+		  }
+
+		  setDomain (d, fx, fy) {
 					 this.ymin = Math.min(d3.min(d, fy),0);
 					 this.ymax = d3.max(d, fy);
 					 this.xmin = d3.min(d, fx);
@@ -163,18 +175,29 @@ gs.graph = class {
 					 if(this.padH != 0){
 								this.ymax += this.padH * (this.ymax - this.ymin);
 					 }
-					 this.echellex = d3.scale.linear()
-								.domain([this.xmin, this.xmax])
-								.range([this.margeG + this.padG, this.width - (this.margeD + this.padD)]);
-
-					 this.echelley = d3.scale.linear()
-								.domain([this.ymin, this.ymax])
-								.range([this.height - (this.margeB + this.padB), this.margeH + this.padH]);
-
 					 return this;
 		  }
 
-		  getlf (d, fx, fy){
+		  SetScale () {
+					 this.echellex = d3.scale.linear()
+								.domain([this.xmin, this.xmax])
+								.range(this.rangeX);
+
+					 this.echelley = d3.scale.linear()
+								.domain([this.ymin, this.ymax])
+								.range(this.rangeY);
+					 return this;
+		  }
+
+		  setscale (d, fx, fy){
+
+					 this.setDomain(d, fx, fy);
+					 this.setRanges();
+					 this.SetScale();
+					 return this;
+		  }
+
+		  getlf (fx, fy){
 
 					 this.lf = d3.svg.line()
 								.x(function(d) {return this.echellex(fx(d))})
@@ -191,16 +214,7 @@ gs.graph = class {
 								.interpolate("linear");
 		  }
 
-		  tracer (donnees, fonctionx, fonctiony){
-					 this.donnees.push(donnees);
-					 this.getlf(donnees, fonctionx, fonctiony);
-					 this.getsf(donnees, fonctionx, fonctiony);
-					 var times = donnees.map(function(d){return d.Time});
-					 this.animTime = Math.max(times) * 1000;
-
-					 var coord = this.lf(donnees, fonctionx, fonctiony);
-					 var surface = this.sf(donnees, fonctionx, fonctiony);
-
+		  drawgrids () {
 					 if(!("gridY"in this)){
 								this.drawGridY();
 					 }
@@ -209,22 +223,16 @@ gs.graph = class {
 								this.drawGridX();
 					 }
 
-					 if(!('waveformGroup' in this)){
-								this.waveformGroup = this.svg.append("g")
-										  .attr("id", "waveformGroup");
-					 }
+		  }
 
-					 this.clip = this.defs.append("clipPath")
-								.attr("id", this.idsvg + "clip");
-					 //.attr("id", this.idsvg.replace("#","") + "clip");
 
-					 this.clipRect = this.clip.append("rect")
-								.attr("x", this.margeG + this.padG)
-								.attr("y", this.margeH + this.padH - 2)
-								.attr("width", this.width - (this.margeD + this.margeG + this.padD + this.padG) + 2)
-								.attr("height", this.height - (this.margeH + this.margeB + this.padH + this.padB) + 2)
-					 ;
+		  tracer (donnees, fonctionx, fonctiony){
+					 this.donnees.push({donnees: donnees, fx: fonctionx, fy: fonctiony});
 
+					 this.drawgrids();
+
+					 this.getsf(donnees, fonctionx, fonctiony);
+					 var surface = this.sf(donnees, fonctionx, fonctiony);
 					 this.surface = this.svg.append("path")
 								.attr("d", surface)
 								.attr("class", "surface")
@@ -233,16 +241,46 @@ gs.graph = class {
 
 					 this.axes()
 
-					 this.courbe = this.waveformGroup.append("path")
-								.attr("d", coord)
-								.style("clip-path", "url(" + this.idsvg + "clip)")
-								.classed('dataPath', true);
+					 if(!('waveformGroup' in this)){
+								this.waveformGroup = this.svg.append("g")
+										  .attr("id", "waveformGroup");
+					 }
+
+					 this.Tracer(donnees, fonctionx, fonctiony);
 					 //this.playSimb();
 					 return this;
 		  }
+		  Tracer(d, fx, fy){
+					 this.getlf(fx, fy);
+					 var coord = this.lf(d);
+					 var courbe = this.waveformGroup.append("path")
+								.attr("d", coord)
+								.style("clip-path", "url(" + this.idsvg + "clip)")
+								.classed('dataPath', true);
+					 this.courbes.push(courbe);
+					 return this;
+		  }
+
+		  redessiner(){
+					 this.setRanges();
+					 this.SetScale();
+
+					 this.drawGridX();
+					 this.drawGridY();
+					 this.setidx();
+					 this.setidy();
+
+					 for(var c of this.courbes){c.remove()}
+					 for(var v of this.vecteurs){this.vectDraw(v)}
+					 for(var e of this.etiquettes){this.etiqDraw(e)}
+					 for(var p of this.plagesx){this.plagexDraw(p)}
+
+					 var d = this.donnees[this.donnees.length - 1];
+					 this.Tracer(d.donnees, d.fx, d.fy);
+		  }
 
 		  ajouter (donnees, fonctionx, fonctiony){
-					 this.getlf(donnees, fonctionx, fonctiony);
+					 this.getlf(fonctionx, fonctiony);
 					 this.getsf(donnees, fonctionx, fonctiony);
 
 					 var coord = this.lf(donnees, fonctionx, fonctiony);
@@ -259,19 +297,6 @@ gs.graph = class {
 
 					 return this;
 		  }
-
-		  // To simulate continuous plotting like the one seen in medical ventilators,
-		  // we plot the entire time serie, hidden by a zero width clip rectangle, and then
-		  // gradually unhide it.
-
-		  animate (){
-					 this.clipRect.attr("width", 0);
-
-					 this.clipRect.transition().ease("linear").duration(this.animTime)
-								.attr("width", this.width - (this.margeD + this.margeG + this.padD + this.padG) + 2);
-					 return this;
-		  }
-
 
 		  raz (){
 					 for(i in this.anotations){
@@ -319,7 +344,7 @@ gs.graph = class {
 								.domain([0, 3])
 								.range([this.margeG + this.padG, this.width - (this.margeD + this.padD)]);
 
-					 this.getlf(this.donnees, this.fx, this.fy );
+					 this.getlf(this.fx, this.fy );
 
 					 this.courbe.transition().duration(this.durAnim)
 								.attr("d", this.lf(this.donnees));
@@ -327,67 +352,93 @@ gs.graph = class {
 
 		  vecteur ( x1, y1, x2, y2, options){
 					 var pad = this.padPlage;
-					 var vecteur = {};
+					 var vecteur = {x1: x1, y1: y1, x2: x2, y2: y2};
 
-					 vecteur.ligne = this.annotationsGroup.append("line")
-								.attr("x1", this.echellex(x1)/* + pad*/)
-								.attr("x2", this.echellex(x2) /*- pad*/)
-								.attr("y1", this.echelley(y1))
-								.attr("y2", this.echelley(y2))
+					 this.vectDraw(vecteur);
+					 this.vecteurs.push(vecteur);
+
+					 return this;
+
+		  }
+
+		  vectDraw(vect){
+
+					 if(vect.ligne){vect.ligne.remove()}
+					 vect.ligne = this.annotationsGroup.append("line")
+								.attr("x1", this.echellex(vect.x1)/* + pad*/)
+								.attr("x2", this.echellex(vect.x2) /*- pad*/)
+								.attr("y1", this.echelley(vect.y1))
+								.attr("y2", this.echelley(vect.y2))
 								.attr("class", "vecteur")
 								.attr("style", "marker-end: url(#flechev);");
 
-					 //this.annotations.push(vecteur);
-
 					 return this;
-
 		  }
 
 		  etiquette ( x, y, texte, options){
-					 var pad = this.padPlage;
-					 var etiquette = {};
+					 var etiquette = {
+								x: x,
+								y: y,
+								texte: texte,
+								options: options
+					 };
 
-					 etiquette.texte = this.annotationsGroup.append("text")
-								.attr("class", "etiquette")
-								.attr("x", this.echellex(x))
-								.attr("y", this.echelley(y))
-								.attr("text-anchor", "middle")
-								.text(texte);
-
-					 //this.annotations.push(etiquette);
+					 this.etiquettes.push(etiquette);
+					 this.etiqDraw(etiquette);
 
 					 return this;
 
 		  }
-		  plagex (min, max, id){
-					 var pad = this.padPlage;
-					 var plage = {};
 
-					 plage.ligne = this.plageGroup.append("line")
-								.attr("x1", this.echellex(min) + pad)
-								.attr("x2", this.echellex(max) - pad)
-								.attr("y1", this.height - this.margeB*.5)
-								.attr("y2", this.height - this.margeB*.5)
-								.attr("class", "help")
-								.attr("style", "marker-start: url(#fleches);marker-end: url(#flechep);");
+		  etiqDraw (e) {
 
-					 plage.rect = this.plageGroup.append("rect")
-								.attr('y', this.margeH)
-								.attr('x', this.echellex(min))
-								.attr('width', this.echellex(max)- this.echellex(min))
-								.attr('height', this.height - this.margeH - this.margeB);
-
-					 plage.texte = this.svg.append("text")
-								.attr("class", "help")
-								.attr("x", this.echellex(min + (max - min)/2))
-								.attr("y", this.height - this.margeB * .3)
+					 if(e.display){e.display.remove()}
+					 e.display = this.annotationsGroup.append("text")
+								.attr("class", "etiquette")
+								.attr("x", this.echellex(e.x))
+								.attr("y", this.echelley(e.y))
 								.attr("text-anchor", "middle")
-								.text(id)
-								.attr("opacity", 0);
+								.text(e.texte);
 
-					 plage.texte.transition().duration(this.durAnim).attr("opacity",1);
+					 return this;
+		  }
 
-					 this.plages.push(plage);
+		  plagexDraw(p) {
+
+					 if(p.ligne){p.ligne.remove()}
+					 if(p.texteDisplay){p.texteDisplay.remove()}
+
+					 p.ligne = this.plageGroup.append("line")
+								.attr("x1", this.echellex(p.min) + this.padPlage)
+								.attr("x2", this.echellex(p.max) - this.padPlage)
+								.attr("y1", this.echelley(p.y))
+								.attr("y2", this.echelley(p.y))
+								//.attr("y1", this.height - this.margeB*.5)
+								//.attr("y2", this.height - this.margeB*.5)
+								.attr("class", "help")
+								.attr("style", "marker-start: url(#flecheg);marker-end: url(#flechev);");
+
+					 p.texteDisplay = this.svg.append("text")
+								.attr("class", "help")
+								.attr("x", this.echellex(p.min + (p.max - p.min)/2))
+								//.attr("y", this.height - this.margeB * .3)
+								.attr("y", this.echelley(p.y) - 15)
+								.attr("text-anchor", "middle")
+								.text(p.id)
+					 ;
+		  }
+
+		  plagex (min, max, id, y){
+					 var plage = {
+								min: min,
+								max: max,
+								id: id,
+								y: y
+					 };
+
+					 this.plagexDraw(plage);
+
+					 this.plagesx.push(plage);
 
 					 return this;
 
@@ -448,6 +499,8 @@ gs.graph = class {
 		  }
 
 		  setidx (texte){
+					 if (texte){this.idxText = texte}
+					 if(this.idx){this.idx.remove()}
 					 var y = this.height - (.2 * this.margeB);
 
 					 if(this.idPos == "center"){
@@ -461,16 +514,16 @@ gs.graph = class {
 					 }
 
 					 this.idx = this.svg.append("text")
-					 //.attr("x", this.width - this.margeD)
 								.attr("x", x)
-					 //.attr("y", this.height - (.2 * this.margeB))
 								.attr("y", y)
 								.attr("text-anchor", anchor)
-								.text(texte);
+					 			.classed('idx', true)
+								.text(this.idxText);
 
 					 return this;
 		  }
 
+		  /*
 		  texte(x,y,texte){
 					 var t = this.svg.append('text')
 								.attr("text-anchor", 'middle')
@@ -478,9 +531,12 @@ gs.graph = class {
 								.attr('y', this.echelley(y))
 								.text(texte);
 		  }
+		  */
 
 		  setidy (texte){
 
+					 if(this.idy){this.idy.remove()}
+					 if(texte){this.idyText = texte}
 					 if(this.idPos == "center"){
 								var x = this.margeG/3;
 								var y = this.margeH + ((this.height - (this.margeB + this.margeH))/2);
@@ -499,7 +555,7 @@ gs.graph = class {
 								.attr("x", x)
 								.attr("text-anchor", anchor)
 								.attr("transform", transform)
-								.text(texte);
+								.text(this.idyText);
 
 					 return this;
 		  }
@@ -560,6 +616,7 @@ gs.graph = class {
 
 		  drawGridY (){
 
+					 if(this.gridYGroup){this.gridYGroup.remove()}
 					 this.gridY = d3.svg.axis()
 								.orient("left")
 								.tickSize(- (this.width - this.margeG - this.margeD))
@@ -576,6 +633,7 @@ gs.graph = class {
 
 		  drawGridX (){
 
+					 if(this.gridXGroup){this.gridXGroup.remove()}
 					 this.gridX = d3.svg.axis()
 								.tickSize(- (this.height - this.margeH - this.margeB - this.padH))
 								.scale(this.echellex);

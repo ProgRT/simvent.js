@@ -45,14 +45,9 @@ gs.stat = function (iddiv, respd) {
 
 gs.graph = function () {
 			function _class(idsvg, conf) {
-						_classCallCheck(this, _class);
+						var _this = this;
 
-						if (idsvg == null) {
-									this.idsvg = "#" + gs.newSvg();
-						} else {
-									this.idsvg = idsvg;
-						}
-						this.donnees = [];
+						_classCallCheck(this, _class);
 
 						for (var index in gs.defaults) {
 									this[index] = gs.defaults[index];
@@ -62,6 +57,11 @@ gs.graph = function () {
 									this[index] = conf[index];
 						}
 
+						if (idsvg == null) {
+									this.idsvg = "#" + gs.newSvg();
+						} else {
+									this.idsvg = idsvg;
+						}
 						this.svg = d3.select(this.idsvg).classed("gs", true);
 
 						if ('class' in this) {
@@ -77,16 +77,14 @@ gs.graph = function () {
 
 						this.controlsGroup = this.svg.append("g").attr("class", "controlsGroup");
 
+						this.donnees = [];
+						this.courbes = [];
 						this.animations = [];
 						this.anotations = [];
-						this.plages = [];
+						this.vecteurs = [];
+						this.etiquettes = [];
+						this.plagesx = [];
 						this.curAnim = 0;
-
-						this.width = this.svg.style("width");
-						this.width = this.width.substr(0, this.width.length - 2);
-
-						this.height = this.svg.style("height");
-						this.height = this.height.substr(0, this.height.length - 2);
 
 						this.defs = this.svg.append("defs");
 
@@ -94,20 +92,37 @@ gs.graph = function () {
 
 						this.defs.append("marker").attr("id", "fleches").attr("refY", "7").attr("refX", "14").attr("markerWidth", "21").attr("markerHeight", "14").attr("orient", "auto").attr("markerUnits", "userSpaceOnUse").append("path").attr("d", "M16,3 L12,7 L16,11");
 
-						this.defs.append("marker").attr("id", "flecheg").attr("refY", "10").attr("refX", "7").attr("markerWidth", "21").attr("markerHeight", "18").attr("orient", "auto").attr("markerUnits", "userSpaceOnUse").append("path").attr("d", "M3,5 L9,10 L3,15");
+						this.defs.append("marker").attr("id", "flecheg").attr("refY", "10").attr("refX", "3").attr("markerWidth", "21").attr("markerHeight", "18").attr("orient", "auto").attr("markerUnits", "userSpaceOnUse").append("path").attr("d", "M9,5 L3,10 L9,15");
 
-						this.defs.append("marker").attr("id", "flechev").attr("refY", "10").attr("refX", "10").attr("markerWidth", "21").attr("markerHeight", "18").attr("orient", "auto").attr("markerUnits", "userSpaceOnUse").append("path").attr("d", "M3,5 L9,10 L3,15");
+						this.defs.append("marker").attr("id", "flechev").attr("refY", "10").attr("refX", "9").attr("markerWidth", "21").attr("markerHeight", "18").attr("orient", "auto").attr("markerUnits", "userSpaceOnUse").append("path").attr("d", "M3,5 L9,10 L3,15");
 
 						if (this.drawControlsSymbols == true) {
 									this.controlsGroup.append("text").attr("x", this.width - this.margeD - 80).attr("y", this.margeH + 80).attr("text-anchor", "middle").text('T').on('click', function () {
 												alert('Allo !');
 									});
 						}
+						addEventListener('resize', function () {
+									return _this.redessiner();
+						});
 			}
 
 			_createClass(_class, [{
-						key: 'setscale',
-						value: function setscale(d, fx, fy) {
+						key: 'setRanges',
+						value: function setRanges() {
+									this.width = this.svg.style("width");
+									this.width = this.width.substr(0, this.width.length - 2);
+
+									this.height = this.svg.style("height");
+									this.height = this.height.substr(0, this.height.length - 2);
+
+									this.rangeX = [this.margeG + this.padG, this.width - (this.margeD + this.padD)];
+									this.rangeY = [this.height - (this.margeB + this.padB), this.margeH + this.padH];
+
+									return this;
+						}
+			}, {
+						key: 'setDomain',
+						value: function setDomain(d, fx, fy) {
 									this.ymin = Math.min(d3.min(d, fy), 0);
 									this.ymax = d3.max(d, fy);
 									this.xmin = d3.min(d, fx);
@@ -126,15 +141,28 @@ gs.graph = function () {
 									if (this.padH != 0) {
 												this.ymax += this.padH * (this.ymax - this.ymin);
 									}
-									this.echellex = d3.scale.linear().domain([this.xmin, this.xmax]).range([this.margeG + this.padG, this.width - (this.margeD + this.padD)]);
+									return this;
+						}
+			}, {
+						key: 'SetScale',
+						value: function SetScale() {
+									this.echellex = d3.scale.linear().domain([this.xmin, this.xmax]).range(this.rangeX);
 
-									this.echelley = d3.scale.linear().domain([this.ymin, this.ymax]).range([this.height - (this.margeB + this.padB), this.margeH + this.padH]);
+									this.echelley = d3.scale.linear().domain([this.ymin, this.ymax]).range(this.rangeY);
+									return this;
+						}
+			}, {
+						key: 'setscale',
+						value: function setscale(d, fx, fy) {
 
+									this.setDomain(d, fx, fy);
+									this.setRanges();
+									this.SetScale();
 									return this;
 						}
 			}, {
 						key: 'getlf',
-						value: function getlf(d, fx, fy) {
+						value: function getlf(fx, fy) {
 
 									this.lf = d3.svg.line().x(function (d) {
 												return this.echellex(fx(d));
@@ -155,19 +183,8 @@ gs.graph = function () {
 									}).interpolate("linear");
 						}
 			}, {
-						key: 'tracer',
-						value: function tracer(donnees, fonctionx, fonctiony) {
-									this.donnees.push(donnees);
-									this.getlf(donnees, fonctionx, fonctiony);
-									this.getsf(donnees, fonctionx, fonctiony);
-									var times = donnees.map(function (d) {
-												return d.Time;
-									});
-									this.animTime = Math.max(times) * 1000;
-
-									var coord = this.lf(donnees, fonctionx, fonctiony);
-									var surface = this.sf(donnees, fonctionx, fonctiony);
-
+						key: 'drawgrids',
+						value: function drawgrids() {
 									if (!("gridY" in this)) {
 												this.drawGridY();
 									}
@@ -175,28 +192,151 @@ gs.graph = function () {
 									if (!("gridX" in this)) {
 												this.drawGridX();
 									}
+						}
+			}, {
+						key: 'tracer',
+						value: function tracer(donnees, fonctionx, fonctiony) {
+									this.donnees.push({ donnees: donnees, fx: fonctionx, fy: fonctiony });
+
+									this.drawgrids();
+
+									this.getsf(donnees, fonctionx, fonctiony);
+									var surface = this.sf(donnees, fonctionx, fonctiony);
+									this.surface = this.svg.append("path").attr("d", surface).attr("class", "surface").style("clip-path", "url(" + this.idsvg + "clip)");
+
+									this.axes();
 
 									if (!('waveformGroup' in this)) {
 												this.waveformGroup = this.svg.append("g").attr("id", "waveformGroup");
 									}
 
-									this.clip = this.defs.append("clipPath").attr("id", this.idsvg + "clip");
-									//.attr("id", this.idsvg.replace("#","") + "clip");
-
-									this.clipRect = this.clip.append("rect").attr("x", this.margeG + this.padG).attr("y", this.margeH + this.padH - 2).attr("width", this.width - (this.margeD + this.margeG + this.padD + this.padG) + 2).attr("height", this.height - (this.margeH + this.margeB + this.padH + this.padB) + 2);
-
-									this.surface = this.svg.append("path").attr("d", surface).attr("class", "surface").style("clip-path", "url(" + this.idsvg + "clip)");
-
-									this.axes();
-
-									this.courbe = this.waveformGroup.append("path").attr("d", coord).style("clip-path", "url(" + this.idsvg + "clip)").classed('dataPath', true);
+									this.Tracer(donnees, fonctionx, fonctiony);
 									//this.playSimb();
 									return this;
 						}
 			}, {
+						key: 'Tracer',
+						value: function Tracer(d, fx, fy) {
+									this.getlf(fx, fy);
+									var coord = this.lf(d);
+									var courbe = this.waveformGroup.append("path").attr("d", coord).style("clip-path", "url(" + this.idsvg + "clip)").classed('dataPath', true);
+									this.courbes.push(courbe);
+									return this;
+						}
+			}, {
+						key: 'redessiner',
+						value: function redessiner() {
+									this.setRanges();
+									this.SetScale();
+
+									this.drawGridX();
+									this.drawGridY();
+									this.setidx();
+									this.setidy();
+
+									var _iteratorNormalCompletion = true;
+									var _didIteratorError = false;
+									var _iteratorError = undefined;
+
+									try {
+												for (var _iterator = this.courbes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+															var c = _step.value;
+															c.remove();
+												}
+									} catch (err) {
+												_didIteratorError = true;
+												_iteratorError = err;
+									} finally {
+												try {
+															if (!_iteratorNormalCompletion && _iterator.return) {
+																		_iterator.return();
+															}
+												} finally {
+															if (_didIteratorError) {
+																		throw _iteratorError;
+															}
+												}
+									}
+
+									var _iteratorNormalCompletion2 = true;
+									var _didIteratorError2 = false;
+									var _iteratorError2 = undefined;
+
+									try {
+												for (var _iterator2 = this.vecteurs[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+															var v = _step2.value;
+															this.vectDraw(v);
+												}
+									} catch (err) {
+												_didIteratorError2 = true;
+												_iteratorError2 = err;
+									} finally {
+												try {
+															if (!_iteratorNormalCompletion2 && _iterator2.return) {
+																		_iterator2.return();
+															}
+												} finally {
+															if (_didIteratorError2) {
+																		throw _iteratorError2;
+															}
+												}
+									}
+
+									var _iteratorNormalCompletion3 = true;
+									var _didIteratorError3 = false;
+									var _iteratorError3 = undefined;
+
+									try {
+												for (var _iterator3 = this.etiquettes[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+															var e = _step3.value;
+															this.etiqDraw(e);
+												}
+									} catch (err) {
+												_didIteratorError3 = true;
+												_iteratorError3 = err;
+									} finally {
+												try {
+															if (!_iteratorNormalCompletion3 && _iterator3.return) {
+																		_iterator3.return();
+															}
+												} finally {
+															if (_didIteratorError3) {
+																		throw _iteratorError3;
+															}
+												}
+									}
+
+									var _iteratorNormalCompletion4 = true;
+									var _didIteratorError4 = false;
+									var _iteratorError4 = undefined;
+
+									try {
+												for (var _iterator4 = this.plagesx[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+															var p = _step4.value;
+															this.plagexDraw(p);
+												}
+									} catch (err) {
+												_didIteratorError4 = true;
+												_iteratorError4 = err;
+									} finally {
+												try {
+															if (!_iteratorNormalCompletion4 && _iterator4.return) {
+																		_iterator4.return();
+															}
+												} finally {
+															if (_didIteratorError4) {
+																		throw _iteratorError4;
+															}
+												}
+									}
+
+									var d = this.donnees[this.donnees.length - 1];
+									this.Tracer(d.donnees, d.fx, d.fy);
+						}
+			}, {
 						key: 'ajouter',
 						value: function ajouter(donnees, fonctionx, fonctiony) {
-									this.getlf(donnees, fonctionx, fonctiony);
+									this.getlf(fonctionx, fonctiony);
 									this.getsf(donnees, fonctionx, fonctiony);
 
 									var coord = this.lf(donnees, fonctionx, fonctiony);
@@ -207,19 +347,6 @@ gs.graph = function () {
 
 									this.anotations.push(this.courbe2);
 
-									return this;
-						}
-
-						// To simulate continuous plotting like the one seen in medical ventilators,
-						// we plot the entire time serie, hidden by a zero width clip rectangle, and then
-						// gradually unhide it.
-
-			}, {
-						key: 'animate',
-						value: function animate() {
-									this.clipRect.attr("width", 0);
-
-									this.clipRect.transition().ease("linear").duration(this.animTime).attr("width", this.width - (this.margeD + this.margeG + this.padD + this.padG) + 2);
 									return this;
 						}
 			}, {
@@ -256,7 +383,7 @@ gs.graph = function () {
 
 									this.echellex = d3.scale.linear().domain([0, 3]).range([this.margeG + this.padG, this.width - (this.margeD + this.padD)]);
 
-									this.getlf(this.donnees, this.fx, this.fy);
+									this.getlf(this.fx, this.fy);
 
 									this.courbe.transition().duration(this.durAnim).attr("d", this.lf(this.donnees));
 						}
@@ -264,41 +391,83 @@ gs.graph = function () {
 						key: 'vecteur',
 						value: function vecteur(x1, y1, x2, y2, options) {
 									var pad = this.padPlage;
-									var vecteur = {};
+									var vecteur = { x1: x1, y1: y1, x2: x2, y2: y2 };
 
-									vecteur.ligne = this.annotationsGroup.append("line").attr("x1", this.echellex(x1) /* + pad*/).attr("x2", this.echellex(x2) /*- pad*/).attr("y1", this.echelley(y1)).attr("y2", this.echelley(y2)).attr("class", "vecteur").attr("style", "marker-end: url(#flechev);");
+									this.vectDraw(vecteur);
+									this.vecteurs.push(vecteur);
 
-									//this.annotations.push(vecteur);
+									return this;
+						}
+			}, {
+						key: 'vectDraw',
+						value: function vectDraw(vect) {
+
+									if (vect.ligne) {
+												vect.ligne.remove();
+									}
+									vect.ligne = this.annotationsGroup.append("line").attr("x1", this.echellex(vect.x1) /* + pad*/).attr("x2", this.echellex(vect.x2) /*- pad*/).attr("y1", this.echelley(vect.y1)).attr("y2", this.echelley(vect.y2)).attr("class", "vecteur").attr("style", "marker-end: url(#flechev);");
 
 									return this;
 						}
 			}, {
 						key: 'etiquette',
 						value: function etiquette(x, y, texte, options) {
-									var pad = this.padPlage;
-									var etiquette = {};
+									var etiquette = {
+												x: x,
+												y: y,
+												texte: texte,
+												options: options
+									};
 
-									etiquette.texte = this.annotationsGroup.append("text").attr("class", "etiquette").attr("x", this.echellex(x)).attr("y", this.echelley(y)).attr("text-anchor", "middle").text(texte);
-
-									//this.annotations.push(etiquette);
+									this.etiquettes.push(etiquette);
+									this.etiqDraw(etiquette);
 
 									return this;
 						}
 			}, {
+						key: 'etiqDraw',
+						value: function etiqDraw(e) {
+
+									if (e.display) {
+												e.display.remove();
+									}
+									e.display = this.annotationsGroup.append("text").attr("class", "etiquette").attr("x", this.echellex(e.x)).attr("y", this.echelley(e.y)).attr("text-anchor", "middle").text(e.texte);
+
+									return this;
+						}
+			}, {
+						key: 'plagexDraw',
+						value: function plagexDraw(p) {
+
+									if (p.ligne) {
+												p.ligne.remove();
+									}
+									if (p.texteDisplay) {
+												p.texteDisplay.remove();
+									}
+
+									p.ligne = this.plageGroup.append("line").attr("x1", this.echellex(p.min) + this.padPlage).attr("x2", this.echellex(p.max) - this.padPlage).attr("y1", this.echelley(p.y)).attr("y2", this.echelley(p.y))
+									//.attr("y1", this.height - this.margeB*.5)
+									//.attr("y2", this.height - this.margeB*.5)
+									.attr("class", "help").attr("style", "marker-start: url(#flecheg);marker-end: url(#flechev);");
+
+									p.texteDisplay = this.svg.append("text").attr("class", "help").attr("x", this.echellex(p.min + (p.max - p.min) / 2))
+									//.attr("y", this.height - this.margeB * .3)
+									.attr("y", this.echelley(p.y) - 15).attr("text-anchor", "middle").text(p.id);
+						}
+			}, {
 						key: 'plagex',
-						value: function plagex(min, max, id) {
-									var pad = this.padPlage;
-									var plage = {};
+						value: function plagex(min, max, id, y) {
+									var plage = {
+												min: min,
+												max: max,
+												id: id,
+												y: y
+									};
 
-									plage.ligne = this.plageGroup.append("line").attr("x1", this.echellex(min) + pad).attr("x2", this.echellex(max) - pad).attr("y1", this.height - this.margeB * .5).attr("y2", this.height - this.margeB * .5).attr("class", "help").attr("style", "marker-start: url(#fleches);marker-end: url(#flechep);");
+									this.plagexDraw(plage);
 
-									plage.rect = this.plageGroup.append("rect").attr('y', this.margeH).attr('x', this.echellex(min)).attr('width', this.echellex(max) - this.echellex(min)).attr('height', this.height - this.margeH - this.margeB);
-
-									plage.texte = this.svg.append("text").attr("class", "help").attr("x", this.echellex(min + (max - min) / 2)).attr("y", this.height - this.margeB * .3).attr("text-anchor", "middle").text(id).attr("opacity", 0);
-
-									plage.texte.transition().duration(this.durAnim).attr("opacity", 1);
-
-									this.plages.push(plage);
+									this.plagesx.push(plage);
 
 									return this;
 						}
@@ -333,6 +502,12 @@ gs.graph = function () {
 			}, {
 						key: 'setidx',
 						value: function setidx(texte) {
+									if (texte) {
+												this.idxText = texte;
+									}
+									if (this.idx) {
+												this.idx.remove();
+									}
 									var y = this.height - .2 * this.margeB;
 
 									if (this.idPos == "center") {
@@ -343,23 +518,31 @@ gs.graph = function () {
 												var anchor = "end";
 									}
 
-									this.idx = this.svg.append("text")
-									//.attr("x", this.width - this.margeD)
-									.attr("x", x)
-									//.attr("y", this.height - (.2 * this.margeB))
-									.attr("y", y).attr("text-anchor", anchor).text(texte);
+									this.idx = this.svg.append("text").attr("x", x).attr("y", y).attr("text-anchor", anchor).classed('idx', true).text(this.idxText);
 
 									return this;
 						}
-			}, {
-						key: 'texte',
-						value: function texte(x, y, _texte) {
-									var t = this.svg.append('text').attr("text-anchor", 'middle').attr('x', this.echellex(x)).attr('y', this.echelley(y)).text(_texte);
-						}
+
+						/*
+      texte(x,y,texte){
+      	 var t = this.svg.append('text')
+      				.attr("text-anchor", 'middle')
+      				.attr('x', this.echellex(x))
+      				.attr('y', this.echelley(y))
+      				.text(texte);
+      }
+      */
+
 			}, {
 						key: 'setidy',
 						value: function setidy(texte) {
 
+									if (this.idy) {
+												this.idy.remove();
+									}
+									if (texte) {
+												this.idyText = texte;
+									}
 									if (this.idPos == "center") {
 												var x = this.margeG / 3;
 												var y = this.margeH + (this.height - (this.margeB + this.margeH)) / 2;
@@ -371,7 +554,7 @@ gs.graph = function () {
 												var anchor = "start";
 									}
 
-									this.idy = this.svg.append("text").attr("y", y).attr("x", x).attr("text-anchor", anchor).attr("transform", transform).text(texte);
+									this.idy = this.svg.append("text").attr("y", y).attr("x", x).attr("text-anchor", anchor).attr("transform", transform).text(this.idyText);
 
 									return this;
 						}
@@ -412,6 +595,9 @@ gs.graph = function () {
 						key: 'drawGridY',
 						value: function drawGridY() {
 
+									if (this.gridYGroup) {
+												this.gridYGroup.remove();
+									}
 									this.gridY = d3.svg.axis().orient("left").tickSize(-(this.width - this.margeG - this.margeD)).scale(this.echelley);
 
 									this.gridYGroup = this.gridGroup.append("g").attr("class", "gridY").attr("transform", "translate(" + this.echellex(this.xmin) + ", 0)").call(this.gridY);
@@ -422,6 +608,9 @@ gs.graph = function () {
 						key: 'drawGridX',
 						value: function drawGridX() {
 
+									if (this.gridXGroup) {
+												this.gridXGroup.remove();
+									}
 									this.gridX = d3.svg.axis().tickSize(-(this.height - this.margeH - this.margeB - this.padH)).scale(this.echellex);
 
 									this.gridXGroup = this.gridGroup.append("g").attr("class", "gridX").attr("transform", "translate(0, " + this.echelley(this.ymin) + ")").call(this.gridX);
