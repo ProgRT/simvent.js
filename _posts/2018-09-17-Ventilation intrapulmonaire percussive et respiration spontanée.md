@@ -25,7 +25,7 @@ title: Ventilation intrapulmonaire percussive superposée à la respiration spon
 			  var textSpacing = 1;
 
 			  graph.vecteur(x, y + arrLength, x, y);
-			  graph.texte(x, y + arrLength + textSpacing, texte);
+			  graph.etiquette(x, y + arrLength + textSpacing, texte);
 	}
 
 	pointer(5.1, 10, 'Inspiration');
