@@ -5,15 +5,22 @@
 <script src="../src/simvent.js" charset="utf-8"></script>
 <script src="../src/animation.js" charset="utf-8"></script>
 <script src="../src/swipe.js" charset="utf-8"></script>
+<script src="../src/arguments.js" charset="utf-8"></script>
 
 <link rel="stylesheet" type="text/css" href="../css/gs-scratch.css" charset="utf-8"/>
 <link rel="stylesheet" type="text/css" href="../css/fp-scratch.css" charset="utf-8"/>
-
+<link rel="stylesheet" type="text/css" href="../css/fp-layout.css" charset="utf-8"/>
+<style>
+svg.gs {
+		  width: 80%;
+}
+</style>
 <body>
 
 		  <script>
 
 var sim = new simulator();
+if('mode' in args){sim.vent = new sv[args.mode]};
 sim.ventUpdate();
 sim.initPanel();
 sim.start();
