@@ -79,11 +79,14 @@ gs.graph = function () {
 
 						this.donnees = [];
 						this.courbes = [];
-						this.animations = [];
-						this.anotations = [];
 						this.vecteurs = [];
 						this.etiquettes = [];
 						this.plagesx = [];
+						this.pointsx = [];
+						this.pointsy = [];
+
+						this.anotations = [];
+						this.animations = [];
 						this.curAnim = 0;
 
 						this.defs = this.svg.append("defs");
@@ -94,7 +97,7 @@ gs.graph = function () {
 
 						this.defs.append("marker").attr("id", "flecheg").attr("refY", "10").attr("refX", "3").attr("markerWidth", "21").attr("markerHeight", "18").attr("orient", "auto").attr("markerUnits", "userSpaceOnUse").append("path").attr("d", "M9,5 L3,10 L9,15");
 
-						this.defs.append("marker").attr("id", "flechev").attr("refY", "10").attr("refX", "9").attr("markerWidth", "21").attr("markerHeight", "18").attr("orient", "auto").attr("markerUnits", "userSpaceOnUse").append("path").attr("d", "M3,5 L9,10 L3,15");
+						this.defs.append("marker").attr("id", "flechev").attr("refY", "10").attr("refX", "9").attr("markerWidth", "21").attr("markerHeight", "18").attr("orient", "auto").attr("markerUnits", "userSpaceOnUse").attr('stroke', 'cntext-stroke').append("path").attr("d", "M3,5 L9,10 L3,15");
 
 						if (this.drawControlsSymbols == true) {
 									this.controlsGroup.append("text").attr("x", this.width - this.margeD - 80).attr("y", this.margeH + 80).attr("text-anchor", "middle").text('T').on('click', function () {
@@ -330,6 +333,30 @@ gs.graph = function () {
 												}
 									}
 
+									var _iteratorNormalCompletion5 = true;
+									var _didIteratorError5 = false;
+									var _iteratorError5 = undefined;
+
+									try {
+												for (var _iterator5 = this.pointsy[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+															var p = _step5.value;
+															this.pointyDraw(p);
+												}
+									} catch (err) {
+												_didIteratorError5 = true;
+												_iteratorError5 = err;
+									} finally {
+												try {
+															if (!_iteratorNormalCompletion5 && _iterator5.return) {
+																		_iterator5.return();
+															}
+												} finally {
+															if (_didIteratorError5) {
+																		throw _iteratorError5;
+															}
+												}
+									}
+
 									var d = this.donnees[this.donnees.length - 1];
 									this.Tracer(d.donnees, d.fx, d.fy);
 						}
@@ -559,25 +586,40 @@ gs.graph = function () {
 									return this;
 						}
 			}, {
+						key: 'pointyDraw',
+						value: function pointyDraw(p) {
+									if (p.ligne) {
+												p.ligne.remove();
+									};
+									p.ligne = this.svg.append("line").attr("x1", this.margeG).attr("x2", this.width - this.margeD).attr("y1", this.echelley(p.val)).attr("y2", this.echelley(p.val)).attr("class", "help");
+
+									/*
+         var texte = this.svg.append("text")
+         		.attr("text-anchor", "middle")
+         		.attr("y", this.echelley(val))
+         		.attr("dy", 0)
+         		.attr("class", "help")
+         		.text(id);
+          if(this.annotateOnRight == true){
+         			texte.attr("x", this.width - this.margeD/2);
+         } 
+         else{
+         		texte.attr("x", this.margeG/2);
+         }
+         */
+						}
+			}, {
 						key: 'pointy',
 						value: function pointy(val, id) {
 
-									var ligne = this.svg.append("line").attr("x1", this.margeG).attr("x2", this.margeG).attr("y1", this.echelley(val)).attr("y2", this.echelley(val)).attr("class", "help");
+									var point = {
+												val: val,
+												id: id
+									};
 
-									ligne.transition().duration(this.durAnim).attr("x2", this.width - this.margeD);
+									this.pointyDraw(point);
+									this.pointsy.push(point);
 
-									this.anotations.push(ligne);
-
-									var texte = this.svg.append("text").attr("text-anchor", "middle").attr("y", this.echelley(val)).attr("dy", 0).attr("class", "help").text(id);
-
-									if (this.annotateOnRight == true) {
-
-												texte.attr("x", this.width - this.margeD / 2);
-									} else {
-												texte.attr("x", this.margeG / 2);
-									}
-
-									this.anotations.push(texte);
 									return this;
 						}
 			}, {

@@ -14,13 +14,19 @@ body {
 @media (max-width: 800px) {
   #content {
     width: 100%;
-    margin-left: none;
-    margin-right: none; }
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto; }
 
   #fpPanel.hidden {
     right: -100%; } }
-@media (min-width: 800px) {
-  #content {
+@media (min-width: 800px) and (max-width: 1300px) {
+  #content:not(.simulateur) {
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto; }
+
+  #content.simulateur {
     width: calc(100vw - 275px);
     margin-left: none;
     margin-right: auto; } }

@@ -1,5 +1,15 @@
-g#annotationsGroup line, g#plageGroup line {
+line.help {
+  stroke-width: 1px;
+  stroke-dasharray: 6 0;
   stroke: black; }
+
+g#annotationsGroup line, g#plageGroup line {
+  stroke: black;
+  stroke-width: 1px;
+  stroke-dasharray: 1 0; }
+
+#flecheg, #flechev {
+  stroke-width: 1px; }
 
 .gs {
   width: 100%;
@@ -9,7 +19,7 @@ g#annotationsGroup line, g#plageGroup line {
     fill: none; }
   .gs #waveformGroup path {
     display: visible;
-    stroke-width: 2px;
+    stroke-width: 1.5px;
     fill: none;
     stroke: black; }
   .gs .axe {
@@ -20,12 +30,19 @@ g#annotationsGroup line, g#plageGroup line {
   .gs .gridX line, .gs .gridY line {
     stroke-width: 1px;
     stroke: silver;
-    stroke-dasharray: 5 5; }
+    stroke-dasharray: 1 3; }
   .gs .gridX text {
     transform: translate(0, 8px); }
   .gs .gridY text {
     transform: translate(-8px, 0); }
   .gs .ligneZero {
     stroke: silver; }
+
+.gs #waveformGroup path {
+  stroke: #333333; }
+
+.gs.thinPath #waveformGroup path {
+  stroke-width: 1px;
+  stroke: #333333; }
 
 /*# sourceMappingURL=gs.css.map */

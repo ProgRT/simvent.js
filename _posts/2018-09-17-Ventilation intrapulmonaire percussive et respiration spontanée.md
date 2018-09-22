@@ -13,7 +13,7 @@ title: Ventilation intrapulmonaire percussive superposée à la respiration spon
 
 
 	//var graph = gs.quickGraph( null, data.timeData, fx, fy2).setidx("Temps").setidy("Pression");
-	var graph = new gs.graph();
+	var graph = new gs.graph(null, {class: 'thinPath'});
 	graph.padH = 1;
 	graph.setscale(data.timeData, fx, fy2)
 	.tracer(data.timeData, fx, fy2);

@@ -28,7 +28,7 @@ gs.animer = function(graph){
 };
 
 gs.stat = function(iddiv, respd){
-		  var tableau = "<table style='float:top'>";
+		  var tableau = "<table style='float:top'6>";
 		  tableau += "<tr><td>P<small>A</small>CO₂:</td><td>" + Math.round(10*respd[0].pAco2)/10 +" mmHg</td></tr>";
 		  tableau += "<tr><td>P<small>E</small>CO₂:</td><td>" + Math.round(10*respd[0].pmeco2)/10 +" mmHg</td></tr>";
 		  tableau += '<tr><td>$\\frac{V_{EM}}{Vc}$ (Fowler):</td><td>' + Math.round(1000* respd[0].fowler)/10 +" %</td></tr>";
@@ -78,11 +78,14 @@ gs.graph = class {
 
 					 this.donnees = [];
 					 this.courbes = [];
-					 this.animations = [];
-					 this.anotations = [];
 					 this.vecteurs = [];
 					 this.etiquettes = [];
 					 this.plagesx = [];
+					 this.pointsx = [];
+					 this.pointsy = [];
+
+					 this.anotations = [];
+					 this.animations = [];
 					 this.curAnim = 0;
 
 
@@ -129,6 +132,7 @@ gs.graph = class {
 								.attr("markerHeight", "18")
 								.attr("orient", "auto")
 								.attr("markerUnits", "userSpaceOnUse")
+					 .attr('stroke', 'cntext-stroke')
 								.append("path")
 								.attr("d", "M3,5 L9,10 L3,15");
 
@@ -274,6 +278,7 @@ gs.graph = class {
 					 for(var v of this.vecteurs){this.vectDraw(v)}
 					 for(var e of this.etiquettes){this.etiqDraw(e)}
 					 for(var p of this.plagesx){this.plagexDraw(p)}
+					 for(var p of this.pointsy){this.pointyDraw(p)}
 
 					 var d = this.donnees[this.donnees.length - 1];
 					 this.Tracer(d.donnees, d.fx, d.fy);
@@ -560,22 +565,16 @@ gs.graph = class {
 					 return this;
 		  }
 
-		  pointy (val, id){
-
-					 var ligne = this.svg.append("line")
+		  pointyDraw (p) {
+					 if(p.ligne){p.ligne.remove()};
+					 p.ligne = this.svg.append("line")
 								.attr("x1", this.margeG)
-								.attr("x2", this.margeG)
-								.attr("y1", this.echelley(val))
-								.attr("y2", this.echelley(val))
+								.attr("x2", this.width - this.margeD)
+								.attr("y1", this.echelley(p.val))
+								.attr("y2", this.echelley(p.val))
 								.attr("class", "help");
 
-					 ligne
-								.transition()
-								.duration(this.durAnim)
-								.attr("x2", this.width - this.margeD);
-
-					 this.anotations.push(ligne);
-
+					 /*
 					 var texte = this.svg.append("text")
 								.attr("text-anchor", "middle")
 								.attr("y", this.echelley(val))
@@ -590,8 +589,19 @@ gs.graph = class {
 					 else{
 								texte.attr("x", this.margeG/2);
 					 }
+					 */
+		  }
 
-					 this.anotations.push(texte);
+		  pointy (val, id) {
+
+					 var point = {
+								val: val,
+								id: id
+					 };
+
+					 this.pointyDraw(point);
+					 this.pointsy.push(point);
+
 					 return this;
 		  }
 

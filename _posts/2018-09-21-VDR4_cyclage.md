@@ -6,7 +6,8 @@ title: Cyclage haute et basse fréquence du ventilateur VDR-4
 
 var conf = {
 padH: .5,
-padPlage: 1
+padPlage: 1,
+class: 'thinPath'
 };
 var lung = new sv.SimpleLung();
 var vent = new sv.VDR();
