@@ -1,0 +1,17 @@
+div.pagination {
+  font-size: 90%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-top: 1px solid gray;
+  padding-top: 5px;
+  padding-right: 10px;
+  padding-left: 8px; }
+  div.pagination a {
+    font-size: 150%; }
+  div.pagination a:hover {
+    text-decoration: underline; }
+  div.pagination span.previous, div.pagination span.next {
+    visibility: hidden; }
+
+/*# sourceMappingURL=pagination.css.map */
