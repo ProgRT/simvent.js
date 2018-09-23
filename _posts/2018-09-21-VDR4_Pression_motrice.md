@@ -11,8 +11,8 @@ title: 'VDR-4: Pression motrice'
 	fx = function(d){return d.time};
 	fy = function(d){return d.Pao};
 
-	var meani = d3.mean(data.filter(d=>d.time>3 && d.time<4), fy);
-	var meane = d3.mean(data.filter(d=>d.time>5 && d.time<6), fy);
+	var meani = d3.mean(data.filter(function(d){return d.time>3 && d.time<4}), fy);
+	var meane = d3.mean(data.filter(function(d){return d.time>5 && d.time<6}), fy);
 	var vectx = 5.54;
 
 	var graph = gs.quickGraph( null, data, fx, fy, {class: 'thinPath'})
