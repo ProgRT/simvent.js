@@ -684,25 +684,24 @@ sv.Ventilator = function () {
 				this.ventilationCycle(lung);
 			}
 
-			if (this.lowPass > 1) {
-
-				for (var index in this.dataToFilter) {
-					var id = this.dataToFilter[index];
-					var smoothed = this.timeData[0][id];
-					for (var jndex = 1, len = this.timeData.length; jndex < len; ++jndex) {
-						var currentValue = this.timeData[jndex][id];
-						smoothed += (currentValue - smoothed) / this.lowPass;
-						this.timeData[jndex][id] = smoothed;
-					}
-				}
-			}
-
-			if (this.rAvg >= 2) {
-
-				for (var index in this.dataToFilter) {
-					sv.avg(this.timeData, this.dataToFilter[index], this.rAvg);
-				}
-			}
+			/*
+   if(this.lowPass > 1){
+   		for (var index in this.dataToFilter){
+   		var id = this.dataToFilter[index];
+   		var smoothed = this.timeData[0][id];
+   		for (var jndex = 1, len = this.timeData.length; jndex<len; ++jndex){
+   			var currentValue = this.timeData[jndex][id];
+   			smoothed += (currentValue - smoothed) / this.lowPass;
+   			this.timeData[jndex][id] = smoothed;
+   		}
+   	}
+   }
+   	if(this.rAvg >= 2){
+   		for (var index in this.dataToFilter){
+   		sv.avg(this.timeData, this.dataToFilter[index], this.rAvg);
+   	}
+   }
+   */
 			return {
 				timeData: this.timeData
 			};
@@ -996,23 +995,19 @@ sv.IPV = function (_sv$Ventilator4) {
 
 		_this8.Tramp = 0.005;
 		_this8.Rexp = 1; // cmH2O/l/s. To be adjusted based on the visual aspect of the curve.
-		_this8.rAvg = 2;
-		_this8.lowPass = 3;
+		_this8.lppe = 4;
+		_this8.lpip = 6;
+		_this8.lpop = 1;
 
 		_this8.simParams = {
 			Tvent: { unit: "s" },
 			Tsampl: { unit: "s" },
 			Tramp: { unit: "s" },
-			Rexp: { unit: "cmH₂O/l/s" },
-			rAvg: {},
-			lowPass: {}
+			Rexp: { unit: "cmH₂O/l/s" }
 		};
 
 		_this8.Fperc = 500;
 		_this8.Rit = 0.5; //Ratio of inspiratory time over total time (percussion)
-		//this.Fipl= 0.18; // 	
-		//this.Fiph= 1.8; // 
-		//this.CPR = 0;
 		_this8.Fipc = 0.18;
 
 		_this8.Fop = 0; //Phasitron output flow
@@ -1026,7 +1021,6 @@ sv.IPV = function (_sv$Ventilator4) {
 			Fipc: { unit: "l/s" }
 		};
 
-		_this8.dataToFilter = ["Pao", "Flung"];
 		return _this8;
 	}
 
@@ -1042,8 +1036,8 @@ sv.IPV = function (_sv$Ventilator4) {
 
 			var tStopPerc = this.time + this.Tep;
 			while (this.time < tStopPerc) {
-				this.Pao = -lung.flow * Rexp;
-
+				var Pao = -lung.flow * Rexp;
+				this.Pao = this.Pao + (Pao - this.Pao) / this.lppe;
 				var flow = (this.Pao - lung.Palv) / lung.Raw;
 				lung.appliquer_debit(flow, this.Tsampl);
 				this.timeData.push(sv.log(lung, this));
@@ -1056,15 +1050,14 @@ sv.IPV = function (_sv$Ventilator4) {
 			// Must be executed in a scope where the timeData container is defined
 			this.stateP = 1;
 			lung.Vtip = 0;
-			this.Fip = inFlow;
 			var tStartInsp = this.time;
 			var tStopPerc = this.time + this.Tip;
 
 			while (this.time < tStopPerc) {
 
-				this.Fip = inFlow;
+				this.Fip = this.Fip + (inFlow - this.Fip) / this.lpip;
 				this.Pao = this.Fop * lung.Raw + lung.Palv;
-				this.Fop = sv.Phasitron.Fop(this.Fip, this.Pao);
+				this.Fop = this.Fop + (sv.Phasitron.Fop(this.Fip, this.Pao) - this.Fop) / this.lpop;
 				lung.appliquer_debit(this.Fop, this.Tsampl);
 
 				this.timeData.push(sv.log(lung, this));
@@ -1105,24 +1098,8 @@ sv.VDR = function (_sv$IPV) {
 
 		var _this9 = _possibleConstructorReturn(this, (VDR.__proto__ || Object.getPrototypeOf(VDR)).call(this));
 
-		_this9.Tramp = 0.005;
-		_this9.Rexp = 1; // cmH2O/l/s. To be adjusted based on the visual aspect of the curve.
-		_this9.rAvg = 2;
-		_this9.lowPass = 3;
-
-		_this9.simParams = {
-			Tvent: { unit: "s" },
-			Tsampl: { unit: "s" },
-			Tramp: { unit: "s" },
-			Rexp: { unit: "cmH₂O/l/s" },
-			rAvg: {},
-			lowPass: {}
-		};
-
 		_this9.Tic = 2; // Convective inspiratory time
 		_this9.Tec = 2; // Convective expiratory time
-		_this9.Fperc = 500;
-		_this9.Rit = 0.5; //Ratio of inspiratory time over total time (percussion)
 		_this9.Fipl = 0.18; // 	
 		_this9.Fiph = 1.8; // 
 		_this9.CPR = 0;
@@ -1144,7 +1121,6 @@ sv.VDR = function (_sv$IPV) {
 			CPR: {}
 		};
 
-		_this9.dataToFilter = ["Pao", "Flung"];
 		return _this9;
 	}
 
