@@ -15,6 +15,9 @@ js: dist/simvent.min.js dist/graphsimple.min.js dist/ventyaml.min.js
 # CSS things
 # ----------
 
+SalleDeJeux.css: SalleDeJeux.sass
+	sass $< css/$(@)
+
 fp-scratch.css: fp-scratch.sass
 	sass $< css/$(@)
 

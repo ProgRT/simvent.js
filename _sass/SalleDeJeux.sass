@@ -1,0 +1,83 @@
+@import mix-grid
+@import gs-rainbow-lines
+//@import gs.sass
+
+html, body
+  font-size: 4mm
+  height: 100vh
+  overflow: hidden
+  max-height: 100vh
+
+h1
+  text-align: center
+
+.ventyamlSource  
+  box-sizing: border-box
+  display: inline-block
+  margin-left: auto
+  margin-right: auto
+  text-align: left
+  transition: all 1s
+  width: 35%
+  font-weight: normal
+  line-height: 140%
+  font-size: 120%
+  margin: 0px
+  padding: 6px
+
+.gs 
+  @include grid
+  display: inline-block
+  margin-left: auto
+  margin-right: auto
+  width: 100%
+  height: 200px
+
+.gs.loop
+  width: 50%
+  height: 300px
+
+.gs.loop:only-of-type
+  width: 100%
+  height: 100%
+
+div.vyamlwc
+  box-sizing: border-box
+  float: right
+  width: 64% //Must me at least 330 px large
+  margin-left: 0px
+
+div.vyamlwc, .ventyamlSource, .CodeMirror, div.downloads
+  border: 2px solid silver
+  border-radius: 4px
+  overflow: auto
+
+div.vyamlwc, .ventyamlSource, .CodeMirror
+  height: calc(100vh - 140px)
+
+div.downloads
+  padding: 5px
+  margin-top: 10px
+  >a
+    padding-left: 10px
+    padding-right: 10px
+
+figure.ventyaml 
+  display: inline-block
+  margin-left: auto
+  margin-right: auto
+  width: 100%
+
+ul.menu
+  text-align: right
+  background-color: hsl(0, 0%, 20%)
+  >li
+    color: white
+    display: inline-block
+    margin-left: 10px
+    margin-right: 10px
+    margin-top: 5px
+    margin-bottom: 5px
+    padding: none
+    a
+      color: inherit

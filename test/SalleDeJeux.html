@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<meta charset="utf-8"/>
+<meta name='viewport' content='width=device-width'/>
+<script src="../lib/d3.v3.min.js"></script>
+<script src="../lib/yaml.min.js"></script>
+<script src="../src/graphsimple.js"></script>
+<script src="../src/simvent.js"></script>
+<script src="../src/ventyaml.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../css/gs-grid-clear-rainbow.css" />
+<link rel="stylesheet" href="../css/SalleDeJeux.css" />
+<style>
+</style>
+
+<ul class="menu">
+	<li><a href="describe2.html">Aide</a>
+</ul>
+
+<pre>
+Ventilateur: PressureControler
+Poumon: SimpleLung
+</pre>
+<script>
+gs.defaults["margeG"]=60;
+gs.defaults["margeD"]=10;
+gs.defaults["margeH"]=10;
+gs.defaults["margeB"]=60;
+gs.defaults.padH = .1;
+gs.defaults.debugMode=true;
+gs.defaults.autoScale=true;
+
+var myVentyaml = new ventyaml(document.querySelector('pre'));
+
+if('vyamlSource' in localStorage){
+	//myVentyaml.textarea.value = localStorage.vyamlSource;
+	myVentyaml.setValue(localStorage.vyamlSource);
+	myVentyaml.update();
+}
+</script>
+<script src="SalleDeJeux.js"></script>

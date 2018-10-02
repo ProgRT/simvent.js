@@ -1,0 +1,128 @@
+path.surface {
+  stroke: none;
+  fill: none; }
+
+#waveformGroup path {
+  display: visible;
+  stroke-width: 2.5px;
+  fill: none; }
+
+#waveformGroup path:nth-child(1) {
+  stroke: #bf4040; }
+
+#waveformGroup path:nth-child(2) {
+  stroke: #bf408a; }
+
+#waveformGroup path:nth-child(3) {
+  stroke: #aa40bf; }
+
+#waveformGroup path:nth-child(4) {
+  stroke: #6040bf; }
+
+#waveformGroup path:nth-child(5) {
+  stroke: #406abf; }
+
+#waveformGroup path:nth-child(6) {
+  stroke: #40b5bf; }
+
+#waveformGroup path:nth-child(7) {
+  stroke: #40bf80; }
+
+#waveformGroup path:nth-child(8) {
+  stroke: #4abf40; }
+
+html, body {
+  font-size: 4mm;
+  height: 100vh;
+  overflow: hidden;
+  max-height: 100vh; }
+
+h1 {
+  text-align: center; }
+
+.ventyamlSource {
+  box-sizing: border-box;
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  transition: all 1s;
+  width: 35%;
+  font-weight: normal;
+  line-height: 140%;
+  font-size: 120%;
+  margin: 0px;
+  padding: 6px; }
+
+.gs {
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  height: 200px; }
+  .gs .axe {
+    visibility: hidden; }
+  .gs path.domain {
+    stroke: black;
+    fill: none; }
+  .gs .gridX line, .gs .gridY line {
+    stroke-width: 1px;
+    stroke: silver;
+    stroke-dasharray: 1 3; }
+  .gs .gridX text {
+    transform: translate(0, 8px); }
+  .gs .gridY text {
+    transform: translate(-8px, 0); }
+  .gs .ligneZero {
+    stroke: silver; }
+
+.gs.loop {
+  width: 50%;
+  height: 300px; }
+
+.gs.loop:only-of-type {
+  width: 100%;
+  height: 100%; }
+
+div.vyamlwc {
+  box-sizing: border-box;
+  float: right;
+  width: 64%;
+  margin-left: 0px; }
+
+div.vyamlwc, .ventyamlSource, .CodeMirror, div.downloads {
+  border: 2px solid silver;
+  border-radius: 4px;
+  overflow: auto; }
+
+div.vyamlwc, .ventyamlSource, .CodeMirror {
+  height: calc(100vh - 140px); }
+
+div.downloads {
+  padding: 5px;
+  margin-top: 10px; }
+  div.downloads > a {
+    padding-left: 10px;
+    padding-right: 10px; }
+
+figure.ventyaml {
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%; }
+
+ul.menu {
+  text-align: right;
+  background-color: #333333; }
+  ul.menu > li {
+    color: white;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: none; }
+    ul.menu > li a {
+      color: inherit; }
+
+/*# sourceMappingURL=SalleDeJeux.css.map */
