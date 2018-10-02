@@ -1,22 +1,18 @@
-var sj = {
-	updateDelay: 1000
-};
+function inputHandler(e){
+		  if(e.key == 'Control'){myVentyaml.ctrlDown = true}
+		  if(e.key == 'Enter' && myVentyaml.ctrlDown){
+					 updateAndSave();
+		  }
+}
 
-function inputHandler(){
-	if('updateTimeout' in sj){
-		clearTimeout(sj.updateTimeout);
-	}
-	sj.updateTimeout = setTimeout(updateAndSave, sj.updateDelay );
+function inputUp(e){
+		  if(e.key == 'Control'){myVentyaml.ctrlDown = false}
 }
 
 function updateAndSave(){
-	console.log('Updateandsave');
-	if('cm' in myVentyaml){
-		myVentyaml.cm.save();
-	}
 	myVentyaml.update.bind(myVentyaml)();
 	localStorage.vyamlSource = myVentyaml.textarea.value;
 }
 
-myVentyaml.textarea.addEventListener("input", inputHandler);
-//myVentyaml.cm.on("change", inputHandler);
+myVentyaml.textarea.addEventListener("keydown", inputHandler);
+myVentyaml.textarea.addEventListener("keyup", inputUp);

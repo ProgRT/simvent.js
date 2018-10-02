@@ -169,10 +169,8 @@ class ventyaml {
 
 	run(){
 		this.data = [];
-		//var downloadLinks = document.querySelectorAll('#downloads>a');
-		var downloadLinks = this.downloadsDiv.children;
-		for(var i = 0; i<downloadLinks.length; i ++){
-			this.downloadsDiv.removeChild(downloadLinks[i]);
+		while(this.downloadsDiv.firstChild){
+				  this.downloadsDiv.removeChild(this.downloadsDiv.firstChild);
 		}
 
 		for(var i in this.vents){
