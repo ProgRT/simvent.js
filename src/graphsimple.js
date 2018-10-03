@@ -239,15 +239,26 @@ gs.graph = class {
 			Autoscale (){
 					  var lastData = this.donnees[this.donnees.length -1];
 					  if('xmin' in this){
-								 this.ymax = Math.max(this.ymax, d3.max(lastData.donnees, lastData.fy));
-								 this.ymin = Math.min(this.ymin, d3.min(lastData.donnees, lastData.fy));
-								 this.applyPaddings();
+								if(d3.max(lastData.donnees, lastData.fy) > this.ymax){
+										  this.ymax = d3.max(lastData.donnees, lastData.fy);
+										  if(this.padH != 0){
+													 this.ymax += this.padH * (this.ymax - this.ymin);
+										  }
+								}
+
+								if(d3.min(lastData.donnees, lastData.fy) < this.ymin){
+										  this.ymin = d3.min(lastData.donnees, lastData.fy);
+										  if(this.padB != 0){
+													 this.ymin += this.padH * (this.ymin - this.ymax);
+										  }
+								}
+
 								 this.redessiner();
 					  }
 			}
 		  tracer (donnees, fonctionx, fonctiony){
-					 this.donnees.push({donnees: donnees, fx: fonctionx, fy: fonctiony});
-					if(this.autoScale && this.debugMode){
+					this.donnees.push({donnees: donnees, fx: fonctionx, fy: fonctiony});
+					if(this.autoScale){
 							  this.Autoscale();
 					}
 					 this.drawgrids();
@@ -269,7 +280,9 @@ gs.graph = class {
 					 }
 					 */
 
-					 this.Tracer(donnees, fonctionx, fonctiony);
+					if(!this.autoScale){
+							  this.Tracer(donnees, fonctionx, fonctiony);
+					}
 					 //this.playSimb();
 					 return this;
 		  }

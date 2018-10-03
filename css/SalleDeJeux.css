@@ -4,62 +4,62 @@ path.surface {
 
 #waveformGroup path {
   display: visible;
-  stroke-width: 2.5px;
+  stroke-width: 1.5px;
   fill: none; }
 
 #waveformGroup path:nth-child(1) {
-  stroke: #bf4040; }
+  stroke: #408abf; }
 
 #waveformGroup path:nth-child(2) {
-  stroke: #bf408a; }
+  stroke: #59bf40; }
 
 #waveformGroup path:nth-child(3) {
-  stroke: #aa40bf; }
+  stroke: #bf5740; }
 
 #waveformGroup path:nth-child(4) {
-  stroke: #6040bf; }
+  stroke: #8840bf; }
 
 #waveformGroup path:nth-child(5) {
-  stroke: #406abf; }
+  stroke: #40bfb9; }
 
 #waveformGroup path:nth-child(6) {
-  stroke: #40b5bf; }
+  stroke: #95bf40; }
 
 #waveformGroup path:nth-child(7) {
-  stroke: #40bf80; }
+  stroke: #bf4064; }
 
 #waveformGroup path:nth-child(8) {
-  stroke: #4abf40; }
+  stroke: #4d40bf; }
 
-html, body {
-  font-size: 4mm;
-  height: 100vh;
-  overflow: hidden;
-  max-height: 100vh; }
+html {
+  height: 100%;
+  box-sizing: border-box; }
 
-h1 {
-  text-align: center; }
+body {
+  border: 1px dashed gray;
+  padding: 10px;
+  margin: 0px;
+  height: 100%;
+  box-sizing: border-box; }
 
 .ventyamlSource {
+  grid-column-start: 1;
+  grid-column-end: 1;
+  grid-row-start: 1;
+  grid-row-end: 1;
   box-sizing: border-box;
-  display: inline-block;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: left;
-  transition: all 1s;
-  width: 35%;
   font-weight: normal;
   line-height: 140%;
   font-size: 120%;
-  margin: 0px;
-  padding: 6px; }
+  padding: 6px;
+  resize: none; }
 
 .gs {
   display: inline-block;
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-  height: 200px; }
+  height: 20vw; }
   .gs .axe {
     visibility: hidden; }
   .gs path.domain {
@@ -85,44 +85,32 @@ h1 {
   height: 100%; }
 
 div.vyamlwc {
-  box-sizing: border-box;
-  float: right;
-  width: 64%;
-  margin-left: 0px; }
+  grid-row-start: 1;
+  grid-row-end: 1;
+  grid-column-start: 2;
+  grid-column-end: 2; }
 
 div.vyamlwc, .ventyamlSource, .CodeMirror, div.downloads {
   border: 2px solid silver;
   border-radius: 4px;
   overflow: auto; }
 
-div.vyamlwc, .ventyamlSource, .CodeMirror {
-  height: calc(100vh - 140px); }
-
 div.downloads {
   padding: 5px;
-  margin-top: 10px; }
+  grid-row-start: 2;
+  grid-row-end: 2;
+  grid-column-start: 1;
+  grid-column-end: 3; }
   div.downloads > a {
     padding-left: 10px;
     padding-right: 10px; }
 
 figure.ventyaml {
-  display: inline-block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%; }
-
-ul.menu {
-  text-align: right;
-  background-color: #333333; }
-  ul.menu > li {
-    color: white;
-    display: inline-block;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    padding: none; }
-    ul.menu > li a {
-      color: inherit; }
+  margin: 0px;
+  display: grid;
+  grid-template-columns: 330px 1fr;
+  box-sizing: border-box;
+  height: 100%;
+  gap: 10px; }
 
 /*# sourceMappingURL=SalleDeJeux.css.map */
