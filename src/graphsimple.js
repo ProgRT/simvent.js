@@ -19,7 +19,8 @@ gs.defaults = {
 		  autoScale: false,
 		  debugMode: false,
 		  durAnim: 1500,
-		  padPlage: 5
+		  padPlage: 5,
+		  nticksY:6
 };
 
 gs.animer = function(graph){
@@ -668,6 +669,7 @@ gs.graph = class {
 					 this.gridY = d3.svg.axis()
 								.orient("left")
 								.tickSize(- (this.width - this.margeG - this.margeD))
+					 			.ticks(this.nticksY)
 								.scale(this.echelley);
 
 					 this.gridYGroup = this.gridGroup.append("g")

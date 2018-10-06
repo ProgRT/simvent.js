@@ -22,8 +22,11 @@ gs.defaults = {
 			idPos: "center",
 			annotateOnRight: true,
 			drawControlsSymbols: false,
+			autoScale: false,
+			debugMode: false,
 			durAnim: 1500,
-			padPlage: 5
+			padPlage: 5,
+			nticksY: 6
 };
 
 gs.animer = function (graph) {
@@ -34,7 +37,7 @@ gs.animer = function (graph) {
 };
 
 gs.stat = function (iddiv, respd) {
-			var tableau = "<table style='float:top'>";
+			var tableau = "<table style='float:top'6>";
 			tableau += "<tr><td>P<small>A</small>CO₂:</td><td>" + Math.round(10 * respd[0].pAco2) / 10 + " mmHg</td></tr>";
 			tableau += "<tr><td>P<small>E</small>CO₂:</td><td>" + Math.round(10 * respd[0].pmeco2) / 10 + " mmHg</td></tr>";
 			tableau += '<tr><td>$\\frac{V_{EM}}{Vc}$ (Fowler):</td><td>' + Math.round(1000 * respd[0].fowler) / 10 + " %</td></tr>";
@@ -131,6 +134,12 @@ gs.graph = function () {
 									this.xmin = d3.min(d, fx);
 									this.xmax = d3.max(d, fx);
 
+									this.applyPaddings();
+									return this;
+						}
+			}, {
+						key: 'applyPaddings',
+						value: function applyPaddings() {
 									if (this.padD != 0) {
 												this.xmax += this.padD * (this.xmax - this.xmin);
 									}
@@ -197,10 +206,34 @@ gs.graph = function () {
 									}
 						}
 			}, {
+						key: 'Autoscale',
+						value: function Autoscale() {
+									var lastData = this.donnees[this.donnees.length - 1];
+									if ('xmin' in this) {
+												if (d3.max(lastData.donnees, lastData.fy) > this.ymax) {
+															this.ymax = d3.max(lastData.donnees, lastData.fy);
+															if (this.padH != 0) {
+																		this.ymax += this.padH * (this.ymax - this.ymin);
+															}
+												}
+
+												if (d3.min(lastData.donnees, lastData.fy) < this.ymin) {
+															this.ymin = d3.min(lastData.donnees, lastData.fy);
+															if (this.padB != 0) {
+																		this.ymin += this.padH * (this.ymin - this.ymax);
+															}
+												}
+
+												this.redessiner();
+									}
+						}
+			}, {
 						key: 'tracer',
 						value: function tracer(donnees, fonctionx, fonctiony) {
 									this.donnees.push({ donnees: donnees, fx: fonctionx, fy: fonctiony });
-
+									if (this.autoScale) {
+												this.Autoscale();
+									}
 									this.drawgrids();
 
 									this.getsf(donnees, fonctionx, fonctiony);
@@ -209,11 +242,16 @@ gs.graph = function () {
 
 									this.axes();
 
-									if (!('waveformGroup' in this)) {
-												this.waveformGroup = this.svg.append("g").attr("id", "waveformGroup");
-									}
+									/*
+         if(!('waveformGroup' in this)){
+         		this.waveformGroup = this.svg.append("g")
+         				  .attr("id", "waveformGroup");
+         }
+         */
 
-									this.Tracer(donnees, fonctionx, fonctiony);
+									if (!this.autoScale) {
+												this.Tracer(donnees, fonctionx, fonctiony);
+									}
 									//this.playSimb();
 									return this;
 						}
@@ -342,6 +380,11 @@ gs.graph = function () {
 															var p = _step5.value;
 															this.pointyDraw(p);
 												}
+
+												/*
+            var d = this.donnees[this.donnees.length - 1];
+            this.Tracer(d.donnees, d.fx, d.fy);
+            */
 									} catch (err) {
 												_didIteratorError5 = true;
 												_iteratorError5 = err;
@@ -357,8 +400,30 @@ gs.graph = function () {
 												}
 									}
 
-									var d = this.donnees[this.donnees.length - 1];
-									this.Tracer(d.donnees, d.fx, d.fy);
+									var _iteratorNormalCompletion6 = true;
+									var _didIteratorError6 = false;
+									var _iteratorError6 = undefined;
+
+									try {
+												for (var _iterator6 = this.donnees[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+															var d = _step6.value;
+
+															this.Tracer(d.donnees, d.fx, d.fy);
+												}
+									} catch (err) {
+												_didIteratorError6 = true;
+												_iteratorError6 = err;
+									} finally {
+												try {
+															if (!_iteratorNormalCompletion6 && _iterator6.return) {
+																		_iterator6.return();
+															}
+												} finally {
+															if (_didIteratorError6) {
+																		throw _iteratorError6;
+															}
+												}
+									}
 						}
 			}, {
 						key: 'ajouter',
@@ -640,7 +705,7 @@ gs.graph = function () {
 									if (this.gridYGroup) {
 												this.gridYGroup.remove();
 									}
-									this.gridY = d3.svg.axis().orient("left").tickSize(-(this.width - this.margeG - this.margeD)).scale(this.echelley);
+									this.gridY = d3.svg.axis().orient("left").tickSize(-(this.width - this.margeG - this.margeD)).ticks(this.nticksY).scale(this.echelley);
 
 									this.gridYGroup = this.gridGroup.append("g").attr("class", "gridY").attr("transform", "translate(" + this.echellex(this.xmin) + ", 0)").call(this.gridY);
 
