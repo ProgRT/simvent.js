@@ -26,6 +26,8 @@ class ventyaml {
 		this.textarea.classList.add("ventyamlSource");
 		this.container.classList.add("hidden");
 		this.textarea.value = this.textarea.value.trim();
+		addEventListener('keyup', this.handleKeyup.bind(this));
+		addEventListener('keydown', this.handleKeydown.bind(this));
 		//this.createCM();
 
 
@@ -44,6 +46,15 @@ class ventyaml {
 		// Operate the magic
 
 		this.update();
+	}
+
+	handleKeydown(e){
+		  if(e.key == 'Control'){this.ctrlDown = true}
+		  if(e.key == 'Enter' && this.ctrlDown){this.update();}
+	}
+
+	handleKeyup(e){
+		  if(e.key == 'Control'){this.ctrlDown = false}
 	}
 
 	setValue(value){

@@ -1,7 +1,6 @@
 {% include head.html %}
 <link rel="stylesheet" href="{{ "/css/gs.css" | prepend: site.baseurl}}" />
 <link rel="stylesheet" href="{{ "/css/table.css" | prepend: site.baseurl}}" />
-<link rel="stylesheet" href="{{ "/css/ventyaml.css" | prepend: site.baseurl}}" />
 {% include menu.html %}
 
 <div id="content">
@@ -11,3 +10,4 @@
 		  {% endif %}
 		  {{ content }}
 </div>
+<script> ventyamlEverything("pre"); </script>

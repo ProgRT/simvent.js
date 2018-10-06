@@ -1,0 +1,14 @@
+---
+layout: post-list
+---
+
+<ul>
+{% for i in site.html_files %}
+<li>
+<a class="post-link" href="{{ i.url | prepend: site.baseurl }}">
+								{{ i.path }}
+</a>
+</li>
+
+{% endfor %}
+</ul>

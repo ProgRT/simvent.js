@@ -1,19 +1,7 @@
 @import mix-grid
 @import gs-rainbow-lines
 
-
-//html
-  height: 100%
-  box-sizing: border-box
-
-//body
-  border: 1px dashed gray
-  padding: 10px
-  margin: 0px
-  height: 100%
-  box-sizing: border-box
-
-.ventyamlSource  
+.ventyamlSource, .ventyamlSource
   grid-column-start: 1
   grid-column-end: 1
   grid-row-start: 1
@@ -24,6 +12,7 @@
   font-size: 120%
   padding: 6px
   resize: none
+  background: none
 
 .gs 
   @include grid
@@ -33,6 +22,14 @@
   width: 100%
   height: 20vw
 
+.gs.loop
+  width: 50%
+  height: 300px
+
+.gs.loop:only-of-type
+  width: 100%
+  height: 100%
+
 div.vyamlwc
   grid-row-start: 1
   grid-row-end: 1
@@ -40,27 +37,23 @@ div.vyamlwc
   grid-column-end: 2
 
 div.vyamlwc, .ventyamlSource, .CodeMirror, div.downloads
-  border: 2px solid silver
-  border-radius: 4px
+  border: 1px solid gray
+  border-radius: 0px
   overflow: auto
+  margin: 0px
+  background-color: hsl(0, 0%, 93%)
 
 div.downloads
-  padding: 5px
-  grid-row-start: 2
-  grid-row-end: 2
-  grid-column-start: 1
-  grid-column-end: 3
+  display: none
 
   >a
     padding-left: 10px
     padding-right: 10px
 
 figure.ventyaml 
-  max-height: calc(100vh - 67px)
-  margin: 10px
+  margin: 0px
   display: grid
   grid-template-columns: 330px 1fr
-  grid-template-rows: 1fr auto
   box-sizing: border-box
-  height: 100%
-  gap: 10px
+  height: auto
+  gap: 5px

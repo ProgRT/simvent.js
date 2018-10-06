@@ -3,6 +3,7 @@ title: Documentation
 layout: documentation
 ---
 
+<link rel="stylesheet" href="{{ "/css/ventyaml.css" | prepend: site.baseurl}}" />
 ## Modèles de ventilateurs
 
 ### sv.PressureControler
@@ -100,4 +101,3 @@ Modèle de poumon présentant une respiration spontanée et une compliance liné
     Courbes: 
        - Pmus
 
-<script> ventyamlEverything("pre"); </script>
