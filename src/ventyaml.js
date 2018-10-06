@@ -264,7 +264,7 @@ class ventyaml {
 		if(typeof courbe == "string"){
 			function fx(d){return d.time;}
 			function fy(d){return d[courbe];}
-			var graph = gs.addGraph(this.waveformContainer.id, this.data[0], fx, fy)
+			var graph = gs.addGraph(this.waveformContainer.id, this.data[0], fx, fy, {autoScale: true})
 				.setidx('Temps (s)')
 				.setidy(courbe);
 			if(this.data.length>1){

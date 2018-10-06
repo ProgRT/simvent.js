@@ -290,7 +290,7 @@ var ventyaml = function () {
 					return d[courbe];
 				};
 
-				var graph = gs.addGraph(this.waveformContainer.id, this.data[0], fx, fy).setidx('Temps (s)').setidy(courbe);
+				var graph = gs.addGraph(this.waveformContainer.id, this.data[0], fx, fy, { autoScale: true }).setidx('Temps (s)').setidy(courbe);
 				if (this.data.length > 1) {
 					for (var i = 1; i < this.data.length; i++) {
 						graph.tracer(this.data[i], fx, fy);
