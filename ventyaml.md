@@ -15,17 +15,17 @@ On entend par une scène un modèle *x* de ventilateur ventilant un modèle *x* 
 	Poumon: SimpleLung
 	Courbe: Flung
 
-La syntaxe *ventyaml* permet aussi de comparer plusieur modèles de ventilateurs.
+La syntaxe *ventyaml* permet aussi de comparer plusieur modèles de ventilateurs et de poumons.
 
 	Ventilateurs:
 	  - PressureControler
 	  - FlowControler
 
-Ou de poumons.
-
 	Poumons:
 	  - SimpleLung
 	  - RLung
+
+## Valeurs par défault
 
 Lorsque le modèle de ventilateur, le modèle de poumon ou les données 
 a afficher sont ommis, des valeurs par défault sont utilisés. Celles-ci sont:
@@ -34,10 +34,12 @@ a afficher sont ommis, des valeurs par défault sont utilisés. Celles-ci sont:
 - Poumon *SimpleLung*
 - Courbe *Pao - Temps*
 
-## Poumons
+## Ventilateur
 
-	Poumons:
-	  - Raw: 5
-	    Crs: 50
-	  - Raw: 10
-	    Crs: 20
+## Poumon
+
+## Courbe
+
+## Boucle
+
+## Legende
