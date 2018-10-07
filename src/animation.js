@@ -342,6 +342,13 @@ class simulator {
 										  input.onfocus = function(){this.select()};
 										  input.onchange = (evt)=>{
 													 object[evt.target.name] = parseFloat(evt.target.value);
+													 if(object.ventParams){
+																for(var param in object.ventParams){
+																		  if(object.ventParams[param].calculated == true){
+																					 document.querySelector('#data' + param).textContent = Math.round(10 * object[param])/10;
+																		  }
+																}
+													 }
 													 this.ventUpdate();
 													 this.buttonValidate.disabled = false;
 												};
