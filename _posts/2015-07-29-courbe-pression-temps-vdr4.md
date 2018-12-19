@@ -13,6 +13,8 @@ title: Courbe pression-temps du ventilateur VDR-4
 	fy2 = function(d){return d.Pao};
 
 
-	var graph = gs.quickGraph( null, data.timeData, fx, fy2).setidx("Time").setidy("Presure");
+	var graph = gs.quickGraph( null, data.timeData, fx, fy2)
+		.setidx("Time")
+		.setidy("Presure");
 
 </script>

@@ -1,7 +1,6 @@
 ---
 title: Courbe volume-pression du modèle sv.SygLung
 ---
-<svg id="svg1{{ page.id | replace: "/", "" }}" class="square surface"></svg>
 
 <script>
 
@@ -18,7 +17,7 @@ title: Courbe volume-pression du modèle sv.SygLung
 	fy1 = function(d){return d.Vt};
 
 
-	var graph1 = gs.quickGraph( "#svg1{{ page.id | replace: "/", "" }}", data, fx, fy1)
+	var graph1 = gs.quickGraph( null, data, fx, fy1)
 		.setidx("Palv")
 		.setidy("Vt");
 

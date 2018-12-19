@@ -1,7 +1,6 @@
 ---
 title: Histérèse de la courbe pression-volume de poumon
 ---
-<svg id="svg1{{ page.id | replace: "/", "" }}" class="square"></svg>
 
 	var lung = new sv.RLung();
 	var ventilator = new sv.PVCurve();
@@ -27,7 +26,7 @@ title: Histérèse de la courbe pression-volume de poumon
 	fy2 = function(d){return d.Vt};
 
 
-	var graph = gs.quickGraph( "#svg1{{ page.id | replace: "/", "" }}", data, fx, fy2)
+	var graph = gs.quickGraph( null, data, fx, fy2)
 		.setidx("Pressure")
 		.setidy("Volume");
 

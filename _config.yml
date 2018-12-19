@@ -18,4 +18,4 @@ kramdown:
 gems: ['jekyll-paginate']
 plugins-dir:
   - jekyll-paginate
-paginate: 3
+paginate: 6

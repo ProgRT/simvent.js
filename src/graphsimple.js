@@ -611,7 +611,7 @@ gs.graph = class {
 								.attr("x2", this.width - this.margeD)
 								.attr("y1", this.echelley(p.val))
 								.attr("y2", this.echelley(p.val))
-								.attr("class", "help");
+								.attr("class", "pointy");
 
 					 /*
 					 var texte = this.svg.append("text")
@@ -648,11 +648,10 @@ gs.graph = class {
 					 var an = this.svg.append("line")
 								.attr("x1", this.echellex(val))
 								.attr("x2", this.echellex(val))
-								.attr("y1", this.echelley(this.ymax))
+								.attr("y1", this.echelley(this.ymin))
 								.attr("y2", this.echelley(this.ymax))
-								.attr("class", "help");
-					 an.transition().duration(this.durAnim).attr("y1", this.echelley(this.ymin) - 5);
-					 this.anotations.push(an);
+								.attr("class", "pointx");
+					 this.pointsx.push(an);
 
 					 var an = this.svg.append("text")
 								.attr("y", this.height - this.margeB/3)
