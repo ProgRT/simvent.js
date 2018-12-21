@@ -26,7 +26,8 @@ gs.defaults = {
 			debugMode: false,
 			durAnim: 1500,
 			padPlage: 5,
-			nticksY: 6
+			nticksY: 6,
+			nticksX: 10
 };
 
 gs.animer = function (graph) {
@@ -717,7 +718,7 @@ gs.graph = function () {
 									if (this.gridXGroup) {
 												this.gridXGroup.remove();
 									}
-									this.gridX = d3.svg.axis().tickSize(-(this.height - this.margeH - this.margeB - this.padH)).scale(this.echellex);
+									this.gridX = d3.svg.axis().tickSize(-(this.height - this.margeH - this.margeB - this.padH)).ticks(this.nticksX).scale(this.echellex);
 
 									this.gridXGroup = this.gridGroup.append("g").attr("class", "gridX").attr("transform", "translate(0, " + this.echelley(this.ymin) + ")").call(this.gridX);
 
