@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<meta charset="utf-8"/>
+
+<style>
+body {
+	box-sizing: border-box;
+	padding: none;
+	margin-top: none;
+}
+
+html {
+	box-sizing: border-box;
+	height: 100%;
+	padding: 0px;
+	margin: 0px;
+}
+
+</style>
+
+<body>
+
+<script type=module>
+
+	import {PressureControler} from '../src/simvent-ventilators.js';
+	import {SimpleLung} from '../src/simvent-lungs.js';
+	//import * as Plot from "https://cdn.skypack.dev/@observablehq/plot@0.6";
+	import {plot, line, areaY} from "https://cdn.skypack.dev/@observablehq/plot@0.6";
+	//import { graph } from '../src/graphsimple.js';
+
+	const graphParam = {
+		padH: .25,
+		margeG: 80,
+		margeB: 30,
+		margeH: 10,
+	};
+
+	var vent = new PressureControler({PEEP: 10, Fconv: 40});
+	var lung = new SimpleLung();
+	var data = vent.ventilate(lung).timeData;
+
+	const myplot = plot({
+		width: document.documentElement.clientWidth,
+		height: document.documentElement.clientWidth/3,
+		x: {label: 'Temps (s)', line: true},
+		y: {grid: true},
+		marks: [
+			line(data, {x: "time", y: "Flung"}),
+			areaY(data, {x: "time", y: "Flung", fillOpacity: 0.1}),
+			]
+	});
+	document.body.append(myplot);
+
+</script>
+</body>

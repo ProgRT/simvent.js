@@ -1,5 +1,10 @@
-console.log(navigator.language);
-var dict = {
+export function translate(toTranslate, form, lang){
+	try {var translated = dict[toTranslate][form][lang];}
+	catch (e){console.log("Was unable to translate " + toTranslate)}
+	finally {return translated;}
+}
+
+const dict = {
 	Crs:{
 		long:{
 			en:"Respiratory system compliance",

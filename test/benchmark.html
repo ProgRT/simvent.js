@@ -34,8 +34,26 @@ td:not(:first-child){
 	<table id="benchmarkResults"></table>
 
 	<script>
+
+ventList = [
+	'FlowControler',
+	'PressureControler',
+	'PressureAssistor',
+	'IPV',
+	'VDR'
+];
+
+lungList = [
+	'SimpleLung',
+	'SptLung',
+	'SygLung',
+	'RLung'
+];
+
+
 function chrono(vent, lung, target){
 	var v = vent;
+	v.Tvent = 60;
 	var l = new lung();
 
 	var tStart = Date.now();
@@ -65,8 +83,8 @@ function chrono(vent, lung, target){
 }
 
 function benchL(){
-	for(i in sv.ventilators){
-		var vent = new sv.ventilators[i];
+	for(v of ventList){
+		var vent = new sv[v];
 		var b = document.getElementsByTagName("body")[0];
 
 		var h = document.createElement("h2");
@@ -97,8 +115,8 @@ function benchL(){
 		rLine.appendChild(c4);
 		t.appendChild(rLine);
 		
-		for(var i in sv.lungs){
-			chrono(vent, sv.lungs[i], t);
+		for(l of lungList){
+			chrono(vent, sv[l], t);
 		}
 	}
 }

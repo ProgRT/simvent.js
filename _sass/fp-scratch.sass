@@ -1,11 +1,13 @@
+@import fp-layout.sass
+
 $defaultTransition: .5s
 
-//#fpControls
+#fpControls
   float: right
   margin: 0px
   list-style-type: none
 
-//  a
+  a
     margin-left: 10px
 
 .fpPanelTitle
@@ -80,6 +82,9 @@ $defaultTransition: .5s
   input
     width: 50px
 
+#panel.visible
+  right: 0px
+
 #fpDownloadDiv a:before
   vertical-align: middle
   margin-right: .2em
@@ -87,3 +92,11 @@ $defaultTransition: .5s
   transform: scale(0.6)
   //content: url("/Icones/telecharger.svg")
   content: url("/simvent.js/Icones/telecharger.svg")
+
+
+#fp-controls img
+  height: 1.5em
+  opacity: 0.7
+
+#fp-controls img:hover
+  opacity: 1

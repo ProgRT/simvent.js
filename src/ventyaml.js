@@ -1,4 +1,17 @@
-class ventyaml {
+import * as vents from './simvent-ventilators.js';
+import * as lungs from './simvent-lungs.js';
+import {addGraph} from './graphsimple.js';
+
+
+const grconf =	{
+	margeG:60,
+	margeD:10,
+	margeH:10,
+	margeB:60,
+	padH : .1,
+};
+
+export class ventyaml {
 	constructor(sourceNode) {
 		this.clsList = sourceNode.classList;
 
@@ -97,7 +110,7 @@ class ventyaml {
 		this.vents = [];
 
 		if( !("Ventilateur" in this.json) &&!("Ventilateurs" in this.json)){
-			this.vents.push(new sv.PressureControler());
+			this.vents.push(new vents.PressureControler());
 		}
 
 		else if('Ventilateur' in this.json){
@@ -130,17 +143,17 @@ class ventyaml {
 
 	createvent(ventDesc){
 		if(typeof ventDesc == 'string'){
-			if(ventDesc in sv){
-				var vent = new sv[ventDesc]();
+			if(ventDesc in vents){
+				var vent = new vents[ventDesc]();
 			}
 		}
 		else if(typeof ventDesc == 'object'){
 			if(!("Mode" in ventDesc)){
-				var vent = new sv.PressureControler();
+				var vent = new vents.PressureControler();
 			}
 
-			else if(ventDesc.Mode in sv){
-				var vent = new sv[ventDesc.Mode]();
+			else if(ventDesc.Mode in vents){
+				var vent = new vents[ventDesc.Mode]();
 			}
 			else {console.log( "Does not seems to be a valid vent type")}
 
@@ -155,17 +168,17 @@ class ventyaml {
 
 	createlung(lungDesc){
 		if(typeof lungDesc == 'string'){
-			if(lungDesc in sv){
-				var lung = new sv[lungDesc]();
+			if(lungDesc in lungs){
+				var lung = new lungs[lungDesc]();
 			}
 		}
 		else if(typeof lungDesc == 'object'){
 			if(!("Type" in lungDesc)){
-				var lung = new sv.SimpleLung();
+				var lung = new lungs.SimpleLung();
 			}
 
-			else if(lungDesc.Type in sv){
-				var lung = new sv[lungDesc.Type]();
+			else if(lungDesc.Type in lungs){
+				var lung = new lungs[lungDesc.Type]();
 			}
 			else {console.log( "Does not seems to be a valid lung type")}
 
@@ -264,7 +277,7 @@ class ventyaml {
 		if(typeof courbe == "string"){
 			function fx(d){return d.time;}
 			function fy(d){return d[courbe];}
-			var graph = gs.addGraph(this.waveformContainer.id, this.data[0], fx, fy, {autoScale: true})
+			var graph = addGraph(this.waveformContainer.id, this.data[0], fx, fy, {...grconf, ...{autoScale: true}})
 				.setidx('Temps (s)')
 				.setidy(courbe);
 			if(this.data.length>1){
@@ -282,7 +295,7 @@ class ventyaml {
 		if( typeof boucle == "object" && 'x' in boucle && 'y' in boucle && boucle.x != null && boucle.y != null){
 			function fx(d){return d[boucle["x"]];}
 			function fy(d){return d[boucle["y"]];}
-			var graph = gs.addGraph(this.waveformContainer.id, this.data[0], fx, fy, {class: "loop"});
+			var graph = addGraph(this.waveformContainer.id, this.data[0], fx, fy, {...grconf, ...{ class: "loop" }});
 			graph.setidx(boucle["x"]);
 			graph.setidy(boucle["y"]);
 			if(this.data.length>1){
@@ -319,7 +332,7 @@ class ventyaml {
 	}
 }
 
-function ventyamlEverything(selector){
+export function ventyamlEverything(selector){
 	var preS = document.querySelectorAll(selector);
 	for(var i in preS){
 		if(typeof preS[i].tagName != 'undefined'){//Why the hell must I filter this?

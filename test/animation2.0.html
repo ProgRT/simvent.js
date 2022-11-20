@@ -1,35 +1,38 @@
 <!DOCTYPE html>
+<meta name='viewport' content='width=device-width, user-scalable=no'>
 <meta charset="utf-8"/>
 
 <script src="../lib/d3.v3.min.js" charset="utf-8"></script>
-<script src="../src/simvent.js" charset="utf-8"></script>
-<script src="../src/animation.js" charset="utf-8"></script>
 <script src="../src/swipe.js" charset="utf-8"></script>
-<script src="../src/arguments.js" charset="utf-8"></script>
 
 <link rel="stylesheet" type="text/css" href="../css/gs-scratch.css" charset="utf-8"/>
 <link rel="stylesheet" type="text/css" href="../css/fp-scratch.css" charset="utf-8"/>
-<link rel="stylesheet" type="text/css" href="../css/fp-layout.css" charset="utf-8"/>
-<style>
-svg.gs {
-		  width: 80%;
-}
-</style>
+
 <body>
 
-		  <script>
+	<script type=module>
 
-var sim = new simulator();
-if('mode' in args){sim.vent = new sv[args.mode]};
-sim.ventUpdate();
-sim.initPanel();
-sim.start();
-onresize = ()=>sim.redraw();
+		import {simulator} from "../src/animation.js"
+		var sim = new simulator();
+		sim.debugMode = true;
+		sim.vent.Tsampl = 0.02;
+		sim.ventBufferFactor=0.1;
+		sim.ventUpdate();
+		sim.initPanel();
+		sim.start();
 
-function swipeLeftHandler(){ document.querySelector('#fpPanel').classList.remove('hidden'); }
-function swipeRightHandler(){ document.querySelector('#fpPanel').classList.add('hidden'); }
-window.addEventListener('swiperight', swipeRightHandler, false);
-window.addEventListener('swipeleft', swipeLeftHandler, false);
-		  </script>
+		onresize = ()=>sim.redraw();
+
+		function swipeLeftHandler(){
+					document.querySelector('#fpPanel').classList.remove('hidden');
+		}
+
+		function swipeRightHandler(){
+					document.querySelector('#fpPanel').classList.add('hidden');
+		}
+
+		window.addEventListener('swiperight', swipeRightHandler, false);
+		window.addEventListener('swipeleft', swipeLeftHandler, false);
+	</script>
 
 </body>

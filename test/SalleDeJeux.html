@@ -5,37 +5,31 @@
 <script src="../lib/d3.v3.min.js"></script>
 <script src="../lib/yaml.min.js"></script>
 
-<script src="../src/graphsimple.js"></script>
-<script src="../src/simvent.js"></script>
-<script src="../src/ventyaml.js"></script>
-
 <link rel="stylesheet" href="../css/SalleDeJeux.css" />
+
+<ul class="menu">
+	<li><a href="describe2.html">Aide</a>
+</ul>
 
 <pre>
 Ventilateur: PressureControler
 Poumon: SimpleLung
 </pre>
 
-<script>
-gs.defaults["margeG"]=60;
-gs.defaults["margeD"]=10;
-gs.defaults["margeH"]=10;
-gs.defaults["margeB"]=60;
-gs.defaults.padH = .1;
-gs.defaults.padB = .1;
-gs.defaults.debugMode=true;
-gs.defaults.autoScale=true;
+<script type='module'>
+	import { ventyaml } from '../src/ventyaml.js'
 
-if('vyamlSource' in localStorage){
-		  document.querySelector('pre').textContent = localStorage.vyamlSource;
-}
+	if(myVentyaml.waveformContainer.scrollHeight > myVentyaml.waveformContainer.clientHeight){
+		var e = new Event('resize');
+				window.dispatchEvent(e);
+	}
 
-var myVentyaml = new ventyaml(document.querySelector('pre'));
+	myVentyaml.textarea.addEventListener("keydown", function(){ localStorage.vyamlSource = myVentyaml.textarea.value; });
+	var myVentyaml = new ventyaml(document.querySelector('pre'));
 
-if(myVentyaml.waveformContainer.scrollHeight > myVentyaml.waveformContainer.clientHeight){
-	var e = new Event('resize');
-		  window.dispatchEvent(e);
-}
-
-myVentyaml.textarea.addEventListener("keydown", function(){ localStorage.vyamlSource = myVentyaml.textarea.value; });
+	if('vyamlSource' in localStorage){
+		myVentyaml.textarea.value = localStorage.vyamlSource;
+		myVentyaml.setValue(localStorage.vyamlSource);
+		myVentyaml.update();
+	}
 </script>

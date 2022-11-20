@@ -2,9 +2,7 @@ if(typeof d3 == 'undefined'){
 		  throw 'graphsimple.js: d3 library not loaded.';
 }
 
-var gs = {};
-
-gs.defaults = {
+const defaults = {
 		  margeG: 20,
 		  margeD: 20,
 		  margeH: 20,
@@ -24,29 +22,11 @@ gs.defaults = {
 		  nticksX:10
 };
 
-gs.animer = function(graph){
-		  if(graph.curAnim < graph.animations.length){
-					 graph.animations[graph.curAnim]();
-					 graph.curAnim ++;
-		  }
-};
-
-gs.stat = function(iddiv, respd){
-		  var tableau = "<table style='float:top'6>";
-		  tableau += "<tr><td>P<small>A</small>CO₂:</td><td>" + Math.round(10*respd[0].pAco2)/10 +" mmHg</td></tr>";
-		  tableau += "<tr><td>P<small>E</small>CO₂:</td><td>" + Math.round(10*respd[0].pmeco2)/10 +" mmHg</td></tr>";
-		  tableau += '<tr><td>$\\frac{V_{EM}}{Vc}$ (Fowler):</td><td>' + Math.round(1000* respd[0].fowler)/10 +" %</td></tr>";
-		  tableau += '<tr><td>$\\frac{V_{EM}}{Vc}$ (Bohr):</td><td>' + Math.round(1000* respd[0].bohr)/10 +" %</td></tr>";
-		  tableau += "</table>";
-		  $(iddiv).append(tableau);
-};
-
-gs.graph = class {
+export class graph {
 		  constructor(idsvg, conf){
 
-
-					 for(var index in gs.defaults){
-								this[index] = gs.defaults[index];
+					 for(var index in defaults){
+								this[index] = defaults[index];
 					 }
 
 					 for(var index in conf){
@@ -54,7 +34,7 @@ gs.graph = class {
 					 }
 
 					 if(idsvg == null){
-								this.idsvg = "#" + gs.newSvg();
+								this.idsvg = "#" + newSvg();
 					 }
 					 else{
 								this.idsvg = idsvg;
@@ -64,6 +44,9 @@ gs.graph = class {
 
 					 if('class' in this){
 								this.svg.classed(this.class, true);
+					 }
+					 if('viewBox' in this){
+								this.svg.attr('viewBox', this.viewBox);
 					 }
 					 this.gridGroup = this.svg.append("g")
 								.attr("id", "gridGroup");
@@ -135,8 +118,8 @@ gs.graph = class {
 								.attr("markerWidth", "21")
 								.attr("markerHeight", "18")
 								.attr("orient", "auto")
-								.attr("markerUnits", "userSpaceOnUse")
-					 .attr('stroke', 'cntext-stroke')
+								.attr("markerUdivnits", "userSpaceOnUse")
+								.attr('stroke', 'context-stroke')
 								.append("path")
 								.attr("d", "M3,5 L9,10 L3,15");
 
@@ -258,47 +241,76 @@ gs.graph = class {
 								 this.redessiner();
 					  }
 			}
-		  tracer (donnees, fonctionx, fonctiony){
-					this.donnees.push({donnees: donnees, fx: fonctionx, fy: fonctiony});
-					if(this.autoScale){
-							  this.Autoscale();
-					}
-					 this.drawgrids();
+	AutoscaleAll (){
+		var lastData = this.donnees[this.donnees.length -1];
+		if('xmin' in this){
+			if(d3.max(lastData.donnees, lastData.fy) > this.ymax){
+				this.ymax = d3.max(lastData.donnees, lastData.fy);
+				if(this.padH != 0){
+					this.ymax += this.padH * (this.ymax - this.ymin);
+				}
+			}
 
-					 this.getsf(donnees, fonctionx, fonctiony);
-					 var surface = this.sf(donnees, fonctionx, fonctiony);
-					 this.surface = this.svg.append("path")
-								.attr("d", surface)
-								.attr("class", "surface")
-								.style("clip-path", "url(" + this.idsvg + "clip)")
-					 ;	
+			if(d3.min(lastData.donnees, lastData.fy) < this.ymin){
+				this.ymin = d3.min(lastData.donnees, lastData.fy);
+				if(this.padB != 0){
+					this.ymin += this.padH * (this.ymin - this.ymax);
+				}
+			}
 
-					 this.axes()
+			if(d3.max(lastData.donnees, lastData.fx) > this.xmax){
+				this.xmax = d3.max(lastData.donnees, lastData.fx);
+				if(this.padD != 0){
+					this.xmax += this.padD * (this.xmax - this.xmin);
+				}
+			}
 
-					 /*
-					 if(!('waveformGroup' in this)){
-								this.waveformGroup = this.svg.append("g")
-										  .attr("id", "waveformGroup");
-					 }
-					 */
+			if(d3.min(lastData.donnees, lastData.fx) < this.xmin){
+				this.xmin = d3.min(lastData.donnees, lastData.fx);
+				if(this.padG != 0){
+					this.xmin += this.padG * (this.xmin - this.xmax);
+				}
+			}
+			this.redessiner();
+		}
+	}
 
-					if(!this.autoScale){
-							  this.Tracer(donnees, fonctionx, fonctiony);
-					}
-					 //this.playSimb();
-					 return this;
-		  }
+	tracer (donnees, fonctionx, fonctiony, attr){
+		this.donnees.push({donnees: donnees, fx: fonctionx, fy: fonctiony});
+		if(this.autoScale){
+			this.Autoscale();
+		}
 
-		  Tracer(d, fx, fy){
-					 this.getlf(fx, fy);
-					 var coord = this.lf(d);
-					 var courbe = this.waveformGroup.append("path")
-								.attr("d", coord)
-								.style("clip-path", "url(" + this.idsvg + "clip)")
-								.classed('dataPath', true);
-					 this.courbes.push(courbe);
-					 return this;
-		  }
+		this.drawgrids();
+
+		this.getsf(donnees, fonctionx, fonctiony);
+		var surface = this.sf(donnees, fonctionx, fonctiony);
+		this.surface = this.svg.append("path")
+			.attr("d", surface)
+			.attr("class", "surface")
+			.style("clip-path", "url(" + this.idsvg + "clip)")
+		;	
+
+		this.axes()
+
+		if(!this.autoScale){
+			this.Tracer(donnees, fonctionx, fonctiony, attr);
+		}
+		//this.playSimb();
+		return this;
+	}
+
+	Tracer(d, fx, fy, attr){
+		this.getlf(fx, fy);
+		var coord = this.lf(d);
+		var courbe = this.waveformGroup.append("path")
+			.attr("d", coord)
+			.style("clip-path", "url(" + this.idsvg + "clip)")
+			.classed('dataPath', true);
+		this.courbes.push(courbe);
+
+		return this;
+	}
 
 		  redessiner(){
 					 this.setRanges();
@@ -742,13 +754,13 @@ gs.graph = class {
 		  //	return this;
 }
 
-gs.quickGraph = function(div, data, fx, fy, conf){
-		  return new gs.graph(div, conf)
+export function quickGraph(div, data, fx, fy, conf){
+		  return new graph(div, conf)
 					 .setscale(data, fx, fy)
 					 .tracer(data, fx, fy);
 }
 
-gs.addGraph = function(target, data, fx, fy, conf){
+export function addGraph(target, data, fx, fy, conf){
 		  var numSVG = document.getElementsByTagName("svg").length + 1; 
 		  var newSVGid = target + "SVG" + numSVG;
 		  var newsvg = d3.select("#" + target)
@@ -758,10 +770,10 @@ gs.addGraph = function(target, data, fx, fy, conf){
 		  if (typeof conf != "undefined" && 'class' in conf){
 					 newsvg.classed(conf.class, true);
 		  }
-		  return gs.quickGraph("#" + newSVGid, data, fx, fy, conf);
+		  return quickGraph("#" + newSVGid, data, fx, fy, conf);
 }
 
-gs.newSvg = function(){
+function newSvg (){
 		  var scriptParent = document.scripts[document.scripts.length - 1].parentNode;
 		  var numSVG = document.getElementsByTagName("svg").length + 1; 
 		  var newSVGid = "svg" + numSVG;
@@ -771,7 +783,7 @@ gs.newSvg = function(){
 		  return newSVGid;
 }
 
-gs.newDiv = function(){
+function newDiv (){
 		  var scriptParent = document.scripts[document.scripts.length - 1].parentNode;
 		  var divNum = document.querySelectorAll("div").length + 1;
 		  var newDiv = document.createElement("div");
@@ -780,7 +792,7 @@ gs.newDiv = function(){
 		  return newDiv.id;
 }
 
-gs.randomHue = function(saturation, lightnes){
+function randomHue (saturation, lightnes){
 		  var hue = Math.random() * 360;
 		  var color = "hsl( " + hue + ", " + saturation + "%, " + lightnes + "% )";
 		  return color;

@@ -16,6 +16,8 @@ kramdown:
   syntax_highlighter_opts:
     disable: true
 gems: ['jekyll-paginate']
+plugins:
+  - jekyll-paginate
 plugins-dir:
   - jekyll-paginate
 paginate: 6

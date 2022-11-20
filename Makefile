@@ -27,6 +27,15 @@ gs-scratch.css: gs-scratch.sass
 gs-annotate.css: gs-annotate.sass
 	sass $< css/$(@)
 
+# ------------
+# Random tests
+# ------------
+
+article.html: head.html article.md tail.html
+	cat test/head.html > test/$(@F)
+	kramdown test/article.md >> test/$(@F)
+	cat test/tail.html >> test/$(@F)
+	
 # --------------
 # Legacification
 # --------------
