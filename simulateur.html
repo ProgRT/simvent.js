@@ -5,7 +5,7 @@ layout: simulateur
 <script src="{{ "/src/swipe.js" | prepend: site.baseurl}}" charset="utf-8"></script>
 
 <script type=module>
-	import {simulator} from "../src/animation.mjs";
+	import {simulator} from "./src/animation.mjs";
 	const sim = new simulator();
 	sim.target = d3.select('#content');
 	sim.initPanel();
