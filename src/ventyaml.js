@@ -1,7 +1,6 @@
 import * as vents from './simvent-ventilators.js';
 import * as lungs from './simvent-lungs.js';
-import {addGraph} from './graphsimple.js';
-
+import {addGraph} from 'https://progrt.github.io/graphsimple.js/graphsimple.js';
 
 const grconf =	{
 	margeG:60,

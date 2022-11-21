@@ -25,7 +25,7 @@ export function defaultsTable(obj){
 			var rLine = document.createElement("tr");
 
 			var c1 = document.createElement("td");
-			c1.textContent = id;
+			c1.textContent = id; 
 			rLine.appendChild(c1);
 
 			var c3 = document.createElement("td");

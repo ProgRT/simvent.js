@@ -9,6 +9,7 @@
 /**
  * Base ventilator class uppon wich ventilator models are built
  */
+import * as sd  from "./simvent-describe.js";
 
 class Ventilator{
 
@@ -110,7 +111,7 @@ class Ventilator{
 	}
 
 	defaultsTable(){
-		sv.defaultsTable.call(this,this.ventParams);
+		sd.defaultsTable.call(this,this.ventParams);
 	}
 };
 

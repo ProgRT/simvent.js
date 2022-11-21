@@ -3,28 +3,18 @@ layout: simulateur
 ---
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser-polyfill.min.js"></script>
 <script src="{{ "/src/swipe.js" | prepend: site.baseurl}}" charset="utf-8"></script>
-<script src="{{ "/dist/animation-legacy.js" | prepend: site.baseurl}}"></script>
-<!--script src="{{ "/src/animation.js" | prepend: site.baseurl}}"></script-->
-<script>
-var sim = new simulator();
-sim.ventList = [
-		  'FlowControler',
-		  'PressureControler',
-		  'PressureAssistor',
-		  'IPV',
-		  'VDR'
-];
-sim.lungList = [
-		  'SimpleLung',
-		  'SptLung'
-];
-sim.target = d3.select('#content');
-sim.initPanel();
-sim.start();
-onresize = function(){sim.redraw()};
 
-function swipeLeftHandler(){ document.querySelector('#fpPanel').classList.remove('hidden'); }
-function swipeRightHandler(){ document.querySelector('#fpPanel').classList.add('hidden'); }
-window.addEventListener('swiperight', swipeRightHandler, false);
-window.addEventListener('swipeleft', swipeLeftHandler, false);
+<script type=module>
+	import {simulator} from "../src/animation.js"
+	const sim = new simulator();
+	sim.target = d3.select('#content');
+	sim.initPanel();
+	sim.start();
+	onresize = function(){sim.redraw()};
+
+	function swipeLeftHandler(){document.querySelector('#fpPanel').classList.remove('hidden'); }
+	function swipeRightHandler(){document.querySelector('#fpPanel').classList.add('hidden'); }
+
+	window.addEventListener('swiperight', swipeRightHandler, false);
+	window.addEventListener('swipeleft', swipeLeftHandler, false);
 </script>

@@ -12,15 +12,26 @@ Générateur de pression (pression constante) déclenché et cyclé par le temps
 
     Ventilateur: PressureControler
 
-<script> new sv.PressureControler().defaultsTable(); </script>
+<table id="PressureControlerDefaults"></table>
+<script type='module'>
+    import {PressureControler} from "./src/simvent-ventilators.js";
+
+    const pc = new PressureControler();
+    const tbl = document.querySelector("#PressureControlerDefaults");
+
+    var headline = `<tr><th>Paramètre</th><th>Val. init.</th><th>Unité</th></tr>`;
+    tbl.insertAdjacentHTML('afterbegin', headline);
+    for(let p in pc.ventParams){
+        let line = `<tr><td>${p}</td><td>${pc[p]}</td><td>${pc.ventParams[p].unit}</td></tr>`;
+        tbl.insertAdjacentHTML('beforeend', line);
+    }
+</script>
 
 ### sv.FlowControler
 
 Générateur de débit (débit constant) déclenché et cyclé par le temps.
 
     Ventilateur: FlowControler
-
-<script> new sv.FlowControler().defaultsTable(); </script>
 
 ### sv.PressureAssistor
 
@@ -29,8 +40,6 @@ Générateur de pression (pression constante) déclenché et cyclé par le débi
     Ventilateur: PressureAssistor
     Poumon: SptLung
     Legende: "Ventilation spontanée avec aide inspiratoire"
-
-<script> new sv.PressureAssistor().defaultsTable(); </script>
 
 ### sv.IPV
 
@@ -41,8 +50,6 @@ Ventilateur à haute fréquence percussive.
     Courbe: Pao
     Legende: "Ventilation à haute fréquence percussive superposée à une respiration spontanée."
 
-<script> new sv.IPV().defaultsTable(); </script>
-
 ### sv.VDR
 
 Ventilateur à haute fréquence percussive biphadique.
@@ -50,15 +57,11 @@ Ventilateur à haute fréquence percussive biphadique.
     Ventilateur: VDR
     Courbe: Pao
 
-<script> new sv.VDR().defaultsTable(); </script>
-
 ### sv.PVCurve
 
 Manoeuvre pression-volume quasi-statique destinée à mettre en lumière les caractéristiques mécaniques des différents modèles de poumon.
 
     Ventilateur: PVCurve
-
-<script> new sv.PVCurve().defaultsTable(); </script>
 
 ## Modèles de poumon
 

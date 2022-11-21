@@ -10,4 +10,7 @@
 		  {% endif %}
 		  {{ content }}
 </div>
-<script> ventyamlEverything("pre"); </script>
+<script type="module">
+	import {ventyamlEverything} from "./src/ventyaml.js";
+	ventyamlEverything("pre");
+</script>

@@ -1,6 +1,0 @@
-../css/gs-grid-clear-rainbow.css
-../css/gs-scratch.css
-../css/gs-flex.css
-../css/fp-scratch.css
-../css/fig-Pmotrice.css
-../css/gs-annotate.css
