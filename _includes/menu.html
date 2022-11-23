@@ -19,7 +19,6 @@
 			  <img src="{{ "/Icones/carnet.svg" | prepend: site.baseurl}}"/>
 			  Carnet
 	</a>
-	-->
 	<a href="{{ "/index.html" | prepend: site.baseurl}}">
 			  <img src="{{ "/Icones/souflet.svg" | prepend: site.baseurl}}"/>
 			  Simulateur</a>
@@ -31,6 +30,13 @@
 			  <img src="{{ "/Icones/experiences.svg" | prepend: site.baseurl}}"/>
 			  Salle de jeux
 	</a>
+	-->
+{% for page in site.html_pages %}
+<a href='{{ page.url }}'>
+	<img src='Icones/{{ page.icon }}'/>
+	{{ page.title }}
+</a>
+{% endfor %}
 </div>
 <script>
 document.onscroll = function(){

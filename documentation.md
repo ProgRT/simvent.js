@@ -1,6 +1,7 @@
 ---
 title: Documentation
 layout: documentation
+icon: livre.svg
 ---
 
 <link rel="stylesheet" href="{{ "/css/ventyaml.css" | prepend: site.baseurl}}" />

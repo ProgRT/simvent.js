@@ -15,9 +15,15 @@ markdown: kramdown
 kramdown:
   syntax_highlighter_opts:
     disable: true
-gems: ['jekyll-paginate']
-plugins:
-  - jekyll-paginate
-plugins-dir:
-  - jekyll-paginate
-paginate: 6
+#gems: ['jekyll-paginate']
+#plugins:
+#  - jekyll-paginate
+#plugins-dir:
+#  - jekyll-paginate
+#paginate: 6
+exclude:
+  - test
+  - test.html
+    #- pagelist.html
+  - postlist.html
+  - ventyaml.md
