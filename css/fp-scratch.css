@@ -35,12 +35,12 @@ svg {
     margin-left: 10px; }
 
 .fpPanelTitle {
-  background-color: #4d4d4d;
+  background-color: hsl(0, 0%, 32%);
   color: white;
   font-size: medium;
   padding-left: 6px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding-top: 3px;
+  padding-bottom: 2px;
   text-align: left;
   font-weight: 500;
   letter-spacing: 1px; }
@@ -49,19 +49,25 @@ svg {
   vertical-align: middle;
   margin-right: 0.3em;
   display: inline-block;
-  transform: scale(0.8); }
+	padding: 0px;
+  transform: scale(0.7);
+}
 
-#fpH2PanelVent:before {
-  content: url("./Icones/souflet-blanc.svg"); }
+.fpPanelTitle.ventilateur:before {
+  content: url("../Icones/souflet-blanc.svg");
+}
 
-#fpH2PanelLung:before {
-  content: url("/simvent.js/Icones/poumons-blanc.svg"); }
+.fpPanelTitle.poumon:before {
+  content: url("../Icones/poumons-blanc.svg");
+}
 
 #fpH2PanelSim:before {
-  content: url("/simvent.js/Icones/configuration-blanc.svg"); }
+  content: url("../Icones/configuration-blanc.svg");
+}
+
 
 #fpH2PanelDownload:before {
-  content: url("/simvent.js/Icones/telecharger-blanc.svg"); }
+  content: url("../Icones/telecharger-blanc.svg"); }
 
 #fpPanel {
   font-family: sans-serif;

@@ -50,7 +50,8 @@ export class simulator {
 		if(!this.panelDiv){throw 'sim class: non panelDiv'}
 		var title = document.createElement("h2");
 		title.textContent = content;
-		title.className = "fpPanelTitle";
+		title.classList.add("fpPanelTitle");
+		title.classList.add(content.toLowerCase());
 		this.panelDiv.appendChild(title);
 	}
 
