@@ -1,6 +1,6 @@
 #fpPanel {
   position: fixed;
-  top: 0px;
+  top: 50px;
   right: 0px;
   height: 100%;
   overflow-x: hidden; }
@@ -68,7 +68,7 @@ svg {
   padding: 2px;
   transition: 0.5s;
   background-color: white;
-  box-shadow: 0px 0px 10px 2px black; }
+  box-shadow: 0px 0px 5px 0px gray; }
   #fpPanel select, #fpPanel button {
     display: block;
     margin-top: 3px;
