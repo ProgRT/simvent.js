@@ -1,7 +1,6 @@
 ---
 title: Documentation
 icon: livre.svg
-layout: documentation
 ---
 
 * Table des matières
@@ -140,6 +139,11 @@ Courbes:
 ```
 
 <table id="SptLungDefaults"></table>
+
+<script type="module">
+	import {ventyamlEverything} from "./src/ventyaml.js";
+	ventyamlEverything("pre");
+</script>
 
 <script type='module'>
     import * as ventilators from "./src/simvent-ventilators.js";

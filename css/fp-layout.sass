@@ -10,11 +10,13 @@ body
   max-height: calc(100vh - (47px + 15px))
   overflow-x: hidden
 
-#content
-  margin-top: calc(47px + 10px)
+main
+  margin-top: calc(47px + 5px)
+  overflow-y: scroll
+  max-height: calc(100vh - 57px)
 
 @media (max-width: 800px)
-  #content
+  main
     width: 100%
     margin-left: none
     margin-right: none
@@ -22,8 +24,8 @@ body
   #fpPanel.hidden
     right: -100%
 
-@media (min-width: 1300px)
-  #content
+@media (min-width: 900px)
+  main
     width: 800px
     margin-left: auto
     margin-right: auto

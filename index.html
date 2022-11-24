@@ -9,7 +9,7 @@ icon: souflet.svg
 <script type=module>
 	import {simulator} from "./src/animation.js";
 	const sim = new simulator();
-	sim.target = d3.select('#content');
+	sim.target = d3.select('main');
 	sim.initPanel();
 	sim.start();
 	onresize = function(){sim.redraw()};

@@ -1,10 +1,12 @@
 {% include head.html %}
+<link rel="stylesheet" href="https://progrt.github.io/graphsimple.js/css/gs.css" />
+<link rel="stylesheet" href="{{ "/css/table.css" | prepend: site.baseurl}}" />
+<link rel="stylesheet" href="{{ "/css/ventyaml.css" | prepend: site.baseurl}}" />
 {% include menu.html %}
 
-<div id="content">
-		  {% if page.title %}
-		  <h1>{{ page.title }}</h1>
-		  <!--p class="date">{{ page.date | date: "%Y-%m-%d"}}</p-->
-		  {% endif %}
-		  {{ content }}
-</div>
+<main>
+	{% if page.title %}
+	<h1>{{ page.title }}</h1>
+	{% endif %}
+	{{ content }}
+</main>
