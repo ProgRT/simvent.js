@@ -1,45 +1,29 @@
 <div id="controls">
-		  <div id="leftControls">
-					 <a onclick="document.querySelector('#menu').classList.toggle('visible')" title="Menu">
-								<img src="{{ "/Icones/menu.svg" | prepend: site.baseurl}}" alt="Menu" />
-					 </a>
-		  </div>
+	<div id="leftControls">
+		<a onclick="document.querySelector('#menu').classList.toggle('visible')" title="Menu">
+			<img src="{{ "/Icones/menu.svg" | prepend: site.baseurl}}" alt="Menu" />
+		</a>
+	</div>
 
-		  <div>
-					 <img src="{{ "/Icones/Vdecel.svg" | prepend: site.baseurl}}"/>
-					 simvent.js
-		  </div>
+	<div>
+		<img src="{{ "/Icones/Vdecel.svg" | prepend: site.baseurl}}"/>
+		simvent.js
+	</div>
 
-		  <div id="fpControls"></div>
+	<div id="fpControls"></div>
 </div>
 
 <div id="menu">
-	<!--
-	<a href="{{ "/index.html" | prepend: site.baseurl}}">
-			  <img src="{{ "/Icones/carnet.svg" | prepend: site.baseurl}}"/>
-			  Carnet
+	{% for page in site.html_pages %}
+	<a href='{{ page.url }}'>
+		<img src='Icones/{{ page.icon }}'/>
+		{{ page.title }}
 	</a>
-	<a href="{{ "/index.html" | prepend: site.baseurl}}">
-			  <img src="{{ "/Icones/souflet.svg" | prepend: site.baseurl}}"/>
-			  Simulateur</a>
-	<a href="{{ "/documentation.html" | prepend: site.baseurl}}">
-			  <img src="{{ "/Icones/livre.svg" | prepend: site.baseurl}}"/>
-			  Documentation
-	</a>
-	<a href="{{ "/salle_de_jeux.html" | prepend: site.baseurl}}">
-			  <img src="{{ "/Icones/experiences.svg" | prepend: site.baseurl}}"/>
-			  Salle de jeux
-	</a>
-	-->
-{% for page in site.html_pages %}
-<a href='{{ page.url }}'>
-	<img src='Icones/{{ page.icon }}'/>
-	{{ page.title }}
-</a>
-{% endfor %}
+	{% endfor %}
 </div>
+
 <script>
-document.onscroll = function(){
-		  document.querySelector('#menu').classList.remove('visible');
-};
+	document.onscroll = function(){
+		document.querySelector('#menu').classList.remove('visible');
+	};
 </script>

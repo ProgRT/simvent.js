@@ -1,10 +1,12 @@
 ---
 title: Documentation
-layout: documentation
 icon: livre.svg
+layout: documentation
 ---
 
-<link rel="stylesheet" href="{{ "/css/ventyaml.css" | prepend: site.baseurl}}" />
+* Table des matières
+{:toc}
+
 ## Modèles de ventilateurs
 
 ### PressureControler
@@ -43,10 +45,12 @@ Legende: "Ventilation spontanée avec aide inspiratoire"
 
 Ventilateur à haute fréquence percussive.
 
-    Ventilateur: IPV
-    Poumon: SptLung
-    Courbe: Pao
-    Legende: "Ventilation à haute fréquence percussive superposée à une respiration spontanée."
+```{ventyaml}
+Ventilateur: IPV
+Poumon: SptLung
+Courbe: Pao
+Legende: "Ventilation à haute fréquence percussive superposée à une respiration spontanée."
+```
 
 <table id="IPVDefaults"></table>
 
@@ -54,8 +58,10 @@ Ventilateur à haute fréquence percussive.
 
 Ventilateur à haute fréquence percussive biphadique.
 
-    Ventilateur: VDR
-    Courbe: Pao
+```{ventyaml}
+Ventilateur: VDR
+Courbe: Pao
+```
 
 <table id="VDRDefaults"></table>
 
@@ -63,12 +69,27 @@ Ventilateur à haute fréquence percussive biphadique.
 
 Manoeuvre pression-volume quasi-statique destinée à mettre en lumière les caractéristiques mécaniques des différents modèles de poumon.
 
-    Ventilateur: PVCurve
+```{ventyaml}
+Ventilateur: PVCurve
+```
 
 <table id="PVCurveDefaults"></table>
 
 ## Modèles de poumon
 
+Les différents modèles de poumons partagent les mêmes caractéristiques
+en ce qui a trait à la concentration de CO₂ dans l'air expiré et son
+évolution au cours de l'expiration.
+
+```{ventyaml}
+Ventilateur:
+  Mode: PVCurve
+  Pmax: 10
+
+Boucle:
+   x: Vte
+   y: PCO2
+```
 ### SimpleLung
 
 Modèle simple de poumon avec une compliance linéaire.
@@ -124,6 +145,12 @@ Courbes:
     import * as ventilators from "./src/simvent-ventilators.js";
     import * as lungs from "./src/simvent-lungs.js";
 
+    var headline = `
+    <thead>
+        <tr><th>Paramètre</th><th>Val. init.</th><th>Unité</th></tr>
+    </thead>
+   `;
+
     const ventlist = [
         'PressureControler',
         'FlowControler',
@@ -133,20 +160,6 @@ Courbes:
         'PVCurve'
     ];
 
-    for(let v of ventlist){
-        let vent = new ventilators[v];
-        let tbl = document.querySelector(`#${v}Defaults`);
-
-        var headline = `<tr><th>Paramètre</th><th>Val. init.</th><th>Unité</th></tr>`;
-        tbl.insertAdjacentHTML('afterbegin', headline);
-        for(let p in vent.ventParams){
-            if(!vent.ventParams[p].calculated){
-                let line = `<tr><td>${p}</td><td>${vent[p]}</td><td>${vent.ventParams[p].unit|| ''}</td></tr>`;
-                tbl.insertAdjacentHTML('beforeend', line);
-            }
-        }
-    }
-
     const lunglist = [
         'SimpleLung',
         'SygLung',
@@ -154,17 +167,27 @@ Courbes:
         'SptLung',
     ];
 
+    function mktbl(obj, list){
+        var tblcontent = headline;
+        for(let p in obj[list]){
+            if(!obj[list][p].calculated){
+                tblcontent += `<tr><td>${p}</td><td>${obj[p]}</td><td>${obj[list][p].unit|| ''}</td></tr>
+                `;
+            }
+        }
+        return tblcontent;
+    }
+
+    for(let v of ventlist){
+        let vent = new ventilators[v];
+        let tbl = document.querySelector(`#${v}Defaults`);
+        tbl.innerHTML = mktbl(vent, "ventParams");
+    }
+
     for(let l of lunglist){
         let lung = new lungs[l];
         let tbl = document.querySelector(`#${l}Defaults`);
-
-        var headline = `<tr><th>Paramètre</th><th>Val. init.</th><th>Unité</th></tr>`;
-        tbl.insertAdjacentHTML('afterbegin', headline);
-        for(let p in lung.mechParams){
-            if(!lung.mechParams[p].calculated){
-                let line = `<tr><td>${p}</td><td>${lung[p]}</td><td>${lung.mechParams[p].unit|| ''}</td></tr>`;
-                tbl.insertAdjacentHTML('beforeend', line);
-            }
-        }
+        tbl.innerHTML = mktbl(lung, "mechParams");
     }
+
 </script>

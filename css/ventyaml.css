@@ -7,7 +7,7 @@
   transition: all 1s;
   width: 100%;
   line-height: 140%;
-  font-size: 120%;
+  font-size: 105%;
   height: 100px; }
 
 figure.ventyaml.hidden .ventyamlSource, figure.ventyaml.hidden .downloads {
@@ -23,6 +23,12 @@ figure.ventyaml.hidden .ventyamlSource, figure.ventyaml.hidden .downloads {
   margin-left: auto;
   margin-right: auto;
   width: 100%; }
+
+.gs.loop{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%; }
 
 figure.ventyaml caption {
   width: 100%;
