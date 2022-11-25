@@ -10,12 +10,17 @@
   font-size: 105%;
   height: 100px; }
 
+.vyaml, .vyamlwc, .ventyaml {
+	box-sizing: border-box;
+}
+
 figure.ventyaml.hidden .ventyamlSource, figure.ventyaml.hidden .downloads {
   opacity: 0;
   border: none;
   padding: none;
   height: 0px;
   overflow: scroll;
+	box-sizing: border-box;
   transition: all 1s; }
 
 .gs {
