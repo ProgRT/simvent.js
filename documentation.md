@@ -101,6 +101,19 @@ Modèle simple de poumon avec une compliance linéaire.
 
 <table id="SimpleLungDefaults"></table>
 
+### SptLung
+
+Modèle de poumon présentant une respiration spontanée et une compliance linéaire.
+
+```{ventyaml}
+Ventilateur: PressureAssistor
+Poumon: SptLung
+Courbes: 
+   - Pmus
+```
+
+<table id="SptLungDefaults"></table>
+
 ### SygLung
 
 Modèle de poumon avec une courbe pression-volume de forme sygmoïde.
@@ -127,19 +140,6 @@ Boucle:
 
 <table id="RLungDefaults"></table>
 
-### SptLung
-
-Modèle de poumon présentant une respiration spontanée et une compliance linéaire.
-
-```{ventyaml}
-Ventilateur: PressureAssistor
-Poumon: SptLung
-Courbes: 
-   - Pmus
-```
-
-<table id="SptLungDefaults"></table>
-
 <script type="module">
 	import {ventyamlEverything} from "./src/ventyaml.js";
 	ventyamlEverything("pre");
@@ -148,12 +148,7 @@ Courbes:
 <script type='module'>
     import * as ventilators from "./src/simvent-ventilators.js";
     import * as lungs from "./src/simvent-lungs.js";
-
-    var headline = `
-    <thead>
-        <tr><th>Paramètre</th><th>Val. init.</th><th>Unité</th></tr>
-    </thead>
-   `;
+    import {mktbl, mkListTbl} from "./src/simvent-describe.js";
 
     const ventlist = [
         'PressureControler',
@@ -164,23 +159,6 @@ Courbes:
         'PVCurve'
     ];
 
-    const lunglist = [
-        'SimpleLung',
-        'SygLung',
-        'RLung',
-        'SptLung',
-    ];
-
-    function mktbl(obj, list){
-        var tblcontent = headline;
-        for(let p in obj[list]){
-            if(!obj[list][p].calculated){
-                tblcontent += `<tr><td>${p}</td><td>${obj[p]}</td><td>${obj[list][p].unit|| ''}</td></tr>
-                `;
-            }
-        }
-        return tblcontent;
-    }
 
     for(let v of ventlist){
         let vent = new ventilators[v];
@@ -188,10 +166,29 @@ Courbes:
         tbl.innerHTML = mktbl(vent, "ventParams");
     }
 
+    var lunglist = [
+        'SygLung',
+        'RLung',
+    ];
+
     for(let l of lunglist){
         let lung = new lungs[l];
         let tbl = document.querySelector(`#${l}Defaults`);
         tbl.innerHTML = mktbl(lung, "mechParams");
     }
+
+    var lunglist = [
+        'SimpleLung',
+        'SptLung',
+    ];
+
+    for(let l of lunglist){
+        let trgt = document.querySelector(`#${l}Defaults`);
+        trgt.innerHTML = mkListTbl([
+                ...lungs[l].mechParams,
+                ...lungs[l].carbParams
+        ]);
+    }
+
 
 </script>

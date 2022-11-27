@@ -9,7 +9,8 @@
 /**
  * Base ventilator class uppon wich ventilator models are built
  */
-import * as sd  from "./simvent-describe.js";
+
+//import * as sd  from "./simvent-describe.js";
 
 class Ventilator{
 

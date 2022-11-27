@@ -41,6 +41,35 @@ export function defaultsTable(obj){
 	}
 };
 
+const headline = `
+		<thead>
+				<tr><th>Paramètre</th><th>Val. init.</th><th>Unité</th></tr>
+		</thead>
+	 `;
+
+export function mktbl(obj, list){
+	var tblcontent = headline;
+	for(let p in obj[list]){
+		if(!obj[list][p].calculated){
+			tblcontent += `<tr><td>${p}</td><td>${obj[p]}</td><td>${obj[list][p].unit|| ''}</td></tr>
+								`;
+		}
+	}
+	return tblcontent;
+}
+
+export function mkListTbl(list){
+    var tblcontent = headline;
+    for(let p of list){
+        tblcontent += `<tr>
+    <td>${p.id}</td>
+    <td>${p.defaultValue}</td>
+    <td>${p.unit|| ''}</td>
+</tr> `;
+    }
+    return tblcontent;
+}
+
 function download(objArray) {
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
     var str = '';

@@ -12,27 +12,47 @@ import {sygX, sygY} from './simvent-math.js';
  * @memberof sv
  */
 
-export class Lung{
+class Lung{
+
+	static carbParams = [
+		{id: 'Vdaw',   defaultValue: 0.1,   unit: 'l'},
+		{id: 'PiCO2',  defaultValue: 0.0,   unit: 'mmHg'},
+		{id: 'PACO2',  defaultValue: 35.0,  unit: 'mmHg'},
+		{id: 'Slope2', defaultValue: 0.003, unit: 'l'},
+		{id: 'Slope3', defaultValue: 5, },
+	];
+
+	static simParams = [
+		{id: 'Tsampl',   defaultValue: .001,  unit: 's'},
+	];
+
+	static mechParams = [
+		{id: 'Raw',   defaultValue: 5,  unit: 'hPa/l/s'},
+		{id: 'Vfrc',   defaultValue: 2.5,  unit: 'l'},
+	];
+
+	static variables = [
+		{id: 'Vti',   defaultValue: 0,  unit: 'l'},
+		{id: 'Vte',   defaultValue: 0,  unit: 'l'},
+		{id: 'Vtmax', defaultValue: 0,  unit: 'l'},
+		{id: 'Vabs',  defaultValue: 0,  unit: 'l'},
+	];
+
 	constructor() {
 
-		this.defaults = {
-			Tsampl: 0.001,
-			Raw: 5,
-			// Gaz exchange parameters
-			Vdaw   : 0.1,
-			PiCO2  : 0.0,
-			PACO2  : 35.0,
-			Slope2 : 0.003,
-			Slope3 : 5,
-			// Variable parameters
-			Vti	:  0,
-			Vte	:  0,
-			Vtmax:0,
-			PCO2:0,
-			Vabs    : 0
-		};
+		this.parseDefaultsList([
+			...Lung.simParams,
+			...Lung.carbParams,
+			...Lung.variables,
+			...Lung.mechParams,
+		]);
 
-		this.parseDefaults();
+	}
+
+	parseDefaultsList(list) {
+		for(let p of list){
+			this[p.id]=p.defaultValue;
+		}
 	}
 
 	parseDefaults() {
@@ -40,12 +60,34 @@ export class Lung{
 			this[p] = this.defaults[p];
 		}
 	}
-
-	get Palv() {return this.Pel - this.Pmus;}
+2
+	get Palv() {
+		/*
+		console.log("Palv getter called");
+		console.log(`Pel: ${this.Pel}`);
+		console.log(`Pmus: ${this.Pmus}`);
+		*/
+		return this.Pel - this.Pmus;
+	}
 	get Vt() {return this.Vtmax -this.Vte;}
 	get SCO2() { return this.PCO2/(760-47); }
 	get VcAlv() { return this.Vtmax - this.Vdaw; }
 	get PplCO2() { return this.PACO2 - (this.Slope3 * (this.VcAlv / 2)); }
+
+	get PCO2() {
+		var PCO2 = sygY(
+				this.Vte,
+				this.PiCO2, 
+				this.PplCO2, 
+				this.Vdaw, //Pid / ou Vid 
+				this.Slope2); // Kid
+
+		if (this.Vte > this.Vdaw) {
+			PCO2 += this.Slope3 * (this.Vte - this.Vdaw);
+		}
+		
+		return PCO2;
+	}
 
 	/**
 	 * Simulate a pressure being applied to airway openning of the lung
@@ -60,9 +102,9 @@ export class Lung{
 		var deltaVolume = 0.0;
 
 		while (time < duree){
+			//console.log(`appliquer_pression: this.Palv = ${this.Palv}`);
 			var deltaP = pression - this.Palv;
 			var flow = deltaP / this.Raw;
-			//this.flow = deltaP / this.Raw;
 			this.appliquer_debit(flow, this.Tsampl);
 
 			time += this.Tsampl;
@@ -72,20 +114,18 @@ export class Lung{
 	appliquer_debit (flow, duration){
 
 		if(isNaN(flow)){
-			throw "sv.SimpleLung.appliquer_debit: NaN value passed as flow";
+			throw "Lung.appliquer_debit: NaN value passed as flow";
 		}
 
 		this.flow = flow ; // l/s
 		var deltaVolume = this.flow * duration; // l
 		this.Vabs+= deltaVolume; // l
-		// this.Vti += deltaVolume;
 
 		if (this.flow > 0){
 			// We are inhaling
 
 			this.Vti += deltaVolume;
 			this.Vtmax = this.Vti;
-			this.PCO2 = 0;
 			this.Vte = 0;
 			this.VtCO2 = 0;
 		}
@@ -93,69 +133,41 @@ export class Lung{
 		else {
 			this.Vti = 0;
 			this.Vte -= deltaVolume;
-			this.updateCO2();
 			this.VtCO2 += this.SCO2 * (-deltaVolume);
 		}
 		this.time += duration;
 	}
 
-	updateCO2() {
-		var co2 = sygY(
-				this.Vte,
-				this.PiCO2, 
-				this.PplCO2, 
-				this.Vdaw, 
-				this.Slope2);
-
-		if (this.Vte > this.Vdaw) {
-			co2 += this.Slope3 * (this.Vte - this.Vdaw);
-		}
-
-		this.PCO2 = co2;
-	};
-
-	complianceCurve(){
-		var vent = new sv.PVCurve;
-		var data = vent.ventilate(this).timeData;
-		var idsvg = "svg" + document.querySelectorAll("svg").length;
-		document.write("<svg id='" + idsvg +"'></svg>");
-		function fx(d){return d.Pel;}
-		function fy(d){return d.Vabs;}
-		var graph = new gs.graph("#"+idsvg); 
-		graph.setscale(data, fx, fy);
-		graph.tracer(data, fx, fy);
-		graph.setidx("Elastic recoil pressure (cmH₂O)");
-		graph.setidy("Volume (l)");
-	}
-
-	defaultsTable(){
-		sv.defaultsTable.call(this,this.mechParams);
-	}
 }
 
 /** 
  * Basic lung model with linear compliance.
- * @extends sv.Lung
+ * @extends Lung
  */
 
 export class SimpleLung extends Lung {
+
+	static mechParams = [
+		...Lung.mechParams,
+		{id: 'Crs',   defaultValue: 50,  unit: 'ml/hPa'},
+		//{id: 'Vfrc',   defaultValue: 2.5,  unit: 'l'},
+	];
+
 	constructor(params) {
+
 		super();
 
-		this.defaults = {
-			Crs : 50.0,// ml/cmH2O
-			Pmus   : 0,// cmH2O/l/s
-			Vfrc: 2.5
-			};
+		this.parseDefaultsList([
+			...SimpleLung.mechParams,
+			...Lung.simParams,
+			...Lung.carbParams,
+			...Lung.variables
+		]);
 
-		this.parseDefaults();
 		this.Vabs = this.Vfrc;
-		this.mechParams = {
-			Crs: {unit: "ml/cmH₂O"},
-			Raw: {unit: "cmH₂O/l/s"}
-		}
 
 	}
+	get Pmus() {return 0}
 	get Pel() {return 1000 * (this.Vabs - this.Vfrc)/ this.Crs;}
 
 }
@@ -165,28 +177,21 @@ export class SimpleLung extends Lung {
  * @extends sv.Lung
  */
 
-export class SptLung extends Lung{
+export class SptLung extends SimpleLung{
+
+	static mechParams = [
+		...Lung.mechParams,
+		{id: 'Fspt',   defaultValue: 14,  unit: '/min'},
+		{id: 'Pmax',   defaultValue: 6.5, unit: 'hPa'},
+		{id: 'Ti',     defaultValue: 1,   unit: 's'},
+	];
 
 	constructor() {
 
 		super();
-		this.defaults = {
-			Crs : 50.0 ,// ml/cmH2O
-			Fspt : 14.0 ,// c/min
-			Ti : 1 , // sec
-			Pmax : 6.5, // cmH20
-			Vabs: 0, // Have to be initialised
-			time : 0 // Have to be initialised
-		};
 
-		this.parseDefaults();
-		this.mechParams = {
-			Crs: {unit: "ml/cmH₂O"},
-			Raw: {unit: "cmH₂O/l/s"},
-			Fspt: {unit: "/min."},
-			Ti: {unit: "sec."},
-			Pmax: {unit: "cmH₂O"}
-		}
+		this.parseDefaultsList(SptLung.mechParams);
+		this.time=0;
 	}
 
 	get Pmus(){
@@ -200,7 +205,6 @@ export class SptLung extends Lung{
 		else{ return 0; }
 	}
 
-	get Pel() {return 1000 * this.Vabs/ this.Crs;}
 }
 
 /** 

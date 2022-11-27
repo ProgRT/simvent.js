@@ -2,8 +2,10 @@
 <meta charset="utf-8"/>
 
 <script src="../lib/d3.v3.min.js" charset="utf-8"></script>
-
-<link rel="stylesheet" type="text/css" href="../css/gs.css" charset="utf-8"/>
+<link rel="stylesheet"
+			type="text/css"
+			href="https://progrt.github.io/graphsimple.js/css/gs.css"
+			charset="utf-8"/>
 
 <style>
 body {
@@ -22,8 +24,8 @@ html {
 svg.gs {
 	/*border: 1px solid gray;*/
 	display: block;
-	width: 100vw;
-	height: 25vh;
+	width: 60vw;
+	height: 50vw;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -34,8 +36,7 @@ svg.gs {
 <script type=module>
 
 	import {PressureControler} from '../src/simvent-ventilators.js';
-	import {SimpleLung} from '../src/simvent-lungs.js';
-	//import { graph } from '../src/graphsimple.js';
+	import {SptLung} from '../src/simvent-lungs.js';
 	import { graph } from 'http://progrt.github.io/graphsimple.js/graphsimple.js';
 
 	const graphParam = {
@@ -46,17 +47,17 @@ svg.gs {
 	};
 
 	var vent = new PressureControler({PEEP: 10, Fconv: 40});
-	var lung = new SimpleLung();
+	var lung = new SptLung();
+	lung.Slope2 = .1;
 	var data = vent.ventilate(lung).timeData;
 
 	const fx = d=>d.time;
-	const fy = d=>d.Pao;
+	const fy = d=>d.Flung;
 
 
 	var gr = new graph(null, graphParam);
 	gr.setscale(data, fx, fy)
 		.tracer(data, fx, fy)
-		.setidy('Pao');
 
 </script>
 </body>
