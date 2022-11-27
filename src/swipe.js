@@ -12,10 +12,7 @@ function touchMoveHandler(evt){
 		  }
 		  var xMove = Math.abs(touchMoveCoord.x - touchStartCoord.x);
 		  var yMove = Math.abs(touchMoveCoord.y - touchStartCoord.y);
-		  /*
-		  if(xMove>yMove && touchMoveCoord.x - touchStartCoord.x > 0){console.log('Swiped right '+ xMove)};
-		  if(xMove>yMove && touchMoveCoord.x - touchStartCoord.x > 0){console.log('Swiped right '+ xMove)};
-		  */
+
 		  if(xMove>yMove && touchMoveCoord.x - touchStartCoord.x > 0){
 					 var newEvent = new Event('swiperight');
 					 window.dispatchEvent(newEvent);

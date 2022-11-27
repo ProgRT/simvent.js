@@ -89,6 +89,16 @@ Boucle:
    x: Vte
    y: PCO2
 ```
+
+<table id="LungDefaults"></table>
+<script type=module>
+    import {SimpleLung} from "./src/simvent-lungs.js";
+    import {mkListTbl} from "./src/simvent-describe.js";
+    
+    let trgt = document.querySelector(`#LungDefaults`);
+    trgt.innerHTML = mkListTbl(SimpleLung.carbParams);
+</script>
+
 ### SimpleLung
 
 Modèle simple de poumon avec une compliance linéaire.
@@ -167,26 +177,16 @@ Boucle:
     }
 
     var lunglist = [
-        'SygLung',
-        'RLung',
-    ];
-
-    for(let l of lunglist){
-        let lung = new lungs[l];
-        let tbl = document.querySelector(`#${l}Defaults`);
-        tbl.innerHTML = mktbl(lung, "mechParams");
-    }
-
-    var lunglist = [
         'SimpleLung',
         'SptLung',
+        'SygLung',
+        'RLung',
     ];
 
     for(let l of lunglist){
         let trgt = document.querySelector(`#${l}Defaults`);
         trgt.innerHTML = mkListTbl([
                 ...lungs[l].mechParams,
-                ...lungs[l].carbParams
         ]);
     }
 

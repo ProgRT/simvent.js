@@ -61,14 +61,8 @@ class Lung{
 		}
 	}
 2
-	get Palv() {
-		/*
-		console.log("Palv getter called");
-		console.log(`Pel: ${this.Pel}`);
-		console.log(`Pmus: ${this.Pmus}`);
-		*/
-		return this.Pel - this.Pmus;
-	}
+	get Palv() {return this.Pel - this.Pmus}
+	get Pmus() {return 0}
 	get Vt() {return this.Vtmax -this.Vte;}
 	get SCO2() { return this.PCO2/(760-47); }
 	get VcAlv() { return this.Vtmax - this.Vdaw; }
@@ -167,7 +161,6 @@ export class SimpleLung extends Lung {
 		this.Vabs = this.Vfrc;
 
 	}
-	get Pmus() {return 0}
 	get Pel() {return 1000 * (this.Vabs - this.Vfrc)/ this.Crs;}
 
 }
@@ -213,27 +206,18 @@ export class SptLung extends SimpleLung{
  */
 
 export class SygLung extends Lung{
+
+	static mechParams = [
+		{id: 'Vmax', defaultValue: 4, unit: "l"},
+		{id: 'Vmin', defaultValue: 0, unit: "l"},
+		{id: 'Pid', defaultValue: 5, unit: "cmH₂O"},
+		{id: 'Kid', defaultValue: 20, unit: "cmH₂O"},
+	] ;
+
 	constructor() {
 
 		super();
-		this.defaults = {
-			 // Mechanical parameters
-			 Vmax : 4.0,
-			 Vmin : 0.0,
-			 Pid : 5.0,
-			 Kid : 20.0,
-			 Pmus:0,
-		 };
-
-		this.parseDefaults();
-
-		this.mechParams = {
-			Vmax: {unit: "l"},
-			Vmin: {unit: "l"},
-			Pid: {unit: "cmH₂O"},
-			Kid: {unit: "cmH₂O"},
-			Raw: {unit: "cmH₂O/l/s"}
-		};
+		this.parseDefaultsList(SygLung.mechParams);
 
 		this.flow = 0.0;
 		this.Vabs = this.volume(0);
@@ -254,49 +238,52 @@ export class SygLung extends Lung{
  */
 
 export class RLung extends Lung {
+	static mechParams = [
+		{id: 'Vmax', defaultValue: 4, unit: "l"},
+		{id: 'Vmin', defaultValue: 0, unit: "l"},
+		{id: 'Pid', defaultValue: 20, unit: "cmH₂O"},
+		{id: 'Kid', defaultValue: 20, unit: "cmH₂O"},
+		{id: 'Phister', defaultValue: 20, unit: "cmH₂O"},
+	];
+
+	static calcParams = [
+		{id: 'PidInsp', unit: "cmH₂O"},
+		{id: 'PidExp', unit: "cmH₂O"},
+	];
+
+	static variables = [
+		{id: 'flow', defaultValue: 0},
+		{id: 'lastFlow', defaultValue: 0},
+		{id: 'Vtmax', defaultValue: 0},
+		{id: 'lastPel', defaultValue: 0},
+	];
+
 	constructor() {
 		super();
-		this.defaults = {
-			// Mechanical parameters
-			Vmax : 4.0,
-			Vmin : 0.0,
-			Pid : 20,
-			Kid : 20.0,
-			Phister: 20,
 
-			flow : 0.0,
-			lastFlow : 0.0,
-			Pmus: 0,
-			Vtmax : 0,
-			lastPel: 0
-		};
-
-		this.parseDefaults();
+		this.parseDefaultsList(RLung.mechParams);
+		this.parseDefaultsList(RLung.variables);
 
 		this.VmaxExp=this.Vmax;
 		this.VminInsp=this.Vmin;
 		this.Vabs = this.volume(0);
+
 		this.fitInsp();
 		this.fitExp();
+
 		this.appliquer_pression(1,3);
 		this.appliquer_pression(-1,3);
 		this.appliquer_pression(1,3);
 		this.appliquer_pression(-1,3);
 
-		this.mechParams = {
-			Vmax: {unit: "l"},
-			Vmin: {unit: "l"},
-			PidInsp: {unit: "cmH₂O"},
-			PidExp: {unit: "cmH₂O"},
-			Kid: {unit: "cmH₂O"},
-			Raw: {unit: "cmH₂O/l/s"}
-		};
 	}
 
 	volume(P){
 		return sygY(P, this.Vmin, this.Vmax, this.Pid, this.Kid);
 	}
 
+
+		//this.parseDefaults();
 	fitInsp(){
 		//console.log('fitInsp');
 		var N = 1 + Math.pow(Math.E,-((this.lastPel - this.PidInsp)/this.Kid));
