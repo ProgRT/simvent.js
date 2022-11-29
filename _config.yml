@@ -22,7 +22,7 @@ kramdown:
 #  - jekyll-paginate
 #paginate: 6
 exclude:
-  #  - test
+  - test
   - test.html
     #- pagelist.html
   - postlist.html
