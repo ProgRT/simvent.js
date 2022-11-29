@@ -143,11 +143,12 @@ export class simulator {
 	}
 
 	fillParamTable(object, paramSet, table){
-		if(typeof object[paramSet] == "undefined"){throw object.name + '[' + paramSet + '] does not exist'}
 
 		while(table.hasChildNodes()){table.removeChild(table.firstChild)}
 
-		for(var id in object[paramSet]){
+		//for(var id in object[paramSet]){
+		for(var p of object.__proto__.constructor[paramSet]){
+			/*
 			var param = object[paramSet][id];
 			//var abrev = fp.translate1(id, "short");
 			var abrev = id;
@@ -155,6 +156,7 @@ export class simulator {
 			if (typeof param.unit != "undefined"){var unit = param.unit;}
 			else {var unit = "";}
 
+			*/
 			var tr = document.createElement('tr');
 			table.appendChild(tr);
 
@@ -162,8 +164,8 @@ export class simulator {
 
 			var td = document.createElement('td');
 			//td.title = fp.translate1(id, "long");
-			td.title = id;
-			td.textContent = abrev + ' :';
+			td.title = p.id;
+			td.textContent = p.id + ' :';
 			tr.appendChild(td);
 
 			/*
@@ -179,20 +181,20 @@ export class simulator {
 			td.className = 'data';
 			//td.title = fp.translate1(id, "long");
 
-			if (param.calculated == true){
-				var value = Math.round(10 * this.vent[id])/10;
+			if (p.calculated == true){
+				var value = Math.round(10 * this.vent[p.id])/10;
 				var dataSpan = document.createElement('span');
-				dataSpan.id = 'data' + id;
+				dataSpan.id = 'data' + p.id;
 				dataSpan.textContent = value;
 				td.appendChild(dataSpan);
 			}
 			else{
 				var input = document.createElement('input');
-				input.id = 'input' + id;
-				input.name = id;
-				input.value = object[id];
+				input.id = 'input' + p.id;
+				input.name = p.id;
+				input.value = object[p.id];
 				input.type = 'number';
-				input.step = param.step
+				//input.step = param.step
 				input.onfocus = function(){this.select()};
 				input.onchange = (evt)=>{
 					object[evt.target.name] = parseFloat(evt.target.value);
@@ -217,7 +219,7 @@ export class simulator {
 
 			var td = document.createElement('td');
 			td.className = 'unit';
-			td.textContent = unit;
+			td.textContent = p.unit;
 			tr.appendChild(td);
 
 			// Push the row to the table

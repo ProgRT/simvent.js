@@ -171,9 +171,8 @@ Boucle:
 
 
     for(let v of ventlist){
-        let vent = new ventilators[v];
         let tbl = document.querySelector(`#${v}Defaults`);
-        tbl.innerHTML = mktbl(vent, "ventParams");
+        tbl.innerHTML = mkListTbl(ventilators[v].ventParams);
     }
 
     var lunglist = [

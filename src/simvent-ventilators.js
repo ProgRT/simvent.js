@@ -14,45 +14,21 @@
 
 class Ventilator{
 
+	static simParams = [
+		{id: 'Tsampl', init: .003, unit: 's'},
+		{id: 'Tvent', init: 12, unit: 's'},
+	];
+
 	constructor(params) {
 
 		this.time = 0;
+		this.parseDefaultsList(Ventilator.simParams);
+	}
 
-		/**
-		 * Duration of the simulation in seconds
-		 * @type {number}
-		 */
-
-		//this.Tvent = 12;
-		this.Tvent = 0
-
-		/** 
-		 * Time in seconds between each iteration. 
-		 * Higher value will result in faster simulation. 
-		 * Lower values will result in more accurate simulation. 
-		 * @type {number}
-		 * */
-
-		//this.Tsampl = 0.003;
-		this.Tsampl = 0;
-
-		this.simParams = {
-			Tsampl:{unit: "s", init: .003},/** Will this comment be parsed ? **/
-			Tvent: {unit: "s", init: 12},
-		};
-
-		if(typeof params != 'undefined'){
-			for(const index in this.simParams){
-				this[index] = typeof params[index] != 'undefined' ? param[index] : this.simParams[index].init;
-			}
-		}	
-		else{
-			for(const index in this.simParams){
-				this[index] = this.simParams[index].init;
-			}
+	parseDefaultsList(list) {
+		for(let p of list.filter(p=>!p.calculated)){
+			this[p.id]=p.init;
 		}
-
-
 	}
 
 	updateCalcParams(){ console.log("updateCalcParams is deprecated"); }
@@ -123,26 +99,16 @@ class Ventilator{
 
 export class PressureAssistor extends Ventilator{
 
+	static ventParams = [
+		{id: 'Passist', init: 12,  unit: "cmH₂O"},
+		{id: 'PEEP',    init: 5,   unit: "cmH₂O"},
+		{id: 'Ftrig',   init: 0.1, unit:"l/min."},
+		{id: 'Cycling', init: 25,  unit: "%"},
+	];
+
 	constructor() {
 		super();
-
-		/** Inspiratory assistance (in cmH₂O)
-		 * @member {number} */
-
-		this.Passist = 12.0;
-		this.PEEP = 5.0;
-		this.Cycling = 25;
-		this.Ftrig = 0.1;
-
-		//this.demoLung = SptLung;
-
-		this.ventParams = {
-			Passist:{unit: "cmH₂O"},
-			PEEP:{unit: "cmH₂O"},
-			Ftrig:{unit:"l/min."},
-			Cycling:{unit: "%"},
-		};
-
+		this.parseDefaultsList(PressureAssistor.ventParams);
 	}
 
 	ventilationCycle(lung){
@@ -175,31 +141,14 @@ export class PressureAssistor extends Ventilator{
 }
 
 class Controler extends Ventilator{
+	static ventParams = [
+		{id: 'PEEP', init: 5, unit: 'hPa'},
+		{id: 'Ti', init: 1, unit: 's'},
+		{id: 'Fconv', init: 12, unit: '/min'},
+	];
 	constructor (params) {
 		super(params);
-
-		//this.ventParams = {
-		//	PEEP:{unit: "cmH₂O", init: 5},
-		//	Ti:{unit:"s", init: 1},
-		//	Fconv:{unit: "/min", init: 12},
-		//};
-
-		this.ventParams = {};
-		this.ventParams['PEEP'] = {unit: "cmH₂O", init: 5};
-		this.ventParams['Ti'] = {unit:"s", init: 1};
-		this.ventParams['Fconv'] = {unit: "/min", init: 12};
-
-
-		if(typeof params != 'undefined'){
-			for(const key in this.ventParams){
-				this[key] = key in params ? params[key] : this.ventParams[key].init;
-			}
-		}
-		else{
-			for(const key in this.ventParams){
-				this[key] = this.ventParams[key].init;
-			}
-		}
+		this.parseDefaultsList(Controler.ventParams);
 	}
 
 	get Tcycle() { return 60 / this.Fconv; }
@@ -213,7 +162,6 @@ class Controler extends Ventilator{
 			this.time += this.Tsampl
 		){
 			this.applyControledParameter(lung);
-			//this.timeData.push(sv.log(lung, this));
 			this.log(lung);
 		}
 
@@ -237,19 +185,14 @@ class Controler extends Ventilator{
 
 export class PressureControler extends Controler {
 	
+	static ventParams = [
+		...Controler.ventParams,
+		{id: 'Pinspi', init: 10, unit: 'hPa'},
+	];
+
 	constructor(params){
 		super(params);
-
-		this.Pinspi = 10.0;
-
-		this.ventParams = {
-			Pinspi:{unit: "cmH₂O"},
-			PEEP:{unit: "cmH₂O"},
-			Fconv:{unit:"/min."},
-			Ti:{unit: "cmH₂O"},
-			Te:{calculated: true, unit: "sec."},
-			Tcycle:{calculated: true, unit: "sec."}
-		};
+		this.parseDefaultsList(PressureControler.ventParams);
 	}
 
 	applyControledParameter (lung) {
@@ -266,13 +209,14 @@ export class PressureControler extends Controler {
 
 export class FlowControler extends Controler{
 	
+	static ventParams = [
+		...Controler.ventParams,
+		{id: 'Vt', init: 0.5, unit: 'l'},
+	];
+
 	constructor(params){
 		super(params);
-
-		this.Vt = 0.5;
-		this.ventParams['Vt']={unit: "l", step:0.01};
-		this.ventParams['Te']={calculated: true, unit: "sec."};
-		this.ventParams['Tcycle']={calculated: true, unit: "sec."};
+		this.parseDefaultsList(FlowControler.ventParams);
 	}
 
 	get Flow(){return this.Vt / this.Ti;}
@@ -291,22 +235,16 @@ export class FlowControler extends Controler{
 
 export class PVCurve extends Ventilator{
 
+	static ventParams = [
+		{id: 'Pstart', init: 0,   unit: "cmH₂O"},
+		{id: 'Pmax',   init: 100, unit: "cmH₂O"},
+		{id: 'Pstop',  init: 0,   unit: "cmH₂O"},
+		{id: 'Pstep',  init: 2,   unit: "cmH₂O"},
+		{id: 'Tman',   init: 20,  unit: "s"}
+	];
 	constructor() {
 		super();
-		//this.Pstart = -100.0;
-		this.Pstart = 0;
-		this.Pmax = 100;
-		this.Pstop = 0;
-		this.Pstep = 2;
-		this.Tman = 20;
-
-		this.ventParams = {
-			Pstart: {unit: "cmH₂O"},
-			Pmax: {unit: "cmH₂O"},
-			Pstop: {unit: "cmH₂O"},
-			Pstep: {unit: "cmH₂O"},
-			Tman: {unit: "s"}
-		};
+		this.parseDefaultsList(PVCurve.ventParams);
 	}
 
 	ventilate (lung){
@@ -367,55 +305,39 @@ function phasitron(Fip, Pao){
  * @extends sv.Ventilator
  */
 
-/*
-
-logPerc = function(lung, vent){
-	return {
-		time: vent.time,
-		Vtip: lung.Vtip,
-		Vtep: lung.Vtep
-	};
-}
-*/
-
 export class IPV extends Ventilator{
+
+	static simParams = [
+		{id: 'Rexp', init: 1, unit: 'hPa/l/s'},
+		{id: 'lppe', init: 4, unit: ''},
+		{id: 'lpip', init: 6, unit: ''},
+		{id: 'lpop', init: 1, unit: ''},
+	];
+
+	static ventParams = [
+		{id: 'Fperc', init: 500, unit: '/min'},
+		{id: 'Fhz',  unit: "hz", calculated: true},
+		{id: 'Rit',   init: .5,  unit: ''},
+		{id: 'Fipc',  init: .18, unit: 'l/s'},
+	];
+
+	static variables = [
+		{id: 'Fop', init: 0}, //Phasitron output flow
+		{id: 'Fip', init: 0}, //Phasitron output flow
+		{id: 'Pao', init: 0}, //Presure at the ariway openning (phasitron output)
+	];
 
 	constructor(){
 		super();
-
-		this.Tramp= 0.005;
-		this.Rexp= 1; // cmH2O/l/s. To be adjusted based on the visual aspect of the curve.
-		this.lppe = 4;
-		this.lpip = 6;
-		this.lpop = 1
-
-		this.simParams = {
-			Tvent: {unit: "s"},
-			Tsampl: {unit: "s"},
-			Tramp: {unit: "s"},
-			Rexp: {unit: "cmH₂O/l/s"},
-		};
-
-		this.Fperc= 500;
-		this.Rit= 0.5; //Ratio of inspiratory time over total time (percussion)
-		this.Fipc=0.18;
-
-		this.Fop=0; //Phasitron output flow
-		this.Fip=0; //Phasitron output flow
-		this.Pao=0; //Presure at the ariway openning (phasitron output)
-
-		this.ventParams = {
-			Fperc: {unit: "/min"},
-			Fhz: {unit: "hz", calculated: true},
-			Rit: {},
-			Fipc: {unit: "l/s"}
-		};
-
+		this.parseDefaultsList(IPV.simParams);
+		this.parseDefaultsList(IPV.ventParams);
+		this.parseDefaultsList(IPV.variables);
 	}
 
 	get Fhz(){return this.Fperc / 60;}
 	get Tip(){return (60/this.Fperc)*this.Rit;}
 	get Tep(){return (60/this.Fperc)-this.Tip;}
+
 	calcFop(){return this.Fop + (phasitron(this.Fip, this.Pao) - this.Fop)/this.lpop;}
 
 	percussiveExpiration (lung, Rexp){
@@ -465,32 +387,20 @@ export class IPV extends Ventilator{
 
 export class VDR extends IPV{
 
+	static ventParams = [
+		...IPV.ventParams,
+		{id: 'Tic',   init: 2,   unit: 's'},
+		{id: 'Tec',   init: 2,   unit: 's'},
+		{id: 'Fconv', calculated: true , unit: '/min'},
+		{id: 'Fipl',  init: .18, unit: 'l/s'},
+		{id: 'Fiph',  init: 1.8, unit: 'l/s'},
+		{id: 'CPR',   init: 0,   unit: ''},
+	];
+
 	constructor(){
 		super();
-
-		this.Tic= 2; // Convective inspiratory time
-		this.Tec= 2; // Convective expiratory time
-		this.Fipl= 0.18; // 	
-		this.Fiph= 1.8; // 
-		this.CPR = 0;
-
-		this.Fop=0; //Phasitron output flow
-		this.Fip=0; //Phasitron output flow
-		this.Pao=0;//Presure at the ariway openning (phasitron output)
+		this.parseDefaultsList(VDR.ventParams);
 		this.CycleC=0;
-
-		this.ventParams = {
-			Tic: {unit: "s"},
-			Tec: {unit: "s"},
-			Fconv: {unit: "s", calculated: true},
-			Fperc: {unit: "/min"},
-			Fhz: {unit: "hz", calculated: true},
-			Rit: {},
-			Fiph: {unit: "l/s"},
-			Fipl: {unit: "l/s"},
-			CPR: {}
-		};
-
 	}
 
 	get Fconv (){ return 60 / (this.Tic + this.Tec); }

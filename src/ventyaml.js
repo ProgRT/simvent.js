@@ -1,6 +1,7 @@
 import * as vents from './simvent-ventilators.js';
 import * as lungs from './simvent-lungs.js';
 import {addGraph} from 'https://progrt.github.io/graphsimple.js/graphsimple.js';
+//import {YAML} from "https://cdn.skypack.dev/@eemeli/YAML";
 
 const grconf =	{
 	margeG:60,
@@ -331,11 +332,12 @@ export class ventyaml {
 	}
 }
 
-export function ventyamlEverything(selector){
+export async function ventyamlEverything(selector){
 	var preS = document.querySelectorAll(selector);
 	for(var i in preS){
 		if(typeof preS[i].tagName != 'undefined'){//Why the hell must I filter this?
 			var ventyamlInstance = new ventyaml(preS[i]);
 		}
+		await new Promise(f=>setTimeout(f,5));
 	}
 }

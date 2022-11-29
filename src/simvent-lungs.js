@@ -14,29 +14,30 @@ import {sygX, sygY} from './simvent-math.js';
 
 class Lung{
 
-	static carbParams = [
-		{id: 'Vdaw',   defaultValue: 0.1,   unit: 'l'},
-		{id: 'PiCO2',  defaultValue: 0.0,   unit: 'mmHg'},
-		{id: 'PACO2',  defaultValue: 35.0,  unit: 'mmHg'},
-		{id: 'Slope2', defaultValue: 0.003, unit: 'l'},
-		{id: 'Slope3', defaultValue: 5, },
-	];
-
 	static simParams = [
-		{id: 'Tsampl',   defaultValue: .001,  unit: 's'},
+		{id: 'Tsampl',   init: .001,  unit: 's'},
 	];
 
-	static mechParams = [
-		{id: 'Raw',   defaultValue: 5,  unit: 'hPa/l/s'},
-		{id: 'Vfrc',   defaultValue: 2.5,  unit: 'l'},
+	static carbParams = [
+		{id: 'Vdaw',   init: 0.1,   unit: 'l'},
+		{id: 'PiCO2',  init: 0.0,   unit: 'mmHg'},
+		{id: 'PACO2',  init: 35.0,  unit: 'mmHg'},
+		{id: 'Slope2', init: 0.003, unit: 'l'},
+		{id: 'Slope3', init: 5, },
 	];
 
 	static variables = [
-		{id: 'Vti',   defaultValue: 0,  unit: 'l'},
-		{id: 'Vte',   defaultValue: 0,  unit: 'l'},
-		{id: 'Vtmax', defaultValue: 0,  unit: 'l'},
-		{id: 'Vabs',  defaultValue: 0,  unit: 'l'},
+		{id: 'Vti',   init: 0,  unit: 'l'},
+		{id: 'Vte',   init: 0,  unit: 'l'},
+		{id: 'Vtmax', init: 0,  unit: 'l'},
+		{id: 'Vabs',  init: 0,  unit: 'l'},
+		{id: 'Flow',  init: 0,  unit: ''},
 	];
+
+	static mechParams = [
+		{id: 'Raw',   init: 5,  unit: 'hPa/l/s'},
+	];
+
 
 	constructor() {
 
@@ -44,23 +45,16 @@ class Lung{
 			...Lung.simParams,
 			...Lung.carbParams,
 			...Lung.variables,
-			...Lung.mechParams,
 		]);
 
 	}
 
 	parseDefaultsList(list) {
 		for(let p of list){
-			this[p.id]=p.defaultValue;
+			this[p.id]=p.init;
 		}
 	}
 
-	parseDefaults() {
-		for (var p in this.defaults) {
-			this[p] = this.defaults[p];
-		}
-	}
-2
 	get Palv() {return this.Pel - this.Pmus}
 	get Pmus() {return 0}
 	get Vt() {return this.Vtmax -this.Vte;}
@@ -143,20 +137,15 @@ export class SimpleLung extends Lung {
 
 	static mechParams = [
 		...Lung.mechParams,
-		{id: 'Crs',   defaultValue: 50,  unit: 'ml/hPa'},
-		//{id: 'Vfrc',   defaultValue: 2.5,  unit: 'l'},
+		{id: 'Crs',   init: 50,  unit: 'ml/hPa'},
+		{id: 'Vfrc',   init: 2.5,  unit: 'l'},
 	];
 
 	constructor(params) {
 
 		super();
 
-		this.parseDefaultsList([
-			...SimpleLung.mechParams,
-			...Lung.simParams,
-			...Lung.carbParams,
-			...Lung.variables
-		]);
+		this.parseDefaultsList(SimpleLung.mechParams);
 
 		this.Vabs = this.Vfrc;
 
@@ -172,18 +161,17 @@ export class SimpleLung extends Lung {
 
 export class SptLung extends SimpleLung{
 
-	static mechParams = [
-		...Lung.mechParams,
-		{id: 'Fspt',   defaultValue: 14,  unit: '/min'},
-		{id: 'Pmax',   defaultValue: 6.5, unit: 'hPa'},
-		{id: 'Ti',     defaultValue: 1,   unit: 's'},
+	static respParams = [
+		{id: 'Fspt',   init: 14,  unit: '/min'},
+		{id: 'Pmax',   init: 6.5, unit: 'hPa'},
+		{id: 'Ti',     init: 1,   unit: 's'},
 	];
 
 	constructor() {
 
 		super();
 
-		this.parseDefaultsList(SptLung.mechParams);
+		this.parseDefaultsList(SptLung.respParams);
 		this.time=0;
 	}
 
@@ -208,10 +196,11 @@ export class SptLung extends SimpleLung{
 export class SygLung extends Lung{
 
 	static mechParams = [
-		{id: 'Vmax', defaultValue: 4, unit: "l"},
-		{id: 'Vmin', defaultValue: 0, unit: "l"},
-		{id: 'Pid', defaultValue: 5, unit: "cmH₂O"},
-		{id: 'Kid', defaultValue: 20, unit: "cmH₂O"},
+		...Lung.mechParams,
+		{id: 'Vmax', init: 4, unit: "l"},
+		{id: 'Vmin', init: 0, unit: "l"},
+		{id: 'Pid', init: 5, unit: "cmH₂O"},
+		{id: 'Kid', init: 20, unit: "cmH₂O"},
 	] ;
 
 	constructor() {
@@ -219,7 +208,6 @@ export class SygLung extends Lung{
 		super();
 		this.parseDefaultsList(SygLung.mechParams);
 
-		this.flow = 0.0;
 		this.Vabs = this.volume(0);
 	}
 
@@ -239,11 +227,12 @@ export class SygLung extends Lung{
 
 export class RLung extends Lung {
 	static mechParams = [
-		{id: 'Vmax', defaultValue: 4, unit: "l"},
-		{id: 'Vmin', defaultValue: 0, unit: "l"},
-		{id: 'Pid', defaultValue: 20, unit: "cmH₂O"},
-		{id: 'Kid', defaultValue: 20, unit: "cmH₂O"},
-		{id: 'Phister', defaultValue: 20, unit: "cmH₂O"},
+		...Lung.mechParams,
+		{id: 'Vmax', init: 4, unit: "l"},
+		{id: 'Vmin', init: 0, unit: "l"},
+		{id: 'Pid', init: 20, unit: "cmH₂O"},
+		{id: 'Kid', init: 20, unit: "cmH₂O"},
+		{id: 'Phister', init: 20, unit: "cmH₂O"},
 	];
 
 	static calcParams = [
@@ -252,10 +241,9 @@ export class RLung extends Lung {
 	];
 
 	static variables = [
-		{id: 'flow', defaultValue: 0},
-		{id: 'lastFlow', defaultValue: 0},
-		{id: 'Vtmax', defaultValue: 0},
-		{id: 'lastPel', defaultValue: 0},
+		{id: 'lastFlow', init: 0},
+		{id: 'Vtmax', init: 0},
+		{id: 'lastPel', init: 0},
 	];
 
 	constructor() {
@@ -283,7 +271,6 @@ export class RLung extends Lung {
 	}
 
 
-		//this.parseDefaults();
 	fitInsp(){
 		//console.log('fitInsp');
 		var N = 1 + Math.pow(Math.E,-((this.lastPel - this.PidInsp)/this.Kid));

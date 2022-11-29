@@ -60,10 +60,10 @@ export function mktbl(obj, list){
 
 export function mkListTbl(list){
     var tblcontent = headline;
-    for(let p of list){
+    for(let p of list.filter(p=>!p.calculated)){
         tblcontent += `<tr>
     <td>${p.id}</td>
-    <td>${p.defaultValue}</td>
+    <td>${p.init}</td>
     <td>${p.unit|| ''}</td>
 </tr> `;
     }
