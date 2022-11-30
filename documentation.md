@@ -113,7 +113,8 @@ Modèle simple de poumon avec une compliance linéaire.
 
 ### SptLung
 
-Modèle de poumon présentant une respiration spontanée et une compliance linéaire.
+Modèle de poumon présentant une respiration spontanée. Ses
+caractéristiques mécaniques sont identiques au modèle *SimpleLung*.
 
 ```{ventyaml}
 Ventilateur: PressureAssistor
@@ -177,7 +178,7 @@ Boucle:
 
     var lunglist = [
         'SimpleLung',
-        'SptLung',
+//        'SptLung',
         'SygLung',
         'RLung',
     ];
@@ -188,6 +189,9 @@ Boucle:
                 ...lungs[l].mechParams,
         ]);
     }
+
+var trgt = document.querySelector(`#SptLungDefaults`);
+trgt.innerHTML = mkListTbl(lungs.SptLung.respParams);
 
 
 </script>

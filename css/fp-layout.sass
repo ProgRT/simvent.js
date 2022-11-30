@@ -13,8 +13,15 @@ body
 main
   margin-top: calc(47px + 5px)
   overflow-y: scroll
-  max-height: calc(100vh - 57px)
+  //max-height: calc(100vh - 57px)
   box-sizing: border-box
+
+  h2::before, h3::before
+    display: block
+    margin-top: -50px
+    height: 50px
+    content: " "
+
 
 @media (max-width: 800px)
   main
