@@ -2,6 +2,7 @@ import * as simventLungs from "./simvent-lungs.js";
 import * as simventVentilators from "./simvent-ventilators.js";
 
 export class simulator {
+
 	constructor(){
 		this.debugMode = false;
 		this.ventBufferFactor = 2;
@@ -146,17 +147,7 @@ export class simulator {
 
 		while(table.hasChildNodes()){table.removeChild(table.firstChild)}
 
-		//for(var id in object[paramSet]){
 		for(var p of object.__proto__.constructor[paramSet]){
-			/*
-			var param = object[paramSet][id];
-			//var abrev = fp.translate1(id, "short");
-			var abrev = id;
-
-			if (typeof param.unit != "undefined"){var unit = param.unit;}
-			else {var unit = "";}
-
-			*/
 			var tr = document.createElement('tr');
 			table.appendChild(tr);
 
@@ -168,18 +159,10 @@ export class simulator {
 			td.textContent = p.id + ' :';
 			tr.appendChild(td);
 
-			/*
-								var td = $("<td></td>")
-											.attr("title", fp.translate1(id, "long"))
-											.html(abrev + " :")
-											.appendTo(tr);
-											*/
-
 			// input or value cell
 
 			var td = document.createElement('td');
 			td.className = 'data';
-			//td.title = fp.translate1(id, "long");
 
 			if (p.calculated == true){
 				var value = Math.round(10 * this.vent[p.id])/10;
@@ -194,7 +177,6 @@ export class simulator {
 				input.name = p.id;
 				input.value = object[p.id];
 				input.type = 'number';
-				//input.step = param.step
 				input.onfocus = function(){this.select()};
 				input.onchange = (evt)=>{
 					object[evt.target.name] = parseFloat(evt.target.value);
