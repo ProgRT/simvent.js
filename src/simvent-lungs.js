@@ -23,7 +23,7 @@ class Lung{
 		{id: 'PiCO2',  init: 0.0,   unit: 'mmHg'},
 		{id: 'PACO2',  init: 35.0,  unit: 'mmHg'},
 		{id: 'Slope2', init: 0.003, unit: 'l'},
-		{id: 'Slope3', init: 5, },
+		{id: 'Slope3', init: 5, unit: 'mmhg/l'},
 	];
 
 	static variables = [
