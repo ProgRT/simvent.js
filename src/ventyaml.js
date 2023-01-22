@@ -295,7 +295,7 @@ export class ventyaml {
 		if( typeof boucle == "object" && 'x' in boucle && 'y' in boucle && boucle.x != null && boucle.y != null){
 			function fx(d){return d[boucle["x"]];}
 			function fy(d){return d[boucle["y"]];}
-			var graph = addGraph(this.waveformContainer.id, this.data[0], fx, fy, {...grconf, ...{ class: "loop" }});
+			var graph = addGraph(this.waveformContainer.id, this.data[0], fx, fy, {...grconf, ...{ class: "loop", nticksX: 5}});
 			graph.setidx(boucle["x"]);
 			graph.setidy(boucle["y"]);
 			if(this.data.length>1){
