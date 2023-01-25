@@ -319,6 +319,9 @@ export class ventyaml {
 
 	updateCaption(){
 		// Suprimer toute legende existantr
+		if(this.container.querySelector('caption')){
+			this.container.querySelector('caption').remove();
+		}
 
 
 
