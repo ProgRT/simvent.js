@@ -22,8 +22,8 @@ kramdown:
 #  - jekyll-paginate
 #paginate: 6
 exclude:
-  - test
   - test.html
+  - test
     #- pagelist.html
   - postlist.html
   - ventyaml.md
