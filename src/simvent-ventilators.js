@@ -31,6 +31,13 @@ class Ventilator{
 		}
 	}
 
+	parseParams(list) {
+		for(let p in list){
+			if(p in this){this[p] = list[p]}
+			else{console.log(`No parameter _${p}_ in ventilator _${this.constructor.name}_`)}
+		}
+	}
+
 	updateCalcParams(){ console.log("updateCalcParams is deprecated"); }
 
 	log(lung){
@@ -106,9 +113,10 @@ export class PressureAssistor extends Ventilator{
 		{id: 'Cycling', init: 25,  unit: "%"},
 	];
 
-	constructor() {
+	constructor(params) {
 		super();
 		this.parseDefaultsList(PressureAssistor.ventParams);
+		this.parseParams(params);
 	}
 
 	ventilationCycle(lung){
@@ -193,6 +201,7 @@ export class PressureControler extends Controler {
 	constructor(params){
 		super(params);
 		this.parseDefaultsList(PressureControler.ventParams);
+		this.parseParams(params);
 	}
 
 	applyControledParameter (lung) {
@@ -217,6 +226,7 @@ export class FlowControler extends Controler{
 	constructor(params){
 		super(params);
 		this.parseDefaultsList(FlowControler.ventParams);
+		this.parseParams(params);
 	}
 
 	get Flow(){return this.Vt / this.Ti;}
@@ -242,9 +252,10 @@ export class PVCurve extends Ventilator{
 		{id: 'Pstep',  init: 2,   unit: "cmH₂O"},
 		{id: 'Tman',   init: 20,  unit: "s"}
 	];
-	constructor() {
+	constructor(params) {
 		super();
 		this.parseDefaultsList(PVCurve.ventParams);
+		this.parseParams(params);
 	}
 
 	ventilate (lung){
@@ -327,11 +338,12 @@ export class IPV extends Ventilator{
 		{id: 'Pao', init: 0}, //Presure at the ariway openning (phasitron output)
 	];
 
-	constructor(){
+	constructor(params){
 		super();
 		this.parseDefaultsList(IPV.simParams);
 		this.parseDefaultsList(IPV.ventParams);
 		this.parseDefaultsList(IPV.variables);
+		this.parseParams(params);
 	}
 
 	get Fhz(){return this.Fperc / 60;}
@@ -397,9 +409,10 @@ export class VDR extends IPV{
 		{id: 'CPR',   init: 0,   unit: ''},
 	];
 
-	constructor(){
+	constructor(params){
 		super();
 		this.parseDefaultsList(VDR.ventParams);
+		this.parseParams(params);
 		this.CycleC=0;
 	}
 

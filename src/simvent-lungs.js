@@ -55,6 +55,13 @@ class Lung{
 		}
 	}
 
+	parseParams(list) {
+		for(let p in list){
+			if(p in this){this[p] = list[p]}
+			else{console.log(`No parameter _${p}_ in lung _${this.constructor.name}_`)}
+		}
+	}
+
 	get Palv() {return this.Pel - this.Pmus}
 	get Pmus() {return 0}
 	get Vt() {return this.Vtmax -this.Vte;}
@@ -146,6 +153,7 @@ export class SimpleLung extends Lung {
 		super();
 
 		this.parseDefaultsList(SimpleLung.mechParams);
+		this.parseParams(params);
 
 		this.Vabs = this.Vfrc;
 
@@ -167,11 +175,12 @@ export class SptLung extends SimpleLung{
 		{id: 'Ti',     init: 1,   unit: 's'},
 	];
 
-	constructor() {
+	constructor(params) {
 
 		super();
 
 		this.parseDefaultsList(SptLung.respParams);
+		this.parseParams(params);
 		this.time=0;
 	}
 
@@ -203,10 +212,11 @@ export class SygLung extends Lung{
 		{id: 'Kid', init: 20, unit: "cmH₂O"},
 	] ;
 
-	constructor() {
+	constructor(params) {
 
 		super();
 		this.parseDefaultsList(SygLung.mechParams);
+		this.parseParams(params);
 
 		this.Vabs = this.volume(0);
 	}
@@ -246,11 +256,12 @@ export class RLung extends Lung {
 		{id: 'lastPel', init: 0},
 	];
 
-	constructor() {
+	constructor(params) {
 		super();
 
 		this.parseDefaultsList(RLung.mechParams);
 		this.parseDefaultsList(RLung.variables);
+		this.parseParams(params);
 
 		this.VmaxExp=this.Vmax;
 		this.VminInsp=this.Vmin;

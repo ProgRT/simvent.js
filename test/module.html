@@ -35,8 +35,7 @@ svg.gs {
 
 <script type=module>
 
-	import {PressureControler} from '../src/simvent.js';
-	import {SptLung} from '../src/simvent.js';
+	import {PressureControler, SimpleLung} from '../src/simvent.js';
 	import { graph } from 'http://progrt.github.io/graphsimple.js/graphsimple.js';
 
 	const graphParam = {
@@ -46,9 +45,8 @@ svg.gs {
 		margeH: 10,
 	};
 
-	var vent = new PressureControler({PEEP: 10, Fconv: 40});
-	var lung = new SptLung();
-	lung.Slope2 = .1;
+	var vent = new PressureControler({PEEP: 0, Fconv: 20});
+	var lung = new SimpleLung();
 	var data = vent.ventilate(lung).timeData;
 
 	const fx = d=>d.time;
