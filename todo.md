@@ -2,4 +2,4 @@
 
 	-[ ] Traduire en français
 	-[ ] Réorganiser les modèles de ventilateurs en conséquence
--[ ] Transformer en module ES6
+-[X] Transformer en module ES6
