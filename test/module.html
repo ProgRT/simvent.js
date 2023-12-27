@@ -35,27 +35,24 @@ svg.gs {
 
 <script type=module>
 
-	import {PressureControler, SimpleLung} from '../src/simvent.js';
-	import { graph } from 'http://progrt.github.io/graphsimple.js/graphsimple.js';
+	import {VDR} from '../src/simvent-ventilators.js';
+	import {analyse, tblAnalysis} from '../src/vdrSignalAnalysis.js';
+	import {SimpleLung} from '../src/simvent-lungs.js';
 
-	const graphParam = {
-		padH: .25,
-		margeG: 80,
-		margeB: 30,
-		margeH: 10,
-	};
-
-	var vent = new PressureControler({PEEP: 0, Fconv: 20});
+	var vent = new VDR();
 	var lung = new SimpleLung();
 	var data = vent.ventilate(lung).timeData;
+	var an1 = analyse(data, "Dataset 1");
 
-	const fx = d=>d.time;
-	const fy = d=>d.Flung;
-
-
-	var gr = new graph(null, graphParam);
-	gr.setscale(data, fx, fy)
-		.tracer(data, fx, fy)
+	var tbla = tblAnalysis(an1);
+	var pr = tbla.querySelector(".tblaendMeanrow")
+	pr.addEventListener("mouseover", e=>{
+		pr.style.background = "Tomato";
+	});
+	pr.addEventListener("mouseout", e=>{
+		pr.style.background = "";
+	});
+	document.body.append(tbla);
 
 </script>
 </body>

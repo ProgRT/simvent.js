@@ -1,5 +1,6 @@
 import {mean} from "https://cdn.jsdelivr.net/npm/d3-array@3/+esm";
-function getPeaks(data, accessor){
+
+export function getPeaks(data, accessor){
 	var signal = data.map(accessor);
 	var peaks = [];
 	for(var i=1; i<data.length; i++){
@@ -16,7 +17,7 @@ function getPeaks(data, accessor){
 	return peaks;
 }
 
-function getFlats(data, accessor){
+export function getFlats(data, accessor){
 	const signal = data.map(accessor);
 	var flats = [];
 	for(var i=1; i<signal.length; i++){
@@ -51,9 +52,9 @@ export function analyse(data, label){
 	const ape = analysePlage(plages[2]);
 
 	const delta = {
-		peak: (api.peak - ape.peak).toFixed(1),
-		mean: (api.mean - ape.mean).toFixed(1),
-		endMean: (api.endMean - ape.endMean).toFixed(1)
+		peak: api.peak - ape.peak,
+		mean: api.mean - ape.mean,
+		endMean: api.endMean - ape.endMean
 	}
 
 	return {
@@ -64,15 +65,15 @@ export function analyse(data, label){
 	};
 }
 
-function analysePlage (p, durFin=0.5){
+export function analysePlage (p, durFin=0.5){
 	const Tfin = p[p.length-1].time - durFin;
 	const peaks = getPeaks(p, d=>d.Pao);
 	const pEnd = p.filter(d=>d.time > Tfin);
 
 	return {
-		peak: peaks[peaks.length - 1].Pao.toFixed(1),
-		mean: mean(p, d=>d.Pao).toFixed(1),
-		endMean: mean(pEnd, d=>d.Pao).toFixed(1),
+		peak: peaks[peaks.length - 1].Pao,
+		mean: mean(p, d=>d.Pao),
+		endMean: mean(pEnd, d=>d.Pao),
 		//pEndRect: drawPlage(pEnd)
 	};
 }
@@ -121,6 +122,7 @@ export function tblAnalysis(){
 	// For every parameter p (row)
 	params.map(p=>{
 		var tr = document.createElement("tr");
+		tr.className = "tbla" + p.id + "row";
 		var th = document.createElement('th');
 		th.style.textAlign = "left";
 		th.textContent = p.label;
@@ -132,8 +134,7 @@ export function tblAnalysis(){
 			// for every time t (cell)
 			['insp', 'exp', 'dif'].map(t=>{
 				var td = document.createElement('td');
-				console.log(a[t][p.id]);
-				td.textContent = a[t][p.id];
+				td.textContent = fmt(a[t][p.id]);
 				tr.append(td);
 			});
 		};
@@ -141,4 +142,8 @@ export function tblAnalysis(){
 	});
 
 	return tbl
+}
+
+export function fmt(n){
+	return parseFloat(n.toFixed(1)).toLocaleString();
 }
