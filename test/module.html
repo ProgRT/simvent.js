@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8"/>
 
-<script src="../lib/d3.v3.min.js" charset="utf-8"></script>
-<link rel="stylesheet"
-			type="text/css"
-			href="https://progrt.github.io/graphsimple.js/css/gs.css"
-			charset="utf-8"/>
-
 <style>
 body {
 	box-sizing: border-box;
@@ -19,16 +13,22 @@ html {
 	height: 100%;
 	padding: 0px;
 	margin: 0px;
+	font-size: 11pt;
 }
 
-svg.gs {
-	/*border: 1px solid gray;*/
-	display: block;
-	width: 60vw;
-	height: 50vw;
-	margin-left: auto;
-	margin-right: auto;
+
+table {
+	border-collapse: collapse;
 }
+
+tr {
+	border-bottom: 1px solid;
+}
+
+th, td {
+	padding: 8px;
+}
+
 </style>
 
 <body>
@@ -45,6 +45,7 @@ svg.gs {
 	var an1 = analyse(data, "Dataset 1");
 
 	var tbla = tblAnalysis(an1);
+
 	var pr = tbla.querySelector(".tblaendMeanrow")
 	pr.addEventListener("mouseover", e=>{
 		pr.style.background = "Tomato";
@@ -52,6 +53,7 @@ svg.gs {
 	pr.addEventListener("mouseout", e=>{
 		pr.style.background = "";
 	});
+
 	document.body.append(tbla);
 
 </script>

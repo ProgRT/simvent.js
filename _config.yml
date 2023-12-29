@@ -23,7 +23,7 @@ kramdown:
 #paginate: 6
 exclude:
   - test.html
-  - test
+    #- test
     #- pagelist.html
   - postlist.html
   - ventyaml.md
