@@ -27,3 +27,4 @@ exclude:
     #- pagelist.html
   - postlist.html
   - ventyaml.md
+  - todo.md
