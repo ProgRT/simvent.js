@@ -40,6 +40,21 @@ Legende: "Ventilation spontanée avec aide inspiratoire"
 
 <table id="PressureAssistorDefaults"></table>
 
+### APRV
+
+Générateur de pression (pression constante) déclenché et cyclé par le temps.
+
+```{ventyaml}
+Ventilateur: APRV
+Poumon: 
+  Type: SptLung
+  Fspt: 29
+  Ti: 0.5
+Legende: "Mode APRV avec ventilation spontanée superposée."
+```
+
+<table id="APRVDefaults"></table>
+
 ### IPV
 
 Ventilateur à haute fréquence percussive.
@@ -165,6 +180,7 @@ Boucle:
         'PressureControler',
         'FlowControler',
         'PressureAssistor',
+        'APRV',
         'IPV',
         'VDR',
         'PVCurve'
