@@ -19,7 +19,7 @@ class Ventilator{
 		{id: 'Tvent', init: 12, unit: 's'},
 	];
 
-	constructor(params) {
+	constructor() {
 
 		this.time = 0;
 		this.parseDefaultsList(Ventilator.simParams);
@@ -68,6 +68,7 @@ class Ventilator{
 
 		});
 	}
+
 	/**
 	 * Ventilate a lung object by applying **ventilationCycle** algorythm for **Tvent** time.
 	 * @param {LungObject} lung lung object
@@ -77,7 +78,9 @@ class Ventilator{
 	ventilate(lung){
 		this.timeData = [];
 
-		for ( this.simulationStop = this.time + this.Tvent; this.time <= this.simulationStop; ){
+		for (
+			this.simulationStop = this.time + this.Tvent;
+			this.time <= this.simulationStop; ){
 			this.ventilationCycle(lung);
 		}
 
@@ -94,9 +97,6 @@ class Ventilator{
 		throw "ventilationCycle() must be implemented i high level ventilator model.";
 	}
 
-	defaultsTable(){
-		sd.defaultsTable.call(this,this.ventParams);
-	}
 };
 
 /**
@@ -154,8 +154,8 @@ class Controler extends Ventilator{
 		{id: 'Ti', init: 1, unit: 's'},
 		{id: 'Fconv', init: 12, unit: '/min'},
 	];
-	constructor (params) {
-		super(params);
+	constructor () {
+		super();
 		this.parseDefaultsList(Controler.ventParams);
 	}
 
@@ -199,7 +199,7 @@ export class PressureControler extends Controler {
 	];
 
 	constructor(params){
-		super(params);
+		super();
 		this.parseDefaultsList(PressureControler.ventParams);
 		this.parseParams(params);
 	}
@@ -224,7 +224,7 @@ export class FlowControler extends Controler{
 	];
 
 	constructor(params){
-		super(params);
+		super();
 		this.parseDefaultsList(FlowControler.ventParams);
 		this.parseParams(params);
 	}
@@ -242,6 +242,53 @@ export class FlowControler extends Controler{
  * Quasi-static (low flow), stepwise, pressure - volume loop maneuver
  * @extends sv.Ventilator
  */
+
+export class APRV extends Ventilator {
+	static ventParams = [
+		{id: 'Phigh', init: 20, unit: 'hPa'},
+		{id: 'Plow', init: 0, unit: 'hPa'},
+		{id: 'Thigh', init: 4, unit: 's'},
+		{id: 'Tlow', init: .5, unit: 's'},
+		{id: 'Fconv', calculated: true, unit: '/min'},
+	];
+
+	constructor (params) {
+			super();
+			this.parseDefaultsList(APRV.ventParams);
+			this.parseParams(params);
+	}
+
+	get Tcycle() { return this.Thigh + this.Tlow; }
+	get Fconv() { return 60/this.Tcycle; }
+	set Fconv(f) {
+		let Tcycle = 60 / f;
+		this.Thigh = Tcycle - this.Tlow;
+	}
+
+	ventilationCycle(lung){
+		// Thigh
+		for(
+			var tStop = this.time + this.Thigh; 
+			this.time < tStop && this.time <= this.simulationStop;
+			this.time += this.Tsampl
+		){
+			this.Pao = this.Phigh;
+			lung.appliquer_pression(this.Phigh, this.Tsampl);
+			this.log(lung);
+		}
+
+		// Tlow
+		this.Pao = this.Plow
+		for(
+			var tStop = this.time + this.Tlow;
+			this.time < tStop && this.time <= this.simulationStop;
+			this.time += this.Tsampl
+		){
+			lung.appliquer_pression(this.Plow, this.Tsampl)
+			this.log(lung);
+		}
+	}
+}
 
 export class PVCurve extends Ventilator{
 
