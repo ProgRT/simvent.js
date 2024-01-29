@@ -159,6 +159,7 @@ export class SimpleLung extends Lung {
 
 	}
 	get Pel() {return 1000 * (this.Vabs - this.Vfrc)/ this.Crs;}
+	get TC() {return .001 * this.Crs * this.Raw}
 
 }
 
