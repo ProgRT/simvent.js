@@ -2,7 +2,9 @@ import * as simventLungs from "./simvent-lungs.js";
 import * as simventVentilators from "./simvent-ventilators.js";
 import {graph} from "./moovingGraph.js";
 
+
 export class simulator {
+
 
 	constructor(){
 		this.debugMode = false;
@@ -23,6 +25,7 @@ export class simulator {
 			'FlowControler',
 			'PressureControler',
 			'PressureAssistor',
+			'APRV',
 			'IPV',
 			'VDR'
 		];

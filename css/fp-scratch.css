@@ -5,7 +5,7 @@
   height: 100%;
   overflow-x: hidden; }
 
-svg {
+main svg {
   display: block;
   height: 30vh;
   margin-left: none;
@@ -14,16 +14,16 @@ svg {
   margin-bottom: 5px; }
 
 @media (max-width: 800px) {
-  svg {
+  main svg {
     width: 100%; }
 
   #fpPanel.hidden {
     right: -100%; } }
 @media (min-width: 800px) {
-  svg {
+  main svg {
     width: calc(100vw - 275px); } }
 @media (min-width: 1300px) {
-  svg {
+  main svg {
     width: 800px;
     margin-left: auto;
     margin-right: auto; } }

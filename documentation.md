@@ -1,6 +1,6 @@
 ---
 title: Documentation
-icon: livre.svg
+icon: Livre
 ---
 
 * Table des matières
