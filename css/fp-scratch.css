@@ -1,8 +1,9 @@
+
 #fpPanel {
   position: fixed;
-  top: 50px;
+  top: 47px;
   right: 0px;
-  height: 100%;
+  max-height: calc(100vh - (47px + 15px));
   overflow-x: hidden; }
 
 main svg {

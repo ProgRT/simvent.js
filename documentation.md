@@ -166,6 +166,7 @@ Boucle:
 
 <table id="RLungDefaults"></table>
 
+<script src="{{ "/lib/yaml.min.js" | prepend: site.baseurl}}"></script>
 <script type="module">
 	import {ventyamlEverything} from "./src/ventyaml.js";
 	ventyamlEverything("pre");
