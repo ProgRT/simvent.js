@@ -51,10 +51,22 @@ export class simulator {
 
 	}
 
-	panelTitle(content){
+	panelTitle(content, icon=null){
 		if(!this.panelDiv){throw 'sim class: non panelDiv'}
 		var title = document.createElement("h2");
 		title.textContent = content;
+		if(icon){
+
+			let use = document.createElementNS("http://www.w3.org/2000/svg", 'use');
+			use.setAttribute('href', './Icones/Inhalothérapie.svg#' + icon); 
+			console.log(use.href);
+
+			let svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+			svg.setAttribute('viewBox', '0 0 180 180');
+			svg.append(use);
+
+			title.insertAdjacentElement('afterbegin', svg);
+		}
 		title.classList.add("fpPanelTitle");
 		title.classList.add(content.toLowerCase());
 		this.panelDiv.appendChild(title);
@@ -110,13 +122,13 @@ export class simulator {
 		this.panelDiv.classList.add('hidden');
 		document.body.appendChild(this.panelDiv);
 
-		this.panelTitle('Ventilateur');
+		this.panelTitle('Ventilateur', 'Souflet');
 		this.ventMenu();
 		this.ventTable = document.createElement('table');
 		this.panelDiv.appendChild(this.ventTable);
 		this.fillParamTable(this.vent, 'ventParams', this.ventTable);
 
-		this.panelTitle('Poumon');
+		this.panelTitle('Poumon', 'PoumonsAvecBronches');
 		this.lungMenu();
 		this.lungTable = document.createElement('table');
 		this.panelDiv.appendChild(this.lungTable);

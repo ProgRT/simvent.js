@@ -46,29 +46,12 @@ main svg {
   font-weight: 500;
   letter-spacing: 1px; }
 
-.fpPanelTitle:before {
-  vertical-align: middle;
-  margin-right: 0.3em;
-  display: inline-block;
-	padding: 0px;
-  transform: scale(0.7);
+.fpPanelTitle svg {
+	height: 1.4em;
+	fill: white;
+	vertical-align: bottom;
+	margin-right: 0.5em;
 }
-
-.fpPanelTitle.ventilateur:before {
-  content: url("../Icones/souflet-blanc.svg");
-}
-
-.fpPanelTitle.poumon:before {
-  content: url("../Icones/poumons-blanc.svg");
-}
-
-#fpH2PanelSim:before {
-  content: url("../Icones/configuration-blanc.svg");
-}
-
-
-#fpH2PanelDownload:before {
-  content: url("../Icones/telecharger-blanc.svg"); }
 
 #fpPanel {
   font-family: sans-serif;
