@@ -14,13 +14,17 @@ Poumon: SimpleLung
 
 	var myVentyaml = new ventyaml(document.querySelector('pre'));
 
-	if(myVentyaml.waveformContainer.scrollHeight > myVentyaml.waveformContainer.clientHeight){
+	var scrollHeight = myVentyaml.waveformContainer.scrollHeight;
+	var clientHeight = myVentyaml.waveformContainer.clientHeight;
+
+	if(scrollHeight > clientHeight){
 		var e = new Event('resize');
-				window.dispatchEvent(e);
+		window.dispatchEvent(e);
 	}
 
-	myVentyaml.textarea.addEventListener("keydown", function(){ localStorage.vyamlSource = myVentyaml.textarea.value; });
-
+	myVentyaml.textarea.addEventListener("keydown", ()=>{
+		localStorage.vyamlSource = myVentyaml.textarea.value;
+	});
 
 	if('vyamlSource' in localStorage){
 		myVentyaml.textarea.value = localStorage.vyamlSource;
