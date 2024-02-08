@@ -1,29 +1,27 @@
+<script>
+	function toggleMenu(){
+		document.querySelector('menu').classList.toggle('visible');
+	}
+</script>
+
 <nav>
 	<div id="leftControls">
-		<a onclick="document.querySelector('menu').classList.toggle('visible')" title="Menu">
-		<svg viewBox='0 0 180 180'>
-				 <use href="/Icones/Inhalothérapie.svg#Menu"></use>
-		</svg>
+		<a onclick="toggleMenu()" title="Menu">
+		{% include icone.html icone='Menu' %}
 		</a>
 	</div>
 
 	<div>
-		<svg viewBox='0 0 180 180'>
-				 <use href="/Icones/Inhalothérapie.svg#simvent.js"></use>
-		</svg>
-		simvent.js
+		{% include icone.html icone='simvent.js' %} simvent.js
 	</div>
 
-	<div id="fpControls"></div>
+	<div id="rightControls"></div>
 </nav>
 
 <menu>
 	{% for page in site.html_pages %} {% if page.hiden != true %}
 	<a href='{{ page.url | prepend: site.baseurl}}'>
-
-		<svg viewBox='0 0 180 180'>
-			<use href="/Icones/Inhalothérapie.svg#{{ page.icon }}"></use>
-		</svg>
+		{% include icone.html icone=page.icon %}
 		{{ page.title }}
 	</a>
 	{% endif %} {% endfor %}

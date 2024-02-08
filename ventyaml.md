@@ -3,19 +3,23 @@ layout: documentation
 ---
 
 <link rel='stylesheet' href='css/ventyamldoc.css'/>
+
 Syntaxe *ventyaml*
 ==================
 
 *Une langage informatique pour parler de ventilation mécanique*
 
-La syntaxe *ventyaml* permet de décrire simplement une scène de ventilation mécanique.
-On entend par une scène un modèle *x* de ventilateur ventilant un modèle *x* de poumon et l'affichage d'une ou plusieur données tirées des résultats de cette simulation.
+La syntaxe *ventyaml* permet de décrire simplement une scène de
+ventilation mécanique.  On entend par une scène un modèle *x* de
+ventilateur ventilant un modèle *x* de poumon et l'affichage d'une ou
+plusieur données tirées des résultats de cette simulation.
 
 	Ventilateur: PressureControler
 	Poumon: SimpleLung
 	Courbe: Flung
 
-La syntaxe *ventyaml* permet aussi de comparer plusieur modèles de ventilateurs et de poumons.
+La syntaxe *ventyaml* permet aussi de comparer plusieur modèles de
+ventilateurs et de poumons.
 
 	Ventilateurs:
 	  - PressureControler
