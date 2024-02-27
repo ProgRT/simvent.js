@@ -2,7 +2,6 @@
 
 	-[ ] Traduire en français
 	-[ ] Réorganiser les modèles de ventilateurs en conséquence
--[X] Transformer en module ES6
 
 ## VDR
 
@@ -11,3 +10,6 @@
 - [ ] Think about the name of the parameters (as on the machine or
   more factual)
 
+## Fait
+
+-[X] Transformer en module ES6
