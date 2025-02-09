@@ -76,7 +76,6 @@ export class simulator {
 
 			let use = document.createElementNS("http://www.w3.org/2000/svg", 'use');
 			use.setAttribute('href', './Icones/Inhalothérapie.svg#' + icon); 
-			console.log(use.href);
 
 			let svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
 			svg.setAttribute('viewBox', '0 0 180 180');
