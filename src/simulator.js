@@ -286,8 +286,7 @@ export class simulator {
 			this.spanDataMon.textContent = remaining.toFixed(1);
 		}
 
-		//if(remaining * 1000 <= 3 * this.ventLoopInt){ // vent.Tsampl is in second, ventLoopInt in miliseconds
-		if(remaining * 1000 <= 1000){ // vent.Tsampl is in second, ventLoopInt in miliseconds
+		if(remaining * 1000 <= 200 * this.ventLoopInt){
 			this.ventilate();
 		}
 	}
@@ -340,12 +339,19 @@ export class simulator {
 		this.targetNumPoints = Math.floor(this.timeInLoop * this.pointsPerMilliseconds);
 
 		while(this.graphData.length < this.targetNumPoints){
-			this.graphData.push(this.data.shift());
+            if(this.data.length ==0){
+                //this.stop()
+                console.log("Stopping because we have no more data");
+                break;
+            }
+            else {
+                this.graphData.push(this.data.shift());
 
-			for(var gr of this.graphStack){
-				if(gr.coord == null){gr.coord = ''}
-				gr.coord = gr.coord + gr.lf(this.graphData);
-			}
+                for(var gr of this.graphStack){
+                    if(gr.coord == null){gr.coord = ''}
+                    gr.coord = gr.coord + gr.lf(this.graphData);
+                }
+            }
 		}
 
 		for(var gr of this.graphStack){
