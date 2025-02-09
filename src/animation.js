@@ -5,39 +5,53 @@ import {graph} from "./moovingGraph.js";
 
 export class simulator {
 
+    static defaults = {
 
-	constructor(){
-		this.debugMode = false;
-		this.ventBufferFactor = 2;
-		this.Tsampl = 20;
-		this.ventTsampl = 0.005;
-		this.ventLoopInt = 5;
-		this.graphLoopInt = 5;
-		this.target = d3.select(document.body);
+		debugMode: false,
+        displayRemaining: false,
+		timePerScreen: 12,
+		ventBufferFactor: 2,
+		Tsampl: 20,
+		ventTsampl: 0.005,
+		ventLoopInt: 5,
+		graphLoopInt: 5,
+		target: d3.select(document.body),
 
-		this.datasets = [
+		datasets: [
 			{name: 'Pao'},
 			{name: 'Flung'},
 			{name: 'PCO2'}
-		];
+		],
 
-		this.ventList = [
+		ventList: [
 			'FlowControler',
 			'PressureControler',
 			'PressureAssistor',
 			'APRV',
 			'IPV',
 			'VDR'
-		];
+		],
 
-		this.lungList = [
+		lungList: [
 			'SimpleLung',
 			'SptLung',
 			'SygLung',
 			'RLung'
-		];
+		]
 
-		this.timePerScreen = 12;
+    };
+
+	constructor(conf){
+
+    for (let param in simulator.defaults){
+    	if(conf && conf[param]){
+            this[param] = conf[param];
+    	}
+    	else{
+            this[param] = simulator.defaults[param];
+    	}
+    }
+
 		this.graphData = [];
 		this.data = [];
 		this.graphData = [];
@@ -48,6 +62,9 @@ export class simulator {
 		this.vent = new simventVentilators.FlowControler();	
 
 		this.ventUpdate();
+        this.initPanel();
+        this.start();
+        window.onresize = ()=>this.redraw();
 
 	}
 
@@ -113,6 +130,7 @@ export class simulator {
 	lungChange(){
 		this.lung = new simventLungs[this.lungList[this.lungSelect.selectedIndex]]();
 		this.fillParamTable(this.lung, 'mechParams', this.lungTable);
+		//this.fillParamTable(this.lung, 'respParams', this.lungTable);
 	}
 
 	initPanel(){
@@ -134,7 +152,7 @@ export class simulator {
 		this.panelDiv.appendChild(this.lungTable);
 		this.fillParamTable(this.lung, 'mechParams', this.lungTable);
 
-		if(this.debugMode == true){
+		if(this.displayRemaining == true){
 			this.panelTitle('Monitorage');
 			var text = document.createTextNode('Temps en réserve: ');
 			this.panelDiv.append(text);
@@ -252,6 +270,7 @@ export class simulator {
 	redraw(){
 		var scalingData = this.data.concat(this.graphData);
 		// Tentative de débugage
+        if(this.debugMode == true){console.log("Redrawing the UI")}
 		if(scalingData.length == 0){
 			this.stop();
 			throw new Error("Plus de données disponible");
@@ -263,11 +282,13 @@ export class simulator {
 	}
 
 	ventLoop(){
+        const remaining = this.data.length * this.ventTsampl; //Remaining time ins seconds
 		if(this.spanDataMon){
-			this.spanDataMon.textContent = Math.round(this.data.length * this.vent.Tsampl * 10 )/10;
+			this.spanDataMon.textContent = remaining.toFixed(1);
 		}
 
-		if(this.data.length * this.vent.Tsampl * 1000 <= this.ventLoopInt){
+		//if(remaining * 1000 <= 3 * this.ventLoopInt){ // vent.Tsampl is in second, ventLoopInt in miliseconds
+		if(remaining * 1000 <= 1000){ // vent.Tsampl is in second, ventLoopInt in miliseconds
 			this.ventilate();
 		}
 	}
@@ -291,14 +312,14 @@ export class simulator {
 		if(this.data.length == 0){
 			this.stop();
 			throw new Error('Stoped; no more data to plot.');
-
 		}
 
-		//if(this.graphData.length >= this.pointsPerScreen){
+		if(this.graphData.length >= this.pointsPerScreen){
+           
 		// Essayon avec un facteur de sécurité
-		if(this.graphData.length >= this.pointsPerScreen * 1.1){
+		//if(this.graphData.length >= this.pointsPerScreen * 1.1){
 
-			if(this.debugMode == true){
+			if(this.logPlotTime == true){
 				this.loopEndTime = new Date().getTime();
 				this.loopDuration = this.loopEndTime - this.loopStartTime;
 				console.log(this.timePerScreen + 's plotted in ' +  this.loopDuration/1000 +'s');
@@ -317,12 +338,11 @@ export class simulator {
 		}
 
 		this.timeInLoop = new Date().getTime() - this.loopStartTime;
-		//if(this.debugMode == true){console.log('Time in loop: ' + this.timeInLoop)}
 		this.targetNumPoints = Math.floor(this.timeInLoop * this.pointsPerMilliseconds);
+
 		while(this.graphData.length < this.targetNumPoints){
-			//if(this.debugMode == true){console.log('graphdata.length: ' + this.graphData.length)}
-			//if(this.debugMode == true){console.log('Target num points: ' + this.targetNumPoints)}
 			this.graphData.push(this.data.shift());
+
 			for(var gr of this.graphStack){
 				if(gr.coord == null){gr.coord = ''}
 				gr.coord = gr.coord + gr.lf(this.graphData);
@@ -341,6 +361,7 @@ export class simulator {
 			gr.tStart = 0;
 			this.graphStack.push(gr);
 		}
+
 		this.ventLoop();
 		this.setYscale();
 		this.startLoops();

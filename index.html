@@ -9,11 +9,14 @@ icon: Souflet
 
 <script type=module>
 	import {simulator} from "./src/animation.js";
-	const sim = new simulator();
-	sim.target = d3.select('main');
-	sim.initPanel();
-	sim.start();
-	onresize = function(){sim.redraw()};
+
+    const sim = new simulator({
+        target: d3.select('main'),
+        //displayRemaining: true,
+        //debugMode: true
+    });
+
+    window.simulator = sim;
 
 	function swipeLeftHandler(){document.querySelector('#fpPanel').classList.remove('hidden'); }
 	function swipeRightHandler(){document.querySelector('#fpPanel').classList.add('hidden'); }

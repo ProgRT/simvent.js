@@ -170,7 +170,8 @@ export class SimpleLung extends Lung {
 
 export class SptLung extends SimpleLung{
 
-	static respParams = [
+	static mechParams = [
+		...SimpleLung.mechParams,
 		{id: 'Fspt',   init: 14,  unit: '/min'},
 		{id: 'Pmax',   init: 6.5, unit: 'hPa'},
 		{id: 'Ti',     init: 1,   unit: 's'},
@@ -180,9 +181,11 @@ export class SptLung extends SimpleLung{
 
 		super();
 
-		this.parseDefaultsList(SptLung.respParams);
+		this.parseDefaultsList(SptLung.mechParams);
 		this.parseParams(params);
 		this.time=0;
+
+        console.log(SptLung.mechParams);
 	}
 
 	get Pmus(){

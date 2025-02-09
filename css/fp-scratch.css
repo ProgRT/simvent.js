@@ -19,15 +19,21 @@ main svg {
     width: 100%; }
 
   #fpPanel.hidden {
-    right: -100%; } }
+    right: -100%; }
+}
+
 @media (min-width: 800px) {
   main svg {
-    width: calc(100vw - 275px); } }
+    width: calc(100vw - 275px); }
+}
+
 @media (min-width: 1300px) {
   main svg {
     width: 800px;
     margin-left: auto;
-    margin-right: auto; } }
+    margin-right: auto; }
+}
+    
 #fpControls {
   float: right;
   margin: 0px;

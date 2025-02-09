@@ -35,8 +35,9 @@ export function analyse(data, label){
 	var flatsOfPeaks = getFlats(peaks, d=>d.Pao);
 
   var bascules = [...peaksOfPeaks, ...flatsOfPeaks];
-	bascules.sort((a,b)=>a.time > b.time);
+	bascules = bascules.sort((a,b)=>a.time > b.time ? 1 : -1);
 
+	console.log(bascules);
 	var plages = bascules.map((b, i, a)=>{
 		if (i == 0) {return data.filter(d=>d.time <= b.time)}
 		else {
@@ -46,6 +47,7 @@ export function analyse(data, label){
 			);
 		}
 	});
+
 	plages.push(data.filter(d=>d.time > bascules.slice(-1)[0].time));
 
 	const api = analysePlage(plages[1]);
@@ -74,7 +76,6 @@ export function analysePlage (p, durFin=0.5){
 		peak: peaks[peaks.length - 1].Pao,
 		mean: mean(p, d=>d.Pao),
 		endMean: mean(pEnd, d=>d.Pao),
-		//pEndRect: drawPlage(pEnd)
 	};
 }
 
