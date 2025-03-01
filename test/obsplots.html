@@ -23,29 +23,28 @@ html {
 
 	import {APRV} from '../src/simvent-ventilators.js';
 	import {SimpleLung} from '../src/simvent-lungs.js';
-	//import * as Plot from "https://cdn.skypack.dev/@observablehq/plot@0.6";
 	import {plot, line, areaY} from "https://cdn.skypack.dev/@observablehq/plot@0.6";
-	//import { graph } from '../src/graphsimple.js';
 
-	//const graphParam = {
-	//	padH: .25,
-	//	margeG: 80,
-	//	margeB: 30,
-	//	margeH: 10,
-	//};
+	var vent = new APRV();
 
-	var vent = new APRV({
-		Tvent: 24,
-		Fconv: 15,
-		Tlow: .3,
-		Phigh: 15,
-		Plow: 5
-	});
 	var lung = new SimpleLung();
-	console.log(`Raw: ${lung.Raw} cmH₂O/l/s
-Crs: ${lung.Crs} ml/cmH₂O
-TC: ${lung.TC} s`);
+
 	var data = vent.ventilate(lung).timeData;
+
+    function tsPlot (conf=null) {
+        conf = {
+            width: document.documentElement.clientWidth,
+            height: document.documentElement.clientWidth/4,
+            x: {label: 'Temps (s)', line: true},
+            y: {grid: true},
+            marks: [
+                line(data, {x: "time", y: "Flung"}),
+                areaY(data, {x: "time", y: "Flung", fillOpacity: 0.1}),
+                ],
+            ...conf
+            };
+        return plot(conf);
+    }
 
 	const presplot = plot({
 		width: document.documentElement.clientWidth,
@@ -57,21 +56,22 @@ TC: ${lung.TC} s`);
 			areaY(data, {x: "time", y: "Pao", fillOpacity: 0.1}),
 			]
 	});
+
+
+//	const myplot = plot({
+//		width: document.documentElement.clientWidth,
+//		height: document.documentElement.clientWidth/4,
+//		x: {label: 'Temps (s)', line: true},
+//		y: {grid: true},
+//		marks: [
+//			line(data, {x: "time", y: "Flung"}),
+//			areaY(data, {x: "time", y: "Flung", fillOpacity: 0.1}),
+//			]
+//	});
+
+    const myplot = tsPlot();
 	document.body.append(presplot);
-
-	const myplot = plot({
-		width: document.documentElement.clientWidth,
-		height: document.documentElement.clientWidth/4,
-		x: {label: 'Temps (s)', line: true},
-		y: {grid: true},
-		marks: [
-			line(data, {x: "time", y: "Flung"}),
-			areaY(data, {x: "time", y: "Flung", fillOpacity: 0.1}),
-			]
-	});
 	document.body.append(myplot);
-
-	console.log(`Fconv: ${vent.Fconv}`);
 
 </script>
 </body>

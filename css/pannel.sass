@@ -1,0 +1,67 @@
+---
+---
+
+#fpPanel
+  font-family: sans-serif
+  padding: 2px
+  transition: 0.5s
+  background-color: white
+  box-shadow: 0px 0px 5px 0px gray
+  position: fixed
+  top: 47px
+  right: 0px
+  max-height: calc(100vh - (47px + 15px))
+  overflow-x: hidden
+
+  h2
+    background-color: hsl(0, 0%, 32%)
+    color: white
+    font-size: medium
+    padding-left: 6px
+    padding-top: 3px
+    padding-bottom: 2px
+    text-align: left
+    font-weight: 500
+    letter-spacing: 1px
+
+  svg
+    height: 1.4em
+    fill: white
+    vertical-align: bottom
+    margin-right: 0.5em
+
+  select, button
+    display: block
+    margin-top: 3px
+    margin-bottom: 5px
+
+  select
+    width: 100%
+
+  table
+    margin-left: 5px
+    margin-right: 5px
+    border: none
+    width: 100%
+    border-collapse: collapse
+
+    tr
+      height: 2em
+      border-bottom: 1px solid silver
+
+    td
+      height: 2em
+      border-bottom: 1px solid silver
+
+      &:not(:last-child)
+        white-space: nowrap
+
+  button
+    margin-top: 25px
+    margin-bottom: 25px
+    text-align: center
+    margin-left: auto
+    margin-right: auto
+
+  input
+    width: 50px

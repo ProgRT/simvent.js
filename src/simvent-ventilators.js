@@ -310,7 +310,6 @@ export class PVCurve extends Ventilator{
 		this.timeData = [];
 		var respd = [];
 
-		this.time = 0.0;
 		this.nbStep = ((this.Pmax - this.Pstart)+(this.Pmax - this.Pstop)) /this.Pstep
 		this.Ti = this.Tman / this.nbStep
 		this.Pao = this.Pstart

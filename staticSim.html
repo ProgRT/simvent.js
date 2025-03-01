@@ -1,0 +1,26 @@
+---
+layout: simulateur
+title: Simulateur statique
+icon: Souflet
+---
+
+<link
+	rel="stylesheet"
+	href="{{ "/css/fp-scratch.css" | prepend: site.baseurl}}"
+	/>
+
+<link
+	rel="stylesheet"
+	href="https://progrt.github.io/graphsimple.js/css/gs-scratch.css"
+	/>
+
+<script type=module>
+    import {simulator} from '../src/staticSimulator.js';
+    const param = {
+        debugMode: true,
+        animate: false,
+        dispTarget: d3.select("main")
+    };
+    const sim = new simulator(param);
+
+</script>

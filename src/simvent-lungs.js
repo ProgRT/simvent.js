@@ -184,8 +184,6 @@ export class SptLung extends SimpleLung{
 		this.parseDefaultsList(SptLung.mechParams);
 		this.parseParams(params);
 		this.time=0;
-
-        console.log(SptLung.mechParams);
 	}
 
 	get Pmus(){

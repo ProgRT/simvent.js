@@ -41,16 +41,10 @@ export class simulator {
 
     };
 
-	constructor(conf){
+	constructor(conf=null){
 
-    for (let param in simulator.defaults){
-    	if(conf && conf[param]){
-            this[param] = conf[param];
-    	}
-    	else{
-            this[param] = simulator.defaults[param];
-    	}
-    }
+        conf = {...simulator.defaults, ...conf};
+        for (let param in conf) this[param] = conf[param];
 
 		this.graphData = [];
 		this.data = [];
@@ -139,14 +133,16 @@ export class simulator {
 		this.panelDiv.classList.add('hidden');
 		document.body.appendChild(this.panelDiv);
 
-		this.panelTitle('Ventilateur', 'Souflet');
+		this.panelDiv.appendChild(this.panelTitle('Ventilateur', 'Souflet'));
 		this.ventMenu();
+
 		this.ventTable = document.createElement('table');
 		this.panelDiv.appendChild(this.ventTable);
 		this.fillParamTable(this.vent, 'ventParams', this.ventTable);
 
-		this.panelTitle('Poumon', 'PoumonsAvecBronches');
+		this.panelDiv.appendChild(this.panelTitle('Poumon', 'PoumonsAvecBronches'));
 		this.lungMenu();
+
 		this.lungTable = document.createElement('table');
 		this.panelDiv.appendChild(this.lungTable);
 		this.fillParamTable(this.lung, 'mechParams', this.lungTable);
@@ -250,6 +246,27 @@ export class simulator {
 		this.pointsPerScreen = this.timePerScreen / this.vent.Tsampl;
 	}
 
+	panelTitle(content, icon=null){
+		var title = document.createElement("h2");
+		title.textContent = content;
+
+		if(icon){
+			let use = document.createElementNS("http://www.w3.org/2000/svg", 'use');
+			use.setAttribute('href', './Icones/Inhalothérapie.svg#' + icon); 
+
+			let svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+			svg.setAttribute('viewBox', '0 0 180 180');
+			svg.append(use);
+
+			title.insertAdjacentElement('afterbegin', svg);
+		}
+
+		title.classList.add("fpPanelTitle");
+		title.classList.add(content.toLowerCase());
+
+        return title;
+	}
+
 	setYscale(){
 		var dataSet = this.data.concat(this.graphData);
 
@@ -348,22 +365,18 @@ export class simulator {
                 this.graphData.push(this.data.shift());
 
                 for(var gr of this.graphStack){
-                    if(gr.coord == null){gr.coord = ''}
+                    if (gr.coord == null) gr.coord = '';
                     gr.coord = gr.coord + gr.lf(this.graphData);
                 }
             }
 		}
 
-		for(var gr of this.graphStack){
-			gr.path.attr('d', gr.coord);
-		}
+		for (let gr of this.graphStack) gr.path.attr('d', gr.coord);
 	}
 
 	start(){
 		for(var ds of this.datasets){
-			var gr = new graph(ds.name, this.timePerScreen, this.target);
-			gr.debugMode = this.debugMode;
-			gr.tStart = 0;
+			let gr = new graph(ds.name, this.timePerScreen, this.target);
 			this.graphStack.push(gr);
 		}
 

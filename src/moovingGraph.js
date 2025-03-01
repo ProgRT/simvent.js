@@ -1,9 +1,10 @@
 export class graph {
+
 	constructor(dataName, timePerScreen, target){
 		this.timePerScreen = timePerScreen;
 		this.dataName = dataName;
-
 		this.svg = target.append('svg');
+
 		this.svg.attr('class', 'gs');
 		this.path = this.svg.append('path');
 		this.path.attr('class', 'gsPlotLine');
@@ -11,6 +12,7 @@ export class graph {
 
 		this.setXscale();	
 		this.drawID();
+        this.tStart = 0;
 	}
 
 	setXscale(){
@@ -55,23 +57,17 @@ export class graph {
 
 	setNLf(){
 		this.lf = function(d){
-			var l = d.length;
-			if(l == 0){
-					throw new Error('graph.lf: no data to plot');
-			}
-			var point = d[l -1];
-			if(l == 0){
-				console.log( 'NLF: no data to plot');
-			}
-			else if (l == 1){
-				var string = 'M' + this.echellex(point.time - this.tStart) + ',' + this.echelley(point[this.dataName]);
-			}
-			else {
-				var string = 'L' + this.echellex(point.time - this.tStart) + ',' + this.echelley(point[this.dataName]);
-			}
-			return string;
+			const point = d[d.length -1];
+            const prefix = d.length == 1 ? 'M' : 'L';
+            const x = this.echellex(point.time - this.tStart);
+            const y = this.echelley(point[this.dataName]);
+            return `${prefix} ${x},${y}`;
 		}
 	}
+
+    updateCoord (data) {
+        this.coord += this.lf(data);
+    }
 
 	drawGradY (){
 
@@ -120,10 +116,6 @@ export class graph {
 
 	redraw(scalingData, plotData){
 		this.setXscale();
-		// Tentative de débugage
-		if(scalingData.length == 0){
-			throw new Error("Plus de données disponible");
-		}
 		this.setYscale(scalingData);
 		this.drawGradX();
 		this.drawGradY();
