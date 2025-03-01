@@ -1,6 +1,6 @@
 ---
 layout: simulateur
-title: Simulateur
+title: Simulateur 2.0
 icon: Souflet
 ---
 
@@ -14,18 +14,14 @@ icon: Souflet
 	href="https://progrt.github.io/graphsimple.js/css/gs-scratch.css"
 	/>
 
-
 <script type=module>
-	import {simulator} from "./src/simulator.js";
-    import {makeSwipable} from "./src/swipe.js";
+	import {simulator} from "./src/animatedSimulator.js";
 
     const sim = new simulator({
-        target: d3.select('main'),
+        dispTarget: d3.select('main'),
         //displayRemaining: true,
         //debugMode: true
     });
 
     window.simulator = sim;
-
-    makeSwipable("#fpPanel");
 </script>
