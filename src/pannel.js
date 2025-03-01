@@ -1,5 +1,6 @@
 import * as simventVents from "./simvent-ventilators.js";
 import * as simventLungs from "./simvent-lungs.js";
+import {makeSwipable} from "./swipe.js";
 
 export class basicPannel {
 
@@ -18,6 +19,7 @@ export class basicPannel {
 		this.container.id = 'fpPanel';
 		//this.container.classList.add('hidden');
 		this.target.appendChild(this.container);
+        makeSwipable("#fpPanel");
 
         this.lung = new simventLungs[this.startLungModel]();
         this.vent = new simventVents[this.startVentModel]();

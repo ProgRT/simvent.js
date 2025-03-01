@@ -16,7 +16,6 @@ icon: Souflet
 
 <script type=module>
 	import {simulator} from "./src/animatedSimulator.js";
-    import {makeSwipable} from "./src/swipe.js";
 
     const sim = new simulator({
         dispTarget: d3.select('main'),
@@ -25,5 +24,4 @@ icon: Souflet
     });
 
     window.simulator = sim;
-    makeSwipable("#fpPanel");
 </script>
