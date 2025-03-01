@@ -1,9 +1,3 @@
-<script>
-	function toggleMenu(){
-		document.querySelector('menu').classList.toggle('visible');
-	}
-</script>
-
 <nav>
 	<div id="leftControls">
 		<a onclick="toggleMenu()" title="Menu">
@@ -28,7 +22,9 @@
 </menu>
 
 <script>
-	document.onscroll = function(){
-		document.querySelector('menu').classList.remove('visible');
-	};
+    const menu = document.querySelector('menu');
+    function hideMenu(){ menu.classList.remove('visible'); }
+	function toggleMenu(){ menu.classList.toggle('visible'); }
+
+    menu.onmouseleave = hideMenu;
 </script>
