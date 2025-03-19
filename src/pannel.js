@@ -1,6 +1,7 @@
 import * as simventVents from "./simvent-ventilators.js";
 import * as simventLungs from "./simvent-lungs.js";
 import {makeSwipable} from "./swipe.js";
+import {icon, button} from "./utils.js";
 
 export class basicPannel {
 
@@ -17,7 +18,7 @@ export class basicPannel {
 
 		this.container = document.createElement('div');
 		this.container.id = 'fpPanel';
-		//this.container.classList.add('hidden');
+		this.container.classList.add('hidden');
 		this.target.appendChild(this.container);
         makeSwipable("#fpPanel");
 
@@ -42,12 +43,20 @@ export class basicPannel {
             obj: this.lung
         });
 
-        //let target = document.querySelectorAll("nav div")[2];
-        //let btn = pannelToggle()
-        //btn.onclick = ()=>{
-        //    this.target.toggleClass("visible");
-        //}
-        //target.appendChild(btn);
+        this.toolbar = document.querySelectorAll("nav div")[2];
+
+        let btn = button({
+            icon: "Sliders", 
+            label: "togglePannel",
+            title: "Panneau de contrôle",
+            callback: ()=>{
+                console.log("Allo");
+                let pannel = document.querySelector("#fpPanel");
+                pannel.classList.toggle("hidden");
+            }
+        })
+
+        this.toolbar.appendChild(btn);
     }
 
 }
@@ -84,34 +93,12 @@ export class objControl {
     }
 }
 
-function pannelToggle(){
-    var toggle = document.createElement("button");
-
-    let use = document.createElementNS("http://www.w3.org/2000/svg", 'use');
-    use.setAttribute('href', './Icones/Inhalothérapie.svg#Sliders'); 
-
-    let svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
-    svg.setAttribute('viewBox', '0 0 180 180');
-    svg.append(use);
-
-    toggle.insertAdjacentElement('afterbegin', svg);
-
-    return toggle;
-}
-
-function sectionTitle(content, icon=null){
+function sectionTitle(content, iconName=null){
     var title = document.createElement("h2");
     title.textContent = content;
 
-    if(icon){
-        let use = document.createElementNS("http://www.w3.org/2000/svg", 'use');
-        use.setAttribute('href', './Icones/Inhalothérapie.svg#' + icon); 
-
-        let svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
-        svg.setAttribute('viewBox', '0 0 180 180');
-        svg.append(use);
-
-        title.insertAdjacentElement('afterbegin', svg);
+    if(iconName){
+        title.insertAdjacentElement('afterbegin', icon(iconName));
     }
 
     title.classList.add("fpPanelTitle");

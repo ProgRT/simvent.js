@@ -122,4 +122,8 @@ export class graph {
 		this.replot(plotData);
 	}
 
+    remove () {
+        this.svg.remove();
+    }
+
 }

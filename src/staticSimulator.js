@@ -22,7 +22,6 @@ export class simulator {
         this.vent.time = 0;
         this.lung = this.pannel.lungCtl.obj;
         this.data = this.vent.ventilate(this.lung).timeData;
-        console.log(d3.max(this.data, d=>d.time));
         if (this.animate) {
             this.disp.animate(this.data);
         }

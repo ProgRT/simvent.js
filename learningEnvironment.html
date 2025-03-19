@@ -1,0 +1,28 @@
+---
+layout: simulateur
+title: Environnement d'aprentissage
+icon: Souflet
+hidden: true
+---
+
+<link
+	rel="stylesheet"
+	href="{{ "/css/fp-scratch.css" | prepend: site.baseurl}}"
+	/>
+
+<link
+	rel="stylesheet"
+	href="https://progrt.github.io/graphsimple.js/css/gs-scratch.css"
+	/>
+
+<script type=module>
+    import {simulator} from './src/simulationGame.js';
+
+    const param = {
+        debugMode: true,
+        animate: false,
+        dispTarget: d3.select("main")
+    };
+
+    const sim = new simulator(param);
+</script>

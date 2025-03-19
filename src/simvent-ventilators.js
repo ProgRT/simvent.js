@@ -54,14 +54,17 @@ class Ventilator{
 			// Lung variables
 
 			Flung : lung.flow,
+
 			Palv  : lung.Palv,
 			Pel   : lung.Pel,
 			Pmus  : lung.Pmus,
+
 			Vabs  : lung.Vabs,
 			Vti   : lung.Vti,
 			Vte   : lung.Vte,
 			Vt    : lung.Vt,
 			Vtmax : lung.Vtmax,
+
 			PCO2  : lung.PCO2,
 			SCO2  : lung.SCO2,
 			VCO2  : lung.VtCO2
@@ -153,6 +156,7 @@ class Controler extends Ventilator{
 		{id: 'PEEP', init: 5, unit: 'hPa'},
 		{id: 'Ti', init: 1, unit: 's'},
 		{id: 'Fconv', init: 12, unit: '/min'},
+		{id: 'Tcycle', calculated: true, unit: 's'},
 	];
 	constructor () {
 		super();

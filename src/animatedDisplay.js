@@ -1,4 +1,5 @@
 import {graph} from "./moovingGraph.js";
+import {dialog} from './utils.js';
 
 export class display {
 
@@ -8,8 +9,10 @@ export class display {
         displayRemaining: false,
 		timePerScreen: 12,
 		Tsampl: 20,
-		graphLoopInt: 20,
+		graphLoopInt: 40,
 		target: d3.select(document.body),
+		//toolbar: document.querySelectorAll("nav div")[2],
+		toolbar: document.querySelector("#rightControls"),
 		datasets: ['Pao', 'Flung', 'PCO2'],
     };
    
@@ -23,13 +26,66 @@ export class display {
 		this.graphStack = [];
 		this.tStart = 0;
 
-		for(var ds of this.datasets){
-			let gr = new graph(ds, this.timePerScreen, this.target);
-			this.graphStack.push(gr);
-		}
+
+        this.modal = new dialog({
+            toolbar: this.toolbar,
+            icon: "CourbesDeVentilation",
+            title: "Sélection des courbes"
+        });
+
+        this.modal.onopen = ()=>{
+            this.modal.setContent(this.waveformSelect());
+        };
+
+        this.initGrStack();
 
         window.onresize = ()=>this.redraw();
 	}
+
+    initGrStack () {
+        for(let gr of this.graphStack) gr.remove();
+		for(var ds of this.datasets){
+			let gr = new graph(ds, this.timePerScreen, this.target);
+            gr.tStart = this.tStart;
+			this.graphStack.push(gr);
+		}
+    }
+
+    waveformSelect () {
+        let cols = Object.keys(this.grData[0]);
+
+        let colFilter = (k)=>{
+            return k != "time" && this.grData[5][k] != undefined;
+        }
+
+        cols = cols.filter(colFilter)
+
+        let list = document.createElement('ol');
+        list.id = 'wSelect';
+
+        for (let column of cols){
+            let li = document.createElement('li');
+            li.innerHTML = `<input
+            type='checkbox'
+            id='cb${column}'
+            value='${column}'
+            ${this.datasets.includes(column)?'checked':''}/>
+                <label for='cb${column}'>${column}</label>`;
+            list.appendChild(li);
+        }
+
+        list.onchange = ()=>{
+            let checked = list.querySelectorAll("input:checked");
+            checked = [...checked].map(i=>i.value);
+
+            this.datasets = checked;
+            this.initGrStack();
+            this.setYscale();
+            this.redraw();
+        }
+
+        return list;
+    }
 
     animate (data) {
         let dur = d3.max(data, d=>d.time);

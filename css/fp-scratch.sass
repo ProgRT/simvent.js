@@ -6,8 +6,8 @@ main svg
   height: 30vh
   margin-left: none
   margin-right: auto
-  margin-top: 5px
-  margin-bottom: 5px
+//  margin-top: 5px
+//  margin-bottom: 5px
 
 @media (max-width: 700px)
   main svg
@@ -17,8 +17,14 @@ main svg
     right: -100%
 
 @media (min-width: 700px)
+  main
+    height: calc(100vh - 60px)
+    display: flex
+    flex-direction: column
   main svg
     width: calc(100vw - 210px)
+  #btnTogglePannel
+    display: none
 
 @media (min-width: 1300px)
   main svg
