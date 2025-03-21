@@ -1,5 +1,5 @@
 import {graph} from "./moovingGraph.js";
-import {dialog} from './utils.js';
+import {dialog, button} from './utils.js';
 
 export class display {
 
@@ -11,6 +11,7 @@ export class display {
 		Tsampl: 20,
 		graphLoopInt: 40,
 		target: d3.select(document.body),
+        restartNpts: 0,
 		//toolbar: document.querySelectorAll("nav div")[2],
 		toolbar: document.querySelector("#rightControls"),
 		datasets: ['Pao', 'Flung', 'PCO2'],
@@ -36,6 +37,27 @@ export class display {
         this.modal.onopen = ()=>{
             this.modal.setContent(this.waveformSelect());
         };
+
+        this.btnStop = button({
+            icon: "Pause",
+            label: "Interrompre",
+            title: "Interrompre",
+            callback: ()=>{
+                if (this.graphInt)  this.stop()
+            }
+        });
+
+        this.btnStart = button({
+            icon: "Play",
+            label: "Reprendre",
+            title: "Reprendre",
+            callback: ()=>{
+                this.start()
+            }
+        })
+
+        this.toolbar.append(this.btnStop);
+        this.toolbar.append(this.btnStart);
 
         this.initGrStack();
 
@@ -140,7 +162,7 @@ export class display {
 
         this.setYscale();
         if (this.grData.length > 0) this.redraw();
-        if (!this.graphInt) this.start();
+        //if (!this.graphInt) this.start();
     }
 
     display (data) {
@@ -193,6 +215,7 @@ export class display {
 				g.coord = '';
 			}
 			this.grData = [];
+            this.restartNpts = 0;
 		}
 
 		while(this.grData.length < this.targNPts && this.data.length > 0){
@@ -205,20 +228,27 @@ export class display {
 
     // Number of points thad should have been plotted at this time
     get targNPts() {
-        return Math.floor(this.timeInLoop * this.ptPerMs)
+        return Math.floor(this.timeInLoop * this.ptPerMs) + this.restartNpts
     };
 
     // Time since last time plot started from zero sec onthe screen
     get timeInLoop() {return new Date().getTime() - this.loopStartTime};
 
 	start(){
-        if(this.graphInt) clearInterval(this.graphInt);
-		this.loopStartTime = new Date().getTime();
-		this.graphInt = setInterval(()=>this.graphLoop(), this.graphLoopInt);
+        //if(this.graphInt) clearInterval(this.graphInt);
+        if(!this.graphInt){
+            this.loopStartTime = new Date().getTime();
+            this.graphInt = setInterval(()=>this.graphLoop(), this.graphLoopInt);
+            this.btnStart.style.display = 'none';
+            this.btnStop.style.display = 'inline';
+        }
 	}
 
 	stop(){
 		clearInterval(this.graphInt);
         this.graphInt = null;
+        this.restartNpts = this.grData.length;
+        this.btnStart.style.display = 'inline';
+        this.btnStop.style.display = 'none';
 	}
 }

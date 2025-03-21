@@ -31,6 +31,8 @@ export class simulator {
                 this.disp.push(nDat);
             }
         }, this.ventIntDur);
+
+        this.disp.start();
     }
 
     update () {

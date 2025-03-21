@@ -29,7 +29,11 @@ export class simulator {
         this.pushNewData();
  
 
-        this.modal = new dialog(this.toolbar);
+        this.modal = new dialog({
+            toolbar: this.toolbar,
+            title: "Tâches",
+            icon: "Carnet"
+        });
         this.modal.setContent(senarioTable(senario));
 
         //--------------------------//

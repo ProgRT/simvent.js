@@ -154,7 +154,7 @@ export class PressureAssistor extends Ventilator{
 class Controler extends Ventilator{
 	static ventParams = [
 		{id: 'PEEP', init: 5, unit: 'hPa'},
-		{id: 'Ti', init: 1, unit: 's'},
+		{id: 'Ti', init: 1, unit: 's', step: .05},
 		{id: 'Fconv', init: 12, unit: '/min'},
 		{id: 'Tcycle', calculated: true, unit: 's'},
 	];
@@ -224,7 +224,7 @@ export class FlowControler extends Controler{
 	
 	static ventParams = [
 		...Controler.ventParams,
-		{id: 'Vt', init: 0.5, unit: 'l'},
+		{id: 'Vt', init: 0.5, unit: 'l', step: .01},
 	];
 
 	constructor(params){
@@ -251,8 +251,8 @@ export class APRV extends Ventilator {
 	static ventParams = [
 		{id: 'Phigh', init: 20, unit: 'hPa'},
 		{id: 'Plow', init: 0, unit: 'hPa'},
-		{id: 'Thigh', init: 4, unit: 's'},
-		{id: 'Tlow', init: .5, unit: 's'},
+		{id: 'Thigh', init: 4, unit: 's', min: 0, step: 0.1},
+		{id: 'Tlow', init: .5, unit: 's', min: 0, step: 0.05},
 		{id: 'Fconv', calculated: true, unit: '/min'},
 	];
 

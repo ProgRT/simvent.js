@@ -154,6 +154,8 @@ function paramTable(object, paramSet) {
             input.name = p.id;
             input.value = object[p.id];
             input.type = 'number';
+            input.min = 0;
+            input.step = p.step;
             input.onfocus = function(){this.select()};
 
             input.onchange = (evt)=>{

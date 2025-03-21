@@ -8,6 +8,33 @@ export function button(params){
     return btn;
 }
 
+export function buttonOffOn(params){
+    var btn = document.createElement("button");
+    let icnPause = icon("Pause");
+    let icnPlay = icon("Play");
+    icnPlay.style.display = 'none';
+
+    btn.insertAdjacentElement('afterbegin', icnPause);
+    btn.insertAdjacentElement('afterbegin', icnPlay);
+
+    let label = params.label[0].toUpperCase() + params.label.slice(1);
+    btn.id = `btn${label}`;
+    btn.title = "Interrompre/Reprendre";
+    btn.onclick = params.callback;
+    btn.addEventListener('click', ()=>{
+        if(icnPlay.style.display == 'none'){
+            icnPlay.style.display = 'inline';
+            icnPause.style.display = 'none';
+        } else{
+            icnPause.style.display = 'inline';
+            icnPlay.style.display = 'none';
+        }
+    })
+    
+    return btn;
+}
+
+
 export function icon(icon) {
     let use = document.createElementNS("http://www.w3.org/2000/svg", 'use');
     use.setAttribute('href', `./Icones/Inhalothérapie.svg#${icon}`); 
