@@ -224,7 +224,7 @@ export class FlowControler extends Controler{
 	
 	static ventParams = [
 		...Controler.ventParams,
-		{id: 'Vt', init: 0.5, unit: 'l', step: .01},
+		{id: 'Vt', init: 500, unit: 'ml', step: 5},
 	];
 
 	constructor(params){
@@ -233,7 +233,7 @@ export class FlowControler extends Controler{
 		this.parseParams(params);
 	}
 
-	get Flow(){return this.Vt / this.Ti;}
+	get Flow(){return (this.Vt/1000) / this.Ti;}
 
 	applyControledParameter (lung) {
 			lung.appliquer_debit(this.Flow, this.Tsampl);

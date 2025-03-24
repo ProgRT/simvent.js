@@ -1,5 +1,6 @@
 import {graph} from "./moovingGraph.js";
 import {dialog, button} from './utils.js';
+import {Vc} from './numDisplay.js';
 
 export class display {
 
@@ -12,9 +13,9 @@ export class display {
 		graphLoopInt: 40,
 		target: d3.select(document.body),
         restartNpts: 0,
-		//toolbar: document.querySelectorAll("nav div")[2],
 		toolbar: document.querySelector("#rightControls"),
 		datasets: ['Pao', 'Flung', 'PCO2'],
+        numData: [ Vc ]
     };
    
 	constructor(conf=null){
@@ -25,6 +26,7 @@ export class display {
 		this.data = [];
 		this.grData = [];
 		this.graphStack = [];
+        this.numDisplay = [];
 		this.tStart = 0;
 
 
@@ -62,6 +64,17 @@ export class display {
         this.initGrStack();
 
         window.onresize = ()=>this.redraw();
+
+        if (this.numData.length > 0) {
+            this.dataTable = document.createElement('div');
+            this.dataTable.className = 'numDisplayContainer';
+            document.body.append(this.dataTable);
+
+            for (let d of this.numData) {
+                let conf = {...{containerTable: this.dataTable}, ...d};
+                this.numDisplay.push(new numDisplay(conf));
+            }
+        }
 	}
 
     initGrStack () {
@@ -221,6 +234,11 @@ export class display {
 		while(this.grData.length < this.targNPts && this.data.length > 0){
             this.grData.push(this.data.shift());
             for(var g of this.graphStack) g.updateCoord(this.grData);
+            for(let nd of this.numDisplay) {
+                if (nd.updateCodition(this.grData)) {
+                    nd.update(this.grData);
+                }
+            }
 		}
 
 		for (let gr of this.graphStack) gr.path.attr('d', gr.coord);
@@ -251,4 +269,29 @@ export class display {
         this.btnStart.style.display = 'inline';
         this.btnStop.style.display = 'none';
 	}
+}
+
+class numDisplay {
+    static defaults = {
+        containerTable: document.createElement('table'),
+        label: 'Volume courant',
+        unit: 'l',
+        updateCodition: (data)=>true,
+        value: data=>data[data.length].Vte
+    }
+
+    constructor (conf) {
+        conf = {...numDisplay.defaults, ...conf};
+        for (let param in conf) this[param] = conf[param];
+
+        this.div = document.createElement('div');
+        this.div.innerHTML = `<div>${this.label} (${this.unit})</div> <div class='value'> </div>`
+        this.containerTable.append(this.div);
+
+        this.valueDisp = this.div.querySelector('.value');
+    }
+
+    update (data) {
+        this.valueDisp.innerHTML = this.value(data);
+    }
 }
