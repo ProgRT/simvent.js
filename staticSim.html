@@ -18,8 +18,8 @@ icon: Souflet
     import {simulator} from './src/staticSimulator.js';
     const param = {
         debugMode: true,
-        animate: false,
-        dispTarget: d3.select("main")
+        animate: true,
+        dispTarget: document.querySelector("main")
     };
     const sim = new simulator(param);
 

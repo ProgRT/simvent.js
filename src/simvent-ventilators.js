@@ -112,7 +112,7 @@ export class PressureAssistor extends Ventilator{
 	static ventParams = [
 		{id: 'Passist', init: 12,  unit: "cmH₂O"},
 		{id: 'PEEP',    init: 5,   unit: "cmH₂O"},
-		{id: 'Ftrig',   init: 0.1, unit:"l/min."},
+		{id: 'Ftrig',   init: 0.08, unit:"l/s"},
 		{id: 'Cycling', init: 25,  unit: "%"},
 	];
 
@@ -127,7 +127,7 @@ export class PressureAssistor extends Ventilator{
 
 		this.Fmax = 0;
 		this.Pao = this.PEEP;
-		while (lung.flow < this.Ftrig && this.time <= this.simulationStop){
+		while (lung.flow < this.Ftrig/* && this.time <= this.simulationStop*/){
 			lung.appliquer_pression(this.PEEP, this.Tsampl);
 			//this.timeData.push(sv.log(lung, this));
 			this.log(lung);
@@ -136,7 +136,7 @@ export class PressureAssistor extends Ventilator{
 
 		// Phase inspiratoire
 		this.Pao = this.Passist + this.PEEP;
-		while (lung.flow > this.Fstop && this.time <= this.simulationStop){
+		while (lung.flow > this.Fstop /*&& this.time <= this.simulationStop*/){
 			lung.appliquer_pression(this.Pao, this.Tsampl);
 			//this.timeData.push(sv.log(lung, this));
 			this.log(lung);

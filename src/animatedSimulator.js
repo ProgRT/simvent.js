@@ -23,10 +23,6 @@ export class simulator {
             let nptDat = this.disp.data;
             if (nptDat.length < this.minData) {
                 this.update();
-                if (this.debugMode) {
-                    console.log("Generating new data");
-                    console.log(`Time: ${this.vent.time}`);
-                }
                 const nDat = this.vent.ventilate(this.lung).timeData;
                 this.disp.push(nDat);
             }

@@ -23,9 +23,13 @@ export class simulator {
         this.lung = this.pannel.lungCtl.obj;
         this.data = this.vent.ventilate(this.lung).timeData;
         if (this.animate) {
+            console.log("Animating new data");
             this.disp.animate(this.data);
         }
-        else this.disp.display(this.data);
+        else {
+            console.log("Displaying new data");
+            this.disp.display(this.data);
+        }
     }
 }
 

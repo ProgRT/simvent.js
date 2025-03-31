@@ -93,8 +93,16 @@ export class objControl {
     }
 }
 
-function sectionTitle(content, iconName=null){
-    var title = document.createElement("h2");
+export function pannelDiv(title, iconName=null){
+		let container = document.createElement('div');
+        let t = sectionTitle(title, iconName);
+        container.appendChild(t);
+
+        return container;
+}
+
+export function sectionTitle(content, iconName=null){
+    let title = document.createElement("h2");
     title.textContent = content;
 
     if(iconName){

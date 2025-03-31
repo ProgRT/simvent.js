@@ -1,6 +1,7 @@
 export class graph {
 
 	constructor(dataName, timePerScreen, target){
+        target = d3.select(target);
 		this.timePerScreen = timePerScreen;
 		this.dataName = dataName;
 		this.svg = target.append('svg');
@@ -13,6 +14,7 @@ export class graph {
 		this.setXscale();	
 		this.drawID();
         this.tStart = 0;
+        this.cursors = [];
 	}
 
 	setXscale(){
@@ -126,4 +128,40 @@ export class graph {
         this.svg.remove();
     }
 
+    drawCursor(time){
+        this.cursors.push(new cursor(this, time));
+    }
+
+    clearCursors(){
+        //if(this.cursG) this.cursG.remove();
+        for (let c of this.cursors) c.remove();
+        this.cursors = [];
+    }
+
+}
+
+class cursor {
+    constructor (graph, time) {
+        this.graph = graph;
+        this.cursG = graph.svg.append('g');
+        this.cursG.attr('class', 'cursor');
+        let x = this.graph.echellex(time);
+        this.line = this.cursG.append('line')
+            .attr('x1', x)
+            .attr('y1', graph.margeH)
+            .attr('x2', x)
+            .attr('y2', graph.height - graph.margeB)
+            .attr('stroke', 'red')
+        ;
+    }
+    move (time) {
+        let x = this.graph.echellex(time);
+        this.line
+            .attr('x1', x)
+            .attr('x2', x)
+        ;
+    }
+    remove () {
+        this.cursG.remove();
+    }
 }

@@ -107,3 +107,13 @@ export class dialog{
         this.dialog.showModal();
     }
 }
+
+export function delta(curs1, curs2){
+    let curs3 = {};
+    let keys = Object.keys(curs1);
+    for (let k of keys) {
+        curs3[k] = curs2[k] - curs1[k];
+    }
+    return curs3;
+}
+
