@@ -32,11 +32,12 @@ export class graph {
 		var dsMax = d3.max(dataSet, d => d[this.dataName]);
 
 		var ymin = Math.min(0,dsMin);
-		var ymax = Math.max(dsMax , - dsMin);
+		//var ymax = Math.max(dsMax , - dsMin);
+		var ymax = dsMax * 1.2;
 
 		if(ymax > 10){ymax = Math.ceil(ymax/5)*5}
-		if(ymax < 10){ymax = Math.ceil(ymax)}
-		if(ymin < 0 && ymin > -10){ymin = Math.floor(ymin)}
+		if(ymax < 1){ymax = Math.ceil(ymax)}
+		//if(ymin < 0 && ymin > -10){ymin = Math.floor(ymin)}
 		if(ymin < -10){ymin = Math.floor(ymin/5)*5}
 
 		this.margeB = this.svg.style('font-size').slice(0,-2) * 2;
