@@ -122,6 +122,7 @@ export class graph {
 		this.drawGradX();
 		this.drawGradY();
 		this.replot(plotData);
+        for (let c of this.cursors) c.redraw();
 	}
 
     remove () {
@@ -142,24 +143,41 @@ export class graph {
 
 class cursor {
     constructor (graph, time) {
+        //console.log(`Height: ${graph.height} Marge: ${graph.margeB}`);
+        this.time = time;
         this.graph = graph;
         this.cursG = graph.svg.append('g');
         this.cursG.attr('class', 'cursor');
         let x = this.graph.echellex(time);
+
+        let y1 = graph.margeH;
+        let y2 = graph.height - graph.margeB;
+
         this.line = this.cursG.append('line')
             .attr('x1', x)
-            .attr('y1', graph.margeH)
             .attr('x2', x)
-            .attr('y2', graph.height - graph.margeB)
+            .attr('y1', y1)
+            .attr('y2', y2)
             .attr('stroke', 'red')
         ;
+
     }
+
     move (time) {
+        this.time = time;
         let x = this.graph.echellex(time);
         this.line
             .attr('x1', x)
             .attr('x2', x)
         ;
+    }
+    redraw() {
+        let x = this.graph.echellex(this.time);
+        this.line
+            .attr('x1', x)
+            .attr('y1', this.graph.margeH)
+            .attr('x2', x)
+            .attr('y2', this.graph.height - this.graph.margeB);
     }
     remove () {
         this.cursG.remove();

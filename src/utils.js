@@ -117,3 +117,13 @@ export function delta(curs1, curs2){
     return curs3;
 }
 
+export function ratio(c1, c2){
+    let c3 = {};
+    let keys = Object.keys(c1);
+    for (let k of keys) {
+        c3[k] = c2[k] / (Math.abs(c1[k])>1e-2?c1[k]:0);
+        // console.log(`Dénominateur de ${k}: ${c1[k]}`)
+    }
+    return c3;
+}
+

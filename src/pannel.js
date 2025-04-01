@@ -150,7 +150,7 @@ function paramTable(object, paramSet) {
         td.className = 'data';
 
         if (p.calculated == true){
-            let value = object[p.id].toFixed(1);
+            let value = object[p.id].toLocaleString(navigator.language);
             var dataSpan = document.createElement('span');
             dataSpan.id = 'data' + p.id;
             dataSpan.textContent = value;
@@ -170,7 +170,7 @@ function paramTable(object, paramSet) {
                 object[evt.target.name] = parseFloat(evt.target.value);
                 for(var param of calculated){
                     document.querySelector('#data' + param.id)
-                        .textContent = object[param.id].toFixed(1);
+                        .textContent = object[param.id].toLocaleString(navigator.language, {maximumFractionDigits: 1});
                 }
             };
 

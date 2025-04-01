@@ -1,5 +1,5 @@
 import {graph} from "./moovingGraph.js";
-import {dialog, button, delta} from './utils.js';
+import {dialog, button, delta, ratio} from './utils.js';
 import {Vc} from './numDisplay.js';
 import {pannelDiv} from './pannel.js';
 
@@ -85,11 +85,23 @@ export class display {
 
     initGrStack () {
         for(let gr of this.graphStack) gr.remove();
+        this.graphStack = [];
+
 		for(var ds of this.datasets){
 			let gr = new graph(ds, this.timePerScreen, this.target);
             gr.tStart = this.tStart;
 			this.graphStack.push(gr);
 		}
+
+        this.redraw();
+
+        for(let c of this.cursors){
+            let time = c.time - this.tStart;
+
+            for (let g of this.graphStack) {
+                g.drawCursor(time);
+            }
+        }
     }
 
     waveformSelect () {
@@ -123,6 +135,15 @@ export class display {
             this.initGrStack();
             this.setYscale();
             this.redraw();
+
+            if(this.cursTbl) {
+                this.cursTbl.remove();
+                let pannel = document.querySelector("#fpPanel");
+                this.cursTbl = this.cursTable();
+                this.fillCursTbl(0);
+                this.fillCursTbl(1);
+                pannel.append(this.cursTbl);
+            }
         }
 
         return list;
@@ -255,6 +276,7 @@ export class display {
 
     cursorControl(pos) {
         let div = document.createElement('div');
+        let inc = 2;
         div.className = 'cursCtrl';
 
         let label = document.createElement('label');
@@ -274,13 +296,13 @@ export class display {
         let plus = document.createElement('button');
         plus.textContent = '+';
         plus.onclick = ()=>{
-            input.value = parseInt(input.value) + 1;
+            input.value = parseInt(input.value) + inc;
             const evt = new Event('input');
             input.dispatchEvent(evt);
         }
         let minus = document.createElement('button');
         minus.onclick = ()=>{
-            input.value -= 1;
+            input.value -= inc;
             const evt = new Event('input');
             input.dispatchEvent(evt);
         }
@@ -311,7 +333,7 @@ export class display {
         if(this.cursTbl) this.cursTbl.remove();
 
         if(!this.graphInt){
-            console.log("Creating new interval");
+            //console.log("Creating new interval");
             this.loopStartTime = new Date().getTime();
             this.graphInt = setInterval(()=>this.graphLoop(), this.graphLoopInt);
             this.btnStart.style.display = 'none';
@@ -329,9 +351,10 @@ export class display {
         if(this.grData.length > 2){
             this.addCursor(0);
             this.addCursor(1);
-            this.cursors[2] = delta(this.cursors[0], this.cursors[1])
             let pannel = document.querySelector("#fpPanel");
             this.cursTbl = this.cursTable();
+            this.fillCursTbl(0);
+            this.fillCursTbl(1);
             pannel.append(this.cursTbl);
         }
 	}
@@ -362,64 +385,45 @@ export class display {
     }
 
     cursTable() {
+        let strConf = [navigator.language, {maximumFractionDigits: 1}];
+
         let div = pannelDiv('Curseurs');
         let tbl = document.createElement('table');
         tbl.className = 'cursTbl';
+        tbl.innerHTML = `<thead><tr>
+            <th></th><th>1</th><th>2</th><th>Δ</th><th>÷</th>
+            </tr></thead>`
         div.appendChild(tbl);
 
-        let thead = document.createElement('thead');
-        tbl.append(thead);
-        let headRow = document.createElement('tr');
-        thead.append(headRow);
-
-        let emptyCell = document.createElement('th');
-        headRow.append(emptyCell);
-        for(let c in [0,1]) {
-            let th = document.createElement('th');
-            th.textContent = `${parseInt(c) + 1}`;
-            headRow.append(th);
-            if(c>0){
-                let th = document.createElement('td');
-                th.textContent = 'Δ';
-                headRow.append(th);
-            }
-        }
-
         let tbody = document.createElement('tbody');
-        tbl.append(tbody);
         for(let ds of this.datasets){
             let row = document.createElement('tr');
+            row.innerHTML = `<th>${ds}</th><td></td><td></td><td></td><td></td><td></td>`
             tbody.append(row);
-            let th = document.createElement('th');
-            th.textContent = ds;
-            row.append(th);
-            for (let c in [0,1]) {
-                let td = document.createElement('td');
-                td.textContent = this.cursors[c][ds].toFixed(1);
-                row.append(td);
-                if(c>0){
-                    let td = document.createElement('td');
-                    td.textContent = this.cursors[2][ds].toFixed(1);
-                    row.append(td);
-                }
-            }
         }
+        tbl.append(tbody);
         return div
     }
 
     fillCursTbl(cursIndex){
-        window.cursTbl = this.cursTbl;
         let tbody = this.cursTbl.querySelector('tbody');
+        let cursor = this.cursors[cursIndex];
+        let dif = delta(this.cursors[0], this.cursors[1]);
+        let R = ratio(this.cursors[0], this.cursors[1]);
+        let strConf = [navigator.language, {maximumFractionDigits: 1}];
 
         for(let n in this.datasets){
             let ds = this.datasets[n];
             let row = tbody.childNodes[n];
 
             let td = row.childNodes[cursIndex + 1];
-            td.textContent = this.cursors[cursIndex][ds].toFixed(1);
+            td.textContent = cursor[ds].toLocaleString(...strConf);
 
             let tdD = row.childNodes[3];
-            tdD.textContent = this.cursors[2][ds].toFixed(1);
+            tdD.textContent = dif[ds].toLocaleString(...strConf);
+
+            let tdR = row.childNodes[4];
+            tdR.textContent = R[ds].toLocaleString(...strConf);
         }
     }
 }

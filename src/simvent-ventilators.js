@@ -12,12 +12,34 @@
 
 //import * as sd  from "./simvent-describe.js";
 
-class Ventilator{
+class Ventilator {
 
 	static simParams = [
 		{id: 'Tsampl', init: .003, unit: 's'},
 		{id: 'Tvent', init: 12, unit: 's'},
 	];
+
+    //static dataToLog = [
+    //    {label: 'time'   source: this.time},
+    //    {label: 'Pao'   source: this.Pao},
+
+	//		// Lung variables
+
+    //    {label: 'Flung'   source: lung.flow},
+    //    {label: 'Palv'   source: lung.Palv},
+    //    {label: 'Pel'   source: lung.Pel},
+    //    {label: 'Pmus'   source: lung.Pmus},
+
+	////		Vabs  : lung.Vabs,
+	////		Vti   : lung.Vti,
+	////		Vte   : lung.Vte,
+	////		Vt    : lung.Vt,
+	////		Vtmax : lung.Vtmax,
+
+	////		PCO2  : lung.PCO2,
+	////		SCO2  : lung.SCO2,
+	////		VCO2  : lung.VtCO2
+    //]
 
 	constructor() {
 
