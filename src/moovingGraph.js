@@ -74,29 +74,28 @@ export class graph {
 
 	drawGradY (){
 
-		if(this.gradYGroup){this.gradYGroup.remove()}
+		if(this.gradYGroup) this.gradYGroup.remove();
+
 		this.gradY = d3.svg.axis()
 			.ticks(4)
 			.tickSize(5)
 			.orient("left")
-			.scale(this.echelley);
+			.scale(this.echelley)
+        ;
 
 		this.gradYGroup = this.svg.append("g")
 			.attr("class", "gradY")
 			.attr("transform", "translate(" + this.margeG + ", 0)")
 			.call(this.gradY)
 		;
-
-		return this;
 	}
 
 	drawGradX (){
 
-		if(this.gradXGroup){this.gradXGroup.remove()}
+		if(this.gradXGroup) this.gradXGroup.remove();
 		this.gradX = d3.svg.axis()
 			.scale(this.echellex)
 			.orient('bottom')
-		//.ticks(2)
 			.tickValues(d3.range(2,this.timePerScreen, 2))
 		;
 
@@ -130,12 +129,11 @@ export class graph {
         this.svg.remove();
     }
 
-    drawCursor(time){
-        this.cursors.push(new cursor(this, time));
+    drawCursor(data){
+        this.cursors.push(new cursor(this, data));
     }
 
     clearCursors(){
-        //if(this.cursG) this.cursG.remove();
         for (let c of this.cursors) c.remove();
         this.cursors = [];
     }
@@ -143,16 +141,18 @@ export class graph {
 }
 
 class cursor {
-    constructor (graph, time) {
+    constructor (graph, data) {
         //console.log(`Height: ${graph.height} Marge: ${graph.margeB}`);
-        this.time = time;
+        this.data = data;
+        this.time = data.time - graph.tStart;
         this.graph = graph;
-        this.cursG = graph.svg.append('g');
+        this.dataName = this.graph.dataName;
+        this.cursG = this.graph.svg.append('g');
         this.cursG.attr('class', 'cursor');
-        let x = this.graph.echellex(time);
+        let x = this.graph.echellex(this.time);
 
-        let y1 = graph.margeH;
-        let y2 = graph.height - graph.margeB;
+        let y1 = this.graph.margeH;
+        let y2 = this.graph.height - this.graph.margeB;
 
         this.line = this.cursG.append('line')
             .attr('x1', x)
@@ -160,26 +160,55 @@ class cursor {
             .attr('y1', y1)
             .attr('y2', y2)
             .attr('stroke', 'red')
+            .attr('opacity', '0.7')
+        ;
+
+        this.el = this.cursG.append('ellipse')
+            .attr('cx', x)
+            .attr('cy', graph.echelley(data[graph.dataName]))
+            .attr('rx', 3.5)
+            .attr('ry', 3.5)
+            .attr('stroke', 'red')
+            .attr('fill', 'red')
+            .attr('opacity', '0.3')
         ;
 
     }
 
-    move (time) {
-        this.time = time;
-        let x = this.graph.echellex(time);
+    move (data) {
+        this.data = data;
+        this.time = data.time - this.graph.tStart;
+        let dataName = this.graph.dataName;
+        let x = this.graph.echellex(this.time);
+        let y = this.graph.echelley(data[dataName])
+
         this.line
             .attr('x1', x)
             .attr('x2', x)
         ;
+
+        this.el
+            .attr('cx', x)
+            .attr('cy', y)
+        ;
     }
+
     redraw() {
         let x = this.graph.echellex(this.time);
+        let y = this.graph.echelley(this.data[this.dataName])
+
         this.line
             .attr('x1', x)
             .attr('y1', this.graph.margeH)
             .attr('x2', x)
             .attr('y2', this.graph.height - this.graph.margeB);
+
+        this.el
+            .attr('cx', x)
+            .attr('cy', y)
+        ;
     }
+
     remove () {
         this.cursG.remove();
     }

@@ -1,5 +1,5 @@
 import {graph} from "./moovingGraph.js";
-import {dialog, button, delta, ratio} from './utils.js';
+import {dialog, button, delta, ratio, improvedRange} from './utils.js';
 import {Vc} from './numDisplay.js';
 import {pannelDiv} from './pannel.js';
 
@@ -97,56 +97,9 @@ export class display {
 
         for(let c of this.cursors){
             let time = c.time - this.tStart;
-
-            for (let g of this.graphStack) {
-                g.drawCursor(time);
-            }
+            //for (let g of this.graphStack) g.drawCursor(time);
+            for (let g of this.graphStack) g.drawCursor(c);
         }
-    }
-
-    waveformSelect () {
-        let cols = Object.keys(this.grData[0]);
-
-        let colFilter = (k)=>{
-            return k != "time" && this.grData[5][k] != undefined;
-        }
-
-        cols = cols.filter(colFilter)
-
-        let list = document.createElement('ol');
-        list.id = 'wSelect';
-
-        for (let column of cols){
-            let li = document.createElement('li');
-            li.innerHTML = `<input
-            type='checkbox'
-            id='cb${column}'
-            value='${column}'
-            ${this.datasets.includes(column)?'checked':''}/>
-                <label for='cb${column}'>${column}</label>`;
-            list.appendChild(li);
-        }
-
-        list.onchange = ()=>{
-            let checked = list.querySelectorAll("input:checked");
-            checked = [...checked].map(i=>i.value);
-
-            this.datasets = checked;
-            this.initGrStack();
-            this.setYscale();
-            this.redraw();
-
-            if(this.cursTbl) {
-                this.cursTbl.remove();
-                let pannel = document.querySelector("#fpPanel");
-                this.cursTbl = this.cursTable();
-                this.fillCursTbl(0);
-                this.fillCursTbl(1);
-                pannel.append(this.cursTbl);
-            }
-        }
-
-        return list;
     }
 
     animate (data) {
@@ -222,9 +175,7 @@ export class display {
             return;
 		}
 
-		for(var g of this.graphStack){
-			g.redraw(scalingData, this.grData);
-		}
+		for(var g of this.graphStack) g.redraw(scalingData, this.grData);
 	}
 
     whipe(){
@@ -274,47 +225,51 @@ export class display {
 		for (let gr of this.graphStack) gr.path.attr('d', gr.coord);
 	}
 
-    cursorControl(pos) {
-        let div = document.createElement('div');
-        let inc = 2;
-        div.className = 'cursCtrl';
+    waveformSelect () {
+        let cols = Object.keys(this.grData[0]);
 
-        let label = document.createElement('label');
-        label.textContent = `Curseur ${this.cursors.length + 1} : `;
-        div.appendChild(label);
-
-        let input = document.createElement('input');
-        input.type = 'range';
-        input.className = 'cursorControl';
-        input.max = this.grData.length - 1;
-        input.min = 0;
-        input.value = Math.ceil(this.grData.length * pos);
-        input.oninput = ()=>{
-            div.value = e.value;
+        let colFilter = (k)=>{
+            return k != "time" && this.grData[5][k] != undefined;
         }
 
-        let plus = document.createElement('button');
-        plus.textContent = '+';
-        plus.onclick = ()=>{
-            input.value = parseInt(input.value) + inc;
-            const evt = new Event('input');
-            input.dispatchEvent(evt);
-        }
-        let minus = document.createElement('button');
-        minus.onclick = ()=>{
-            input.value -= inc;
-            const evt = new Event('input');
-            input.dispatchEvent(evt);
-        }
-        minus.textContent = '-';
+        cols = cols.filter(colFilter)
 
-        
-        div.append(input);
-        div.append(minus);
-        div.append(plus);
+        let list = document.createElement('ol');
+        list.id = 'wSelect';
 
-        div.value = input.value;
-        return div;
+        for (let column of cols){
+            let li = document.createElement('li');
+            li.innerHTML = `<input
+            type='checkbox'
+            id='cb${column}'
+            value='${column}'
+            ${this.datasets.includes(column)?'checked':''}/>
+                <label for='cb${column}'>${column}</label>`;
+            list.appendChild(li);
+        }
+
+        list.onchange = ()=>{
+            let checked = list.querySelectorAll("input:checked");
+            checked = [...checked].map(i=>i.value);
+
+            this.datasets = checked;
+            this.initGrStack();
+            this.setYscale();
+            this.redraw();
+
+            if(this.cursTbl) {
+                this.cursTbl.remove();
+                let pannel = document.querySelector("#fpPanel");
+                this.cursTbl = new cursTable(this.datasets);
+                this.cursTbl.fill(0, this.cursors);
+                this.cursTbl.fill(1, this.cursors);
+                this.fillCursTbl(0);
+                this.fillCursTbl(1);
+                pannel.append(this.cursTbl.container);
+            }
+        }
+
+        return list;
     }
 
     // Number of points thad should have been plotted at this time
@@ -349,82 +304,46 @@ export class display {
         this.btnStop.style.display = 'none';
         
         if(this.grData.length > 2){
+            this.cursTbl = new cursTable(this.datasets);
             this.addCursor(0);
             this.addCursor(1);
             let pannel = document.querySelector("#fpPanel");
-            this.cursTbl = this.cursTable();
             this.fillCursTbl(0);
             this.fillCursTbl(1);
-            pannel.append(this.cursTbl);
+            pannel.append(this.cursTbl.container);
         }
 	}
 
     addCursor(pos) {
         let cursNum = this.cursors.length;
-        let ctrl = this.cursorControl(pos);
+
+        let ctrl = improvedRange({
+            className: 'cursCtrl',
+            label: `Curseur ${this.cursors.length + 1} : `,
+            max: this.grData.length - 1,
+            value: Math.ceil(this.grData.length * pos)
+        });
+
         let input = ctrl.querySelector('input');
         this.cursors[cursNum] = this.grData[input.value];
 
         let time = this.grData[ctrl.value].time - this.tStart;
         for (let g of this.graphStack) {
-            g.drawCursor(time);
+            g.drawCursor(this.cursors[cursNum]);
         }
-
 
         input.oninput = ()=>{
             this.cursors[cursNum] = this.grData[input.value];
-            this.cursors[2] = delta(this.cursors[0], this.cursors[1])
             this.fillCursTbl(cursNum);
             let time = this.grData[input.value].time - this.tStart;
-            for (let g of this.graphStack) {
-                g.cursors[cursNum].move(time);
-            }
+            for (let g of this.graphStack) g.cursors[cursNum].move(this.cursors[cursNum]);
         }
 
         this.cursCont.append(ctrl);
     }
 
-    cursTable() {
-        let strConf = [navigator.language, {maximumFractionDigits: 1}];
-
-        let div = pannelDiv('Curseurs');
-        let tbl = document.createElement('table');
-        tbl.className = 'cursTbl';
-        tbl.innerHTML = `<thead><tr>
-            <th></th><th>1</th><th>2</th><th>Δ</th><th>÷</th>
-            </tr></thead>`
-        div.appendChild(tbl);
-
-        let tbody = document.createElement('tbody');
-        for(let ds of this.datasets){
-            let row = document.createElement('tr');
-            row.innerHTML = `<th>${ds}</th><td></td><td></td><td></td><td></td><td></td>`
-            tbody.append(row);
-        }
-        tbl.append(tbody);
-        return div
-    }
-
     fillCursTbl(cursIndex){
-        let tbody = this.cursTbl.querySelector('tbody');
-        let cursor = this.cursors[cursIndex];
-        let dif = delta(this.cursors[0], this.cursors[1]);
-        let R = ratio(this.cursors[0], this.cursors[1]);
-        let strConf = [navigator.language, {maximumFractionDigits: 1}];
-
-        for(let n in this.datasets){
-            let ds = this.datasets[n];
-            let row = tbody.childNodes[n];
-
-            let td = row.childNodes[cursIndex + 1];
-            td.textContent = cursor[ds].toLocaleString(...strConf);
-
-            let tdD = row.childNodes[3];
-            tdD.textContent = dif[ds].toLocaleString(...strConf);
-
-            let tdR = row.childNodes[4];
-            tdR.textContent = R[ds].toLocaleString(...strConf);
-        }
+        this.cursTbl.fill(cursIndex, this.cursors);
     }
 }
 
@@ -451,4 +370,51 @@ class numDisplay {
     update (data) {
         this.valueDisp.innerHTML = this.value(data);
     }
+}
+
+class cursTable {
+    constructor (rows) {
+        this.rows = rows;
+        let strConf = [navigator.language, {maximumFractionDigits: 1}];
+
+        this.container = pannelDiv('Curseurs');
+        let tbl = document.createElement('table');
+        tbl.className = 'cursTbl';
+        tbl.innerHTML = `<thead><tr>
+            <th></th><th>1</th><th>2</th><th>Δ</th><th>÷</th>
+            </tr></thead>`
+        this.container.appendChild(tbl);
+
+        this.tbody = document.createElement('tbody');
+        for(let ds of rows){
+            let row = document.createElement('tr');
+            row.innerHTML = `<th>${ds}</th><td></td><td></td><td></td><td></td><td></td>`
+            this.tbody.append(row);
+        }
+        tbl.append(this.tbody);
+    }
+
+    fill (col, cursors) {
+
+        let cursor = cursors[col];
+        let dif = delta(cursors[0], cursors[1]);
+        let R = ratio(cursors[0], cursors[1]);
+        let strConf = [navigator.language, {maximumFractionDigits: 1}];
+
+        for(let n in this.rows){
+            let ds = this.rows[n];
+            let row = this.tbody.childNodes[n];
+
+            let td = row.childNodes[col + 1];
+            td.textContent = cursor[ds].toLocaleString(...strConf);
+
+            let tdD = row.childNodes[3];
+            tdD.textContent = dif[ds].toLocaleString(...strConf);
+
+            let tdR = row.childNodes[4];
+            tdR.textContent = R[ds].toLocaleString(...strConf);
+        }
+    }
+
+    remove() { this.container.remove(); }
 }

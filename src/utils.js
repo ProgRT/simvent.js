@@ -127,3 +127,56 @@ export function ratio(c1, c2){
     return c3;
 }
 
+const cursParams = {
+    step: 2,
+    className: null,
+    label: null,
+    min: 0,
+    max: 1,
+    value: 0.5,
+}
+
+export function improvedRange(params={}) {
+    let p = {...cursParams, ...params};
+    let div = document.createElement('div');
+    div.className = p.className;
+
+    if(p.label){
+        let label = document.createElement('label');
+        label.textContent = p.label;
+        div.appendChild(label);
+    }
+
+    let input = document.createElement('input');
+    input.type = 'range';
+    input.className = 'cursorControl';
+    input.max = p.max;
+    input.min = 0;
+    input.value = p.value;
+    input.oninput = ()=>{
+        div.value = e.value;
+    }
+
+    let plus = document.createElement('button');
+    plus.textContent = '+';
+    plus.onclick = ()=>{
+        input.value = parseInt(input.value) + p.step;
+        const evt = new Event('input');
+        input.dispatchEvent(evt);
+    }
+    let minus = document.createElement('button');
+    minus.onclick = ()=>{
+        input.value -= p.step;
+        const evt = new Event('input');
+        input.dispatchEvent(evt);
+    }
+    minus.textContent = '-';
+
+
+    div.append(input);
+    div.append(minus);
+    div.append(plus);
+
+    div.value = input.value;
+    return div;
+}
