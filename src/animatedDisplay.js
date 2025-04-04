@@ -315,7 +315,7 @@ export class display {
 	}
 
     addCursor(pos) {
-        let cursNum = this.cursors.length;
+        let n = this.cursors.length;
 
         let ctrl = improvedRange({
             className: 'cursCtrl',
@@ -325,25 +325,25 @@ export class display {
         });
 
         let input = ctrl.querySelector('input');
-        this.cursors[cursNum] = this.grData[input.value];
+        this.cursors[n] = this.grData[input.value];
 
         let time = this.grData[ctrl.value].time - this.tStart;
         for (let g of this.graphStack) {
-            g.drawCursor(this.cursors[cursNum]);
+            g.drawCursor(this.cursors[n]);
         }
 
         input.oninput = ()=>{
-            this.cursors[cursNum] = this.grData[input.value];
-            this.fillCursTbl(cursNum);
+            this.cursors[n] = this.grData[input.value];
+            this.fillCursTbl(n);
             let time = this.grData[input.value].time - this.tStart;
-            for (let g of this.graphStack) g.cursors[cursNum].move(this.cursors[cursNum]);
+            for (let g of this.graphStack) g.cursors[n].move(this.cursors[n]);
         }
 
         this.cursCont.append(ctrl);
     }
 
     fillCursTbl(cursIndex){
-        this.cursTbl.fill(cursIndex, this.cursors);
+        this.cursTbl.fill(cursIndex, this.cursors, this.tStart);
     }
 }
 
@@ -375,15 +375,16 @@ class numDisplay {
 class cursTable {
     constructor (rows) {
         this.rows = rows;
-        let strConf = [navigator.language, {maximumFractionDigits: 1}];
 
-        this.container = pannelDiv('Curseurs');
+        this.container = pannelDiv('Cursors', 'Curseur');
         let tbl = document.createElement('table');
         tbl.className = 'cursTbl';
         tbl.innerHTML = `<thead><tr>
-            <th></th><th>1</th><th>2</th><th>Δ</th><th>÷</th>
+            <th></th><th>C1</th><th>C2</th><th>Δ</th><th>÷</th>
             </tr></thead>`
         this.container.appendChild(tbl);
+        let heads = this.container.querySelectorAll('thead tr th');
+        this.cursHead = [...heads].splice(1,2);
 
         this.tbody = document.createElement('tbody');
         for(let ds of rows){
@@ -394,27 +395,34 @@ class cursTable {
         tbl.append(this.tbody);
     }
 
-    fill (col, cursors) {
+    fill (col, cursors, tStart = 0) {
 
         let cursor = cursors[col];
         let dif = delta(cursors[0], cursors[1]);
         let R = ratio(cursors[0], cursors[1]);
-        let strConf = [navigator.language, {maximumFractionDigits: 1}];
+
+        let ts = `${fmt(cursor.time - tStart, 3)} s`
+        this.cursHead[col].textContent = ts;
 
         for(let n in this.rows){
             let ds = this.rows[n];
             let row = this.tbody.childNodes[n];
 
             let td = row.childNodes[col + 1];
-            td.textContent = cursor[ds].toLocaleString(...strConf);
+            td.textContent = fmt(cursor[ds],2);
 
             let tdD = row.childNodes[3];
-            tdD.textContent = dif[ds].toLocaleString(...strConf);
+            tdD.textContent = fmt(dif[ds], 2);
 
             let tdR = row.childNodes[4];
-            tdR.textContent = R[ds].toLocaleString(...strConf);
+            tdR.textContent = fmt(R[ds], 1);
         }
     }
 
     remove() { this.container.remove(); }
+}
+
+function fmt(num, dec) {
+    let conf = {maximumFractionDigits: dec};
+    return num.toLocaleString(navigator.language, conf);
 }

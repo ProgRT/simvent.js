@@ -2,6 +2,7 @@ import * as simventVents from "./simvent-ventilators.js";
 import * as simventLungs from "./simvent-lungs.js";
 import {makeSwipable} from "./swipe.js";
 import {icon, button} from "./utils.js";
+import {translate} from './translate.js';
 
 export class basicPannel {
 
@@ -26,7 +27,7 @@ export class basicPannel {
         this.vent = new simventVents[this.startVentModel]();
 
         this.ventCtl = new objControl({
-            title: "Ventilator",
+            title: 'Ventilator',
             icon: "Souflet",
             target: this.container,
             constructors: simventVents,
@@ -35,7 +36,7 @@ export class basicPannel {
         });
 
         this.lungCtl = new objControl({
-            title: "Lung",
+            title: 'Lung',
             icon: "PoumonsAvecBronches",
             target: this.container,
             constructors: simventLungs,
@@ -63,47 +64,44 @@ export class basicPannel {
 
 export class objControl {
     
-    constructor (parameters) {
+    constructor (p) {
         
-        let target = parameters.target;
-        let title = parameters.title;
-        let constructors = parameters.constructors;
-        let optList = parameters.optList || Object.keys(constructors);
-        this.obj = parameters.obj || new constructors[optList[0]]();
-        this.icon = parameters.icon || null;
-        let paramList = parameters.paramList;
+        let optList = p.optList || Object.keys(p.constructors);
+        this.obj = p.obj || new p.constructors[optList[0]]();
+        this.icon = p.icon || null;
 
-		this.container = document.createElement('div');
-		target.appendChild(this.container);
+        this.container = pannelDiv(p.title, this.icon);
+		p.target.appendChild(this.container);
 
         this.modelMenu = modelMenu(optList, evt=>{
             let selected = evt.target.value; 
-            this.obj = new constructors[selected]();
+            this.obj = new p.constructors[selected]();
             this.paramTable.remove();
-            this.paramTable = paramTable(this.obj, paramList);
+            this.paramTable = paramTable(this.obj, p.paramList);
             this.container.appendChild(this.paramTable);
         });
         this.modelMenu.value = this.obj.constructor.name;
 
-        this.paramTable = paramTable(this.obj, paramList);
+        this.paramTable = paramTable(this.obj, p.paramList);
 
-        this.container.appendChild(sectionTitle(title, this.icon));
         this.container.appendChild(this.modelMenu);
         this.container.appendChild(this.paramTable);
     }
 }
 
 export function pannelDiv(title, iconName=null){
-		let container = document.createElement('div');
+
+		let container = document.createElement('details');
         let t = sectionTitle(title, iconName);
         container.appendChild(t);
+        container.open = true;
 
         return container;
 }
 
 export function sectionTitle(content, iconName=null){
-    let title = document.createElement("h2");
-    title.textContent = content;
+    let title = document.createElement("summary");
+    title.textContent = translate(content);
 
     if(iconName){
         title.insertAdjacentElement('afterbegin', icon(iconName));
@@ -120,7 +118,7 @@ function modelMenu(list, callback){
     select.onchange = callback;
 
     for (var vent of list){
-        var option = document.createElement("option");
+        var option = document.createElement("opteon");
         option.value = vent;
         option.textContent = vent;
         select.appendChild(option);
@@ -140,7 +138,6 @@ function paramTable(object, paramSet) {
         // Parameter name cell
 
         var td = document.createElement('td');
-        //td.title = fp.translate1(id, "long");
         td.title = p.id;
         td.textContent = p.id + ' :';
         tr.appendChild(td);

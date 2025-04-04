@@ -13,7 +13,10 @@
   max-height: calc(100vh - (47px + 15px))
   overflow-x: hidden
 
-  h2
+  details
+    margin-bottom: 5px
+
+  h2, summary
     background-color: hsl(0, 0%, 32%)
     color: white
     font-size: medium
@@ -23,6 +26,9 @@
     text-align: left
     font-weight: 500
     letter-spacing: 1px
+
+  summary
+    list-style-type: none
 
   svg
     height: 1.4em
@@ -47,11 +53,14 @@
 
     tr
       height: 2em
+    tr:not(:last-child)
       border-bottom: 1px solid silver
+    thead
+      border-bottom: 1px solid black
 
     td
       height: 2em
-      border-bottom: 1px solid silver
+      //border-bottom: 1px solid silver
 
       &:not(:last-child)
         white-space: nowrap

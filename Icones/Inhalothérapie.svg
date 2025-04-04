@@ -215,7 +215,14 @@
          style="baseline-shift:baseline;display:inline;overflow:visible;vector-effect:none;stroke-width:0.999999;enable-background:accumulate;stop-color:#000000"
          d="m 107.54423,24.999996 h 28.51361 V 155 h -28.51361 z m -63.602069,0 H 72.455776 V 155 H 43.942161 Z"><title
            id="title22">Pause</title></path><title
-         id="title25">Pause</title></symbol></defs><g
+         id="title25">Pause</title></symbol><symbol
+       id="Curseur"><path
+         id="path34"
+         d="M 85,10 V 75.896484 A 15,15 0 0 0 75,90 15,15 0 0 0 85,104.10352 V 170 H 95 V 104.10352 A 15,15 0 0 0 105,90 15,15 0 0 0 95,75.859375 V 10 Z"><desc
+           id="desc33">Curseur</desc><title
+           id="title33">Curseur</title></path><title
+         id="title34">Curseur</title><desc
+         id="desc34">Curseur</desc></symbol></defs><g
      id="layer5"><use
        xlink:href="#Trach%C3%A9otomie"
        id="use1"
@@ -288,7 +295,7 @@
        transform="translate(381.34943,5.5322284)" /><use
        xlink:href="#symbol22"
        id="use25" /><use
-       xlink:href="#symbol20"
-       id="use26" /></g><metadata
+       xlink:href="#symbol33"
+       id="use34" /></g><metadata
      id="metadata3397"><rdf:RDF><cc:Work
          rdf:about=""><dc:title>Inhalothérapie</dc:title><dc:creator><cc:Agent><dc:title>Nicolas Blais St-Laurent</dc:title></cc:Agent></dc:creator></cc:Work></rdf:RDF></metadata></svg>
