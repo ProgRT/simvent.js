@@ -117,10 +117,10 @@ function modelMenu(list, callback){
     let select = document.createElement("select");
     select.onchange = callback;
 
-    for (var vent of list){
-        var option = document.createElement("opteon");
-        option.value = vent;
-        option.textContent = vent;
+    for (var mod of list){
+        var option = document.createElement("option");
+        option.value = mod;
+        option.textContent = translate(mod);
         select.appendChild(option);
     }
     return select;
@@ -138,8 +138,7 @@ function paramTable(object, paramSet) {
         // Parameter name cell
 
         var td = document.createElement('td');
-        td.title = p.id;
-        td.textContent = p.id + ' :';
+        td.innerHTML = `<label for='input${p.id}'>${translate(p.id)} :</label>`;
         tr.appendChild(td);
 
         // input or value cell
@@ -178,7 +177,9 @@ function paramTable(object, paramSet) {
         // Parameter unit cell
         var td = document.createElement('td');
         td.className = 'unit';
-        td.textContent = p.unit;
+        td.innerHTML = `<small>${p.unit}</small>`;
+        //td.textContent = p.unit;
+
         tr.appendChild(td);
 
         // Push the row to the table

@@ -1,3 +1,9 @@
+export function fmt(num, dec) {
+    let conf = {maximumFractionDigits: dec};
+    if (isNaN(dec)) return '';
+    else return num.toLocaleString(navigator.language, conf);
+}
+
 export function button(params){
     var btn = document.createElement("button");
     btn.insertAdjacentElement('afterbegin', icon(params.icon));
@@ -49,7 +55,8 @@ export class dialog{
     static defaults = {
         toolbar: document.querySelector("body"),
         title: '',
-        onopen: null
+        onopen: null,
+        id: null
     }
 
     //constructor (toolbar, icon="Carnet") {
@@ -58,6 +65,7 @@ export class dialog{
         for (let param in conf) this[param] = conf[param];
 
         this.dialog = document.createElement('dialog');
+        if(this.id) this.dialog.id = this.id;
         document.body.prepend(this.dialog);
 
         let titlebar = document.createElement('div');

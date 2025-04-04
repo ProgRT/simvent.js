@@ -1,7 +1,8 @@
 import {graph} from "./moovingGraph.js";
-import {dialog, button, delta, ratio, improvedRange} from './utils.js';
-import {Vc} from './numDisplay.js';
+import {fmt, dialog, button, delta, ratio, improvedRange} from './utils.js';
+import {Vc, Ppeak} from './numDisplay.js';
 import {pannelDiv} from './pannel.js';
+import {translate, units} from './translate.js';
 
 export class display {
 
@@ -17,7 +18,8 @@ export class display {
         restartNpts: 0,
 		toolbar: document.querySelector("#rightControls"),
 		datasets: ['Pao', 'Flung', 'PCO2'],
-        numData: [ Vc ]
+        numData: [ Ppeak, Vc ],
+        units: units
     };
    
 	constructor(conf=null){
@@ -102,29 +104,6 @@ export class display {
         }
     }
 
-    animate (data) {
-        let dur = d3.max(data, d=>d.time);
-        let Tsampl = data[1].time - data[0].time;
-
-        this.timePerScreen = dur;
-		this.pstPerScr = this.timePerScreen / Tsampl;
-		this.ptPerMs = .001 / Tsampl
-        this.data = data;
-        this.setYscale();
-        this.tStart = data[0].time;
-        this.grData = [];
-        this.restartNpts = 0;
-
-        for(const g of this.graphStack){
-            g.timePerScreen = dur;
-            g.setXscale();
-            g.tStart = this.tStart;
-            g.coord = '';
-        }
-
-        this.start();
-    }
-
     clearGraphs () {
         for(const g of this.graphStack) {
             g.coord = '';
@@ -148,7 +127,20 @@ export class display {
 		}
 	}
 
+    convUnits(data){
+        for(let c in this.units){
+            let f = this.units[c].factor;
+            data = data.map(d=>{
+                d[c] = d[c] * f;
+                return d;
+            });
+        }
+        return data;
+    }
+
     push (data) {
+        data = this.convUnits(data);
+
         let Tsampl = data[1].time - data[0].time;
 		this.pstPerScr = this.timePerScreen / Tsampl;
 
@@ -161,10 +153,34 @@ export class display {
     }
 
     display (data) {
-        this.grData = data;
+        this.grData = this.convUnits(data);
         let duration = d3.max(this.grData, d=>d.time);
         for (let g of this.graphStack) g.timePerScreen = duration;
         this.redraw();
+    }
+
+    animate (data) {
+        data = this.convUnits(data)
+        let dur = d3.max(data, d=>d.time);
+        let Tsampl = data[1].time - data[0].time;
+
+        this.timePerScreen = dur;
+		this.pstPerScr = this.timePerScreen / Tsampl;
+		this.ptPerMs = .001 / Tsampl
+        this.data = data;
+        this.setYscale();
+        this.tStart = data[0].time;
+        this.grData = [];
+        this.restartNpts = 0;
+
+        for(const g of this.graphStack){
+            g.timePerScreen = dur;
+            g.setXscale();
+            g.tStart = this.tStart;
+            g.coord = '';
+        }
+
+        this.start();
     }
 
 	redraw(){
@@ -244,7 +260,7 @@ export class display {
             id='cb${column}'
             value='${column}'
             ${this.datasets.includes(column)?'checked':''}/>
-                <label for='cb${column}'>${column}</label>`;
+                <label for='cb${column}'>${translate(column)}</label>`;
             list.appendChild(li);
         }
 
@@ -353,7 +369,8 @@ class numDisplay {
         label: 'Volume courant',
         unit: 'l',
         updateCodition: (data)=>true,
-        value: data=>data[data.length].Vte
+        value: data=>data[data.length].Vte,
+        dec: 0
     }
 
     constructor (conf) {
@@ -361,14 +378,14 @@ class numDisplay {
         for (let param in conf) this[param] = conf[param];
 
         this.div = document.createElement('div');
-        this.div.innerHTML = `<div>${this.label} (${this.unit})</div> <div class='value'> </div>`
+        this.div.innerHTML = `<div>${translate(this.label)} <small>(${this.unit})</small></div> <div class='value'> </div>`
         this.containerTable.append(this.div);
 
         this.valueDisp = this.div.querySelector('.value');
     }
 
     update (data) {
-        this.valueDisp.innerHTML = this.value(data);
+        this.valueDisp.innerHTML = fmt(this.value(data), this.dec);
     }
 }
 
@@ -379,17 +396,24 @@ class cursTable {
         this.container = pannelDiv('Cursors', 'Curseur');
         let tbl = document.createElement('table');
         tbl.className = 'cursTbl';
+        //tbl.innerHTML = `<thead><tr>
+        //    <th></th><th>C1</th><th>C2</th><th>Δ</th><th>÷</th>
+        //    </tr></thead>`
         tbl.innerHTML = `<thead><tr>
-            <th></th><th>C1</th><th>C2</th><th>Δ</th><th>÷</th>
+            <th></th><th>Δ</th><th>÷</th>
             </tr></thead>`
         this.container.appendChild(tbl);
         let heads = this.container.querySelectorAll('thead tr th');
+        this.corner = [...heads][0];
         this.cursHead = [...heads].splice(1,2);
 
         this.tbody = document.createElement('tbody');
         for(let ds of rows){
             let row = document.createElement('tr');
-            row.innerHTML = `<th>${ds}</th><td></td><td></td><td></td><td></td><td></td>`
+            let label = translate(ds);
+            row.innerHTML = `<th>${label}</th><td></td><td></td>`
+
+            if(ds in units) row.childNodes[0].innerHTML += ` <small>(${units[ds].unit})</small>`;
             this.tbody.append(row);
         }
         tbl.append(this.tbody);
@@ -401,28 +425,20 @@ class cursTable {
         let dif = delta(cursors[0], cursors[1]);
         let R = ratio(cursors[0], cursors[1]);
 
-        let ts = `${fmt(cursor.time - tStart, 3)} s`
-        this.cursHead[col].textContent = ts;
 
+        this.corner.textContent = `Δ t : ${fmt(dif.time, 3)} s`;
         for(let n in this.rows){
             let ds = this.rows[n];
             let row = this.tbody.childNodes[n];
 
-            let td = row.childNodes[col + 1];
-            td.textContent = fmt(cursor[ds],2);
-
-            let tdD = row.childNodes[3];
+            let tdD = row.childNodes[1];
             tdD.textContent = fmt(dif[ds], 2);
+            //if(ds in units) tdD.innerHTML += ` <small>${units[ds].unit}</small>`;
 
-            let tdR = row.childNodes[4];
-            tdR.textContent = fmt(R[ds], 1);
+            let tdR = row.childNodes[2];
+            tdR.textContent = fmt(R[ds], 2);
         }
     }
 
     remove() { this.container.remove(); }
-}
-
-function fmt(num, dec) {
-    let conf = {maximumFractionDigits: dec};
-    return num.toLocaleString(navigator.language, conf);
 }

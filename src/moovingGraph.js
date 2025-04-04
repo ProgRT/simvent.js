@@ -1,3 +1,6 @@
+import {translate, units} from './translate.js';
+import {fmt} from './utils.js';
+
 export class graph {
 
 	constructor(dataName, timePerScreen, target){
@@ -32,29 +35,28 @@ export class graph {
 		var dsMax = d3.max(dataSet, d => d[this.dataName]);
 
 		var ymin = Math.min(0,dsMin);
-		//var ymax = Math.max(dsMax , - dsMin);
-		var ymax = dsMax * 1.2;
+		var ymax = dsMax * 1.5;
 
 		if(ymax > 10){ymax = Math.ceil(ymax/5)*5}
-		if(ymax < 1){ymax = Math.ceil(ymax)}
-		//if(ymin < 0 && ymin > -10){ymin = Math.floor(ymin)}
-		if(ymin < -10){ymin = Math.floor(ymin/5)*5}
 
 		this.margeB = this.svg.style('font-size').slice(0,-2) * 2;
 		this.margeH = this.svg.style('font-size').slice(0,-2) * 1;
 		this.height = this.svg.style('height').slice(0, -2);
 
 		this.echelley = d3.scale.linear()
-			.domain([ymin, ymax])
+			.domain([ymin, dsMax +(dsMax - ymin) *.1])
 			.range([this.height - this.margeB, this.margeH]);
 	}
 
 	drawID(){
+        let id = translate(this.dataName);
+        if(this.dataName in units) id += ` (${units[this.dataName].unit})`;
+
 		this.id = this.svg.append('text')
 			.attr('x', this.margeG + 5)
 			.attr('y', 18)
 			.attr('text-anchor', 'start')
-			.text(this.dataName)
+			.text(id)
 		;
 	}
 
@@ -151,6 +153,7 @@ class cursor {
         this.cursG.attr('class', 'cursor');
         let x = this.graph.echellex(this.time);
 
+        let y = graph.echelley(data[graph.dataName])
         let y1 = this.graph.margeH;
         let y2 = this.graph.height - this.graph.margeB;
 
@@ -165,12 +168,20 @@ class cursor {
 
         this.el = this.cursG.append('ellipse')
             .attr('cx', x)
-            .attr('cy', graph.echelley(data[graph.dataName]))
+            .attr('cy', y)
             .attr('rx', 3.5)
             .attr('ry', 3.5)
             .attr('stroke', 'red')
             .attr('fill', 'red')
             .attr('opacity', '0.3')
+        ;
+
+        this.txt = this.cursG.append('text')
+            .attr('x', x +5)
+            .attr('y', y)
+            .attr('fill', 'red')
+            //.attr('stroke', 'white')
+            .text(fmt(this.data[this.dataName], 2))
         ;
 
     }
@@ -191,6 +202,12 @@ class cursor {
             .attr('cx', x)
             .attr('cy', y)
         ;
+
+        this.txt
+            .attr('x', x + 5)
+            .attr('y', y)
+            .text(fmt(this.data[this.dataName], 2))
+        ;
     }
 
     redraw() {
@@ -206,6 +223,11 @@ class cursor {
         this.el
             .attr('cx', x)
             .attr('cy', y)
+        ;
+
+        this.txt
+            .attr('x', x + 5)
+            .attr('y', y)
         ;
     }
 
