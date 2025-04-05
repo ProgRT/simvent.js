@@ -18,7 +18,7 @@ export const Ppeak = {
             let last = d[d.length-1];
             let prev = d[d.length-2]
             let prevprev = d[d.length-3]
-            return prev.Pao > last.Pao && prev.Pao > prevprev.Pao;
+            return prev.Pao > last.Pao && prev.Pao >= prevprev.Pao;
         }
     },
     value: d=> d[d.length-2].Pao

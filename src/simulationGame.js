@@ -34,6 +34,7 @@ export class simulator {
             title: "Tâches",
             icon: "Carnet"
         });
+
         this.modal.setContent(senarioTable(senario));
 
         //--------------------------//
