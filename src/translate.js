@@ -55,7 +55,7 @@ const dictionary = {
 }
 
 export function translate(tag){
-    let nl = navigator.language; 
+    let nl = navigator.language.split('-')[0]; 
 
     if (nl in dictionary && tag in dictionary[nl]) {
         return dictionary[nl][tag];
