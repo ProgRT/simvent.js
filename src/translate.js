@@ -7,9 +7,11 @@ export const units = {
 
 const fr = {
     APRV: 'APRV (PC-VOI)',
+    Close: 'Fermer',
     Cursors: 'Curseurs',
     Cycling: 'Cyclage',
     Crs: 'Compl.',
+    ESC: 'ÉCHAP',
     Flung: 'Débit',
     FlowControler: 'VC-VOC',
     Fconv: 'Fréq.',
@@ -28,8 +30,8 @@ const fr = {
     Pmax: 'P max',
     Pstep: 'Incrément',
     Pstop: 'P fin',
-    Thigh: 'P haut',
-    Tlow: 'P bas',
+    Thigh: 'T haut',
+    Tlow: 'T bas',
     Tman: 'Durée',
     Pmus: 'P mus.',
     Ppeak: 'P crête',
@@ -53,8 +55,10 @@ const dictionary = {
 }
 
 export function translate(tag){
-//    let nl = navigator.language; 
-    let nl = 'fr';
-    if(nl in dictionary && tag in dictionary[nl]) return dictionary[nl][tag];
+    let nl = navigator.language; 
+
+    if (nl in dictionary && tag in dictionary[nl]) {
+        return dictionary[nl][tag];
+    }
     else return tag;
 }

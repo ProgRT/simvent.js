@@ -10,7 +10,8 @@ export class basicPannel {
         debugMode: false,
         target: document.body,
         startVentModel: "FlowControler",
-        startLungModel: "SimpleLung"
+        startLungModel: "SimpleLung",
+        lungControl: true
     };
 
     constructor (parameters=null) {
@@ -35,14 +36,16 @@ export class basicPannel {
             obj: this.vent
         });
 
-        this.lungCtl = new objControl({
-            title: 'Lung',
-            icon: "PoumonsAvecBronches",
-            target: this.container,
-            constructors: simventLungs,
-            paramList: "mechParams",
-            obj: this.lung
-        });
+        if(this.lungControl){
+            this.lungCtl = new objControl({
+                title: 'Lung',
+                icon: "PoumonsAvecBronches",
+                target: this.container,
+                constructors: simventLungs,
+                paramList: "mechParams",
+                obj: this.lung
+            });
+        }
 
         this.toolbar = document.querySelectorAll("nav div")[2];
 

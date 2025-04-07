@@ -1,6 +1,7 @@
+import {translate} from './translate.js';
 export function fmt(num, dec) {
     let conf = {maximumFractionDigits: dec};
-    if (isNaN(dec)) return '';
+    if (isNaN(num)) return '';
     else return num.toLocaleString(navigator.language, conf);
 }
 
@@ -84,7 +85,8 @@ export class dialog{
         var btnClose = document.createElement("button");
         btnClose.textContent = "X";
         btnClose.onclick = ()=>this.dialog.close();
-        menu.prepend(btnClose)
+        btnClose.title = `${translate('Close')} (${translate('ESC')})`;
+        menu.prepend(btnClose);
 
         let btnOpen = button({
             icon: this.icon,

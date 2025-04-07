@@ -1,5 +1,5 @@
 export const Vc = {
-    label: 'Vc',
+    label: 'Vt',
     unit: 'ml',
     updateCodition: (d)=>{
         if(d.length > 2){

@@ -21,22 +21,35 @@ dialog
 
   div.dialogContent
 
-    table
-      border-collapse: collapse
-      border: 1px solid gray
-      width: 100%
-    th, td
-      border-bottom: 1px solid gray
-      padding: 10px
-    td:nth-child(2), th:nth-child(2)
-      width: 5em
-      text-align: center
-
 dialog:focus
   outline: none
 
 #wSelect
   //columns: 3
 
-dialog.learningEnvironment
+dialog#tasks
   width: calc(100% - 20px)
+
+  table
+    border-collapse: collapse
+    width: 100%
+  thead
+    border-bottom: 1px solid gray
+  tr
+
+  th, td
+    //border-bottom: 1px solid gray
+    padding: 10px
+
+  td:nth-child(2), th:nth-child(2)
+    width: 5em
+    text-align: center
+
+  summary
+    margin-bottom: 0.5em
+
+  details div
+    margin-top: 0.5em
+    //border: 1px solid gainsboro
+    border-radius: 5px
+    padding: 10px

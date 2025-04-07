@@ -17,10 +17,14 @@ hidden: true
 
 <script type=module>
     import {simulator} from './src/simulationGame.js';
+    import {scenario} from './scenarios/test.js';
+    const scenarios = {test: scenario};
+
+    const urlparams = new URLSearchParams(window.location.search);
 
     const param = {
-        debugMode: true,
-        animate: false,
+        debugMode: urlparams.has('debugMode'),
+        scnDesc: scenarios[urlparams.get('scenario')],
         dispTarget: document.querySelector("main")
     };
 
