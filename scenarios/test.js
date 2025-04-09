@@ -1,5 +1,6 @@
 import {fmt} from '../src/utils.js';
 import {SimpleLung} from '../src/simvent-lungs.js';
+import {ratio, expRatio} from '../src/analysis.js';
 
 const skeleton = {
     title: "",
@@ -7,34 +8,39 @@ const skeleton = {
     test: (data, vent, lung) => {
         return true;
     },
-    resultFn: (data, vent, lung) => {
-        let div = document.createElement('div');
+    resultfn: (data, vent, lung) => {
+        let div = document.createelement('div');
         return div;
     },
     completed: false
 };
 
-function ratio(Ti, Te) {
-    if (Ti > Te) {
-        let factor = 1/Te;
-        let _Ti = factor * Ti;
-        return `${fmt(_Ti, 1)}:1`
-    }
-    else if (Te > Ti) {
-        let factor = 1/Ti;
-        let _Te = factor * Te;
-        return `1:${fmt(_Te, 1)}`
-    }
-}
+const Tbas = {
+    title: "Ajustement du T bas",
+    instructions: `<p>Régler le Tbas affin que le débit à la fin de l'expiration soit entre 50 et 75 % du débit au début de l'expiration.</p>`,
+    test: (data, vent, lung) => {
+        let r = expRatio(data);
+        return vent.constructor.name == 'APRV' &&
+             r > .5 &&
+             r < .75;
+    },
+    resultFn: (data, vent, lung) => {
+        let r = expRatio(data);
+
+        let div = document.createElement('div');
+        div.innerHTML = `<strong>Ratio : </strong> ${fmt(r, 2)}`;
+        return div;
+    },
+    completed: false
+};
 
 const Rinv = {
     title: "Ratio inversé",
-    instructions: `Ajuster le temps inspiratoire et la fréquence afin
+    instructions: `<p>Ajuster le temps inspiratoire et la fréquence afin
     que le ratio inspiration:expiration soir inversé (temps inspiratoire
-    > temps expiratoire).`,
-    lung: new SimpleLung(),
+    > temps expiratoire).</p>`,
     test: (data, vent, lung) => {
-        return true;
+        //return true;
         return vent.Ti > vent.Te;
     },
     resultFn: (data, vent, lung) => {
@@ -51,15 +57,27 @@ const Rinv = {
 
 const VT = {
     title: "Ventilation protectrice",
-    instructions: `Ajuster un volume courant de <em>300 ml</em>`,
+    instructions: `<p>Ajuster un volume courant de <em>300 ml</em></p>`,
     test: (data, vent, lung) => {
-        return true;
+        //return true;
         return vent.Vt == 300;
     },
     completed: false
 };
 
+
+
 export const scenario = {
-    intro: "Ce scénario vise à démontrer les fonctionnalités de l'environnement d'apprentissage.",
-    tasks: [Rinv, VT]
+    title: 'Scenario test',
+    intro: "<p>Ce scénario vise à démontrer les fonctionnalités de l'environnement d'apprentissage.</p>",
+    tasks: [
+        Rinv,
+        Rinv,
+        Rinv,
+        Rinv,
+        Rinv,
+        Rinv,
+        VT,
+        Tbas,
+    ]
 };

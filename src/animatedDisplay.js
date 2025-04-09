@@ -72,6 +72,12 @@ export class display {
         this.initGrStack();
 
         window.onresize = ()=>this.redraw();
+        window.addEventListener('keyup', (e)=>{
+            if(e.code == 'Space') {
+                if(this.graphInt) this.stop();
+                else this.start();
+            }
+        });
 
         if (this.numData.length > 0) {
             this.dataTable = document.createElement('div');

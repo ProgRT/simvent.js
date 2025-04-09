@@ -1,0 +1,28 @@
+---
+layout: simulateur
+title: Simulateur annimé
+icon: Souflet
+---
+
+<link
+	rel="stylesheet"
+	href="{{ "/css/fp-scratch.css" | prepend: site.baseurl}}"
+	/>
+
+<link
+	rel="stylesheet"
+	href="https://progrt.github.io/graphsimple.js/css/gs-scratch.css"
+	/>
+
+<script type=module>
+	import {simulator} from "./src/animatedSimulator.js";
+
+    const sim = new simulator({
+        //dispTarget: d3.select('main'),
+        dispTarget: document.querySelector('main'),
+        //displayRemaining: true,
+        debugMode: true
+    });
+
+    window.simulator = sim;
+</script>

@@ -5,19 +5,35 @@ export const units = {
     Pao: {unit: 'hPa', factor: 1},
 }
 
-const fr = {
-    APRV: 'APRV (PC-VOI)',
+const uiFr = {
     Close: 'Fermer',
+    'Completed tasks': 'Tâches complétées',
     Cursors: 'Curseurs',
+    ESC: 'Échap',
+    Lung: 'Poumons',
+    'Ongoing tasks': 'Tâches en cours',
+    Ventilator: 'Ventilateur',
+}
+const modelsFr = {
+    APRV: 'APRV (PC-VOI)',
+    IPV: 'Ventilation perc. (IPV)',
+    FlowControler: 'VC-VOC',
+    PressureControler: 'PC-VOC',
+    PressureAssistor: 'PC-VSC',
+    PVCurve: 'Boucle Pres.-Vol.',
+    SimpleLung: 'Compliance linéaire',
+    SptLung: 'Ventilation spontanée',
+    SygLung: 'Compliance sygmoïde',
+    RLung: 'Compl. syg. + hist.',
+    VDR: 'Perc. bi-niveau (VDR-4)',
+}
+
+const paramsFr = {
     Cycling: 'Cyclage',
     Crs: 'Compl.',
-    ESC: 'ÉCHAP',
     Flung: 'Débit',
-    FlowControler: 'VC-VOC',
     Fconv: 'Fréq.',
     Ftrig: 'Décl. insp.',
-    IPV: 'Ventilation perc. (IPV)',
-    Lung: 'Poumons',
     Palv: 'P alv.',
     Pao: 'P circ.',
     Passist: 'Aide inspi.',
@@ -35,19 +51,15 @@ const fr = {
     Tman: 'Durée',
     Pmus: 'P mus.',
     Ppeak: 'P crête',
-    PressureControler: 'PC-VOC',
-    PressureAssistor: 'PC-VSC',
-    PVCurve: 'Boucle Pres.-Vol.',
     Raw: 'Res.',
-    SimpleLung: 'Compliance linéaire',
-    SptLung: 'Ventilation spontanée',
-    SygLung: 'Compliance sygmoïde',
-    RLung: 'Compl. syg. + hist.',
     Tcycle: 'T cycle',
-    VDR: 'Perc. bi-niveau (VDR-4)',
-    Ventilator: 'Ventilateur',
     Vfrc: 'V crf',
     Vt: 'Vc',
+}
+const fr = {
+    ...uiFr,
+    ...modelsFr,
+    ...paramsFr
 }
 
 const dictionary = {
