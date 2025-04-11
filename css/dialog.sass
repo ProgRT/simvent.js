@@ -27,6 +27,13 @@ dialog:focus
 
 dialog#tasks
   width: calc(100% - 20px)
+  
+  svg
+    margin: 1.5em auto
+    padding: 10px
+    border: 1px solid gainsboro
+    //box-shadow: 1px 1px 5px gainsboro
+
 dialog[open]
   display: flex
   flex-direction: column
@@ -38,7 +45,8 @@ dialog[open]
   table
     border-collapse: collapse
     width: 100%
-  thead tr
+
+  thead
     border-bottom: 1px solid gray
 
   th, td
@@ -54,7 +62,6 @@ dialog[open]
     text-align: center
 
   details 
-    //border: 1px dashed red
     p
       margin-top: 0.5em
       margin-bottom: 0em
@@ -63,12 +70,16 @@ dialog[open]
 
     div
       margin-top: 0.5em
-      border: 1px solid gainsboro
-      border-radius: 5px
+      border: 1px solid silver
+      border-radius: 6px
       padding: 10px
+      //box-shadow: 0px 0px 20px 0px gainsboro
   
   tbody th
     text-align: left
 
-
+  details[open]
+    summary
+      font-size: 90%
+      font-weight: bold
 

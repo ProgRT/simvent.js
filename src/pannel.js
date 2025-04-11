@@ -25,7 +25,9 @@ export class basicPannel {
         makeSwipable("#fpPanel");
 
         this.lung = new simventLungs[this.startLungModel]();
-        this.vent = new simventVents[this.startVentModel]();
+        if(!this.vent){
+            this.vent = new simventVents[this.startVentModel]();
+        }
 
         this.ventCtl = new objControl({
             title: 'Ventilator',
@@ -161,7 +163,7 @@ function paramTable(object, paramSet) {
             input.name = p.id;
             input.value = object[p.id];
             input.type = 'number';
-            input.min = 0;
+            input.min = p.min;
             input.step = p.step;
             input.onfocus = function(){this.select()};
 

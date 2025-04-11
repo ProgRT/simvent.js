@@ -7,6 +7,7 @@ import {scenario, scenarioTable, closeCompletedTasks} from './scenario.js';
 export class simulator {
     static defaults = {
         dispTarget: document.body,
+        toolbar: document.querySelector('#rightControls'),
         debugMode: false,
         ventIntDur: 500,
         minDatDur: 3,
@@ -17,27 +18,16 @@ export class simulator {
         let params = {...simulator.defaults, ...parameters};
         for (let p in params) this[p] = params[p];
 
-        if(this.scnDesc){
-            this.scenario = new scenario(this.scnDesc);
-            this.lung = this.scenario.lung;
-        };
-
-        this.toolbar = document.querySelectorAll("nav div")[2];
-
         this.disp = new display({
             target: this.dispTarget,
+            toolbar: this.toolbar,
             debugMode: this.debugMode
         });
 
-        this.pannel = new basicPannel(
-            {
-                lungControl: this.scenario == null,
-            }
-        );
-        this.pannel.container.onchange = ()=>this.update();
+        if(this.scnDesc){
+            this.scenario = new scenario(this.scnDesc);
+            this.lung = this.scenario.lung;
 
-
-        if(this.scenario){
             this.modal = new dialog({
                 toolbar: this.toolbar,
                 title: this.scenario.title,
@@ -46,7 +36,14 @@ export class simulator {
             });
 
             this.updateModal();
+        };
+
+        let panCnf = {
+            lungControl: this.scenario == null,
+            vent: this.scenario && this.scenario.vent?this.scenario.vent:null,
         }
+        this.pannel = new basicPannel(panCnf);
+        this.pannel.container.onchange = ()=>this.update();
 
         //--------------------------//
         // New data generation loop //
@@ -78,15 +75,9 @@ export class simulator {
         // -----------------------------------------
 
         if(this.scenario && this.scenario.ongoing){
-            let task = this.scenario.ongoing;
-
-            if(this.debugMode) this.taskCheckMsg(task);
-            task.completed = task.test(nDat, this.vent, this.lung);
-
-            if (task.completed) {
-                if(task.resultFn) {
-                    task.result = task.resultFn(nDat, this.vent, this.lung);
-                }
+            let nCompl = this.scenario.check(nDat, this.vent, this.lung);
+            if (nCompl) {
+                this.lung = this.scenario.lung;
                 this.updateModal();
                 this.modal.showModal();
             }
@@ -114,11 +105,4 @@ export class simulator {
         console.log("Generating new data");
         console.log(`Time: ${this.vent.time}`);
     }
-
-    taskCheckMsg (task) {
-        let msg = `Tache: ${task.title}
-Résultat: ${task.test([], this.vent, this.lung)}`;
-        console.log(msg);
-    }
-
 }

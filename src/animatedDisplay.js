@@ -16,7 +16,7 @@ export class display {
 		graphLoopInt: 40,
 		target: document.body,
         restartNpts: 0,
-		toolbar: document.querySelector("#rightControls"),
+		toolbar: document.body,
 		datasets: ['Pao', 'Flung', 'PCO2'],
         numData: [ Ppeak, Vc ],
         units: units
@@ -38,16 +38,6 @@ export class display {
         this.cursCont.className = 'cursCont';
         this.target.append(this.cursCont);
 
-        this.modal = new dialog({
-            toolbar: this.toolbar,
-            icon: "CourbesDeVentilation",
-            title: "Sélection des courbes"
-        });
-
-        this.modal.onopen = ()=>{
-            this.modal.setContent(this.waveformSelect());
-        };
-
         this.btnStop = button({
             icon: "Pause",
             label: "Interrompre",
@@ -68,6 +58,16 @@ export class display {
 
         this.toolbar.append(this.btnStop);
         this.toolbar.append(this.btnStart);
+
+        this.modal = new dialog({
+            toolbar: this.toolbar,
+            icon: "CourbesDeVentilation",
+            title: "Sélection des courbes"
+        });
+
+        this.modal.onopen = ()=>{
+            this.modal.setContent(this.waveformSelect());
+        };
 
         this.initGrStack();
 
@@ -190,14 +190,12 @@ export class display {
     }
 
 	redraw(){
-		let scalingData = [...this.data, ...this.grData];
+		let scDat = [...this.data, ...this.grData];
 
-		if(scalingData.length == 0){
-            console.log("redraw() called without scalingData");
-            return;
+		if(scDat.length > 0){
+            for(var g of this.graphStack) g.redraw(scDat, this.grData);
 		}
 
-		for(var g of this.graphStack) g.redraw(scalingData, this.grData);
 	}
 
     whipe(){

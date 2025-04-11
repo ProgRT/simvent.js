@@ -1,6 +1,8 @@
 import {fmt} from '../src/utils.js';
-import {SimpleLung} from '../src/simvent-lungs.js';
-import {ratio, expRatio} from '../src/analysis.js';
+import {SimpleLung, SptLung} from '../src/simvent-lungs.js';
+import {APRV} from '../src/simvent-ventilators.js';
+import {ratio, expRatio, isExpStart, isExpEnd} from '../src/analysis.js';
+import {plot, line, dot, areaY} from "https://cdn.skypack.dev/@observablehq/plot@0.6";
 
 const skeleton = {
     title: "",
@@ -15,9 +17,12 @@ const skeleton = {
     completed: false
 };
 
+
 const Tbas = {
     title: "Ajustement du T bas",
-    instructions: `<p>Régler le Tbas affin que le débit à la fin de l'expiration soit entre 50 et 75 % du débit au début de l'expiration.</p>`,
+    instructions: `<p>Régler le T<sub>bas</sub> affin que le débit à la fin de
+    l'expiration (V'<sub>fin exp</sub>) soit entre 50 et 75 % du débit au
+    début de l'expiration (V'<sub>exp max</sub>).</p>`,
     test: (data, vent, lung) => {
         let r = expRatio(data);
         return vent.constructor.name == 'APRV' &&
@@ -25,10 +30,31 @@ const Tbas = {
              r < .75;
     },
     resultFn: (data, vent, lung) => {
+        let [es] = data.filter(isExpStart).filter((d, i, a)=>i == a.length - 1);
+        let [ee] = data.filter(isExpEnd).filter((d, i, a)=>i == a.length - 1);
+        console.log(ee);
         let r = expRatio(data);
 
+        let pltConf = {
+            width: 200,
+            height: 200,
+            x: {label: 'Temps (s)', line: true},
+            y: {grid: true},
+            marks: [
+                line(data, {x: "time", y: "Flung"}),
+                dot([es, ee], {x: 'time', y:'Flung', stroke:'red'})
+            ],
+        };
+        let plt = plot(pltConf);
+
         let div = document.createElement('div');
-        div.innerHTML = `<strong>Ratio : </strong> ${fmt(r, 2)}`;
+        div.innerHTML = `
+            <strong>Débit exp. max. : </strong> ${fmt(es.Flung, 2)}
+            <strong>Débit fin exp. : </strong> ${fmt(ee.Flung, 2)}
+            <strong>Ratio : </strong> ${fmt(r, 2)}
+        `
+        ;
+        div.append(plt);
         return div;
     },
     completed: false
@@ -58,6 +84,7 @@ const Rinv = {
 const VT = {
     title: "Ventilation protectrice",
     instructions: `<p>Ajuster un volume courant de <em>300 ml</em></p>`,
+    lung: new SptLung(),
     test: (data, vent, lung) => {
         //return true;
         return vent.Vt == 300;
@@ -69,15 +96,12 @@ const VT = {
 
 export const scenario = {
     title: 'Scenario test',
+    lung: new SimpleLung({Raw: 20}),
+    vent: new APRV(),
     intro: "<p>Ce scénario vise à démontrer les fonctionnalités de l'environnement d'apprentissage.</p>",
     tasks: [
-        Rinv,
-        Rinv,
-        Rinv,
-        Rinv,
-        Rinv,
-        Rinv,
-        VT,
+        //Rinv,
+        //VT,
         Tbas,
     ]
 };

@@ -97,7 +97,7 @@ export class dialog{
             },
             label: "showDialog"
         });
-        this.toolbar.prepend(btnOpen);
+        this.toolbar.append(btnOpen);
     }
 
     setContent (content) {
