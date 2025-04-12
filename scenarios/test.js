@@ -14,7 +14,6 @@ const skeleton = {
         let div = document.createelement('div');
         return div;
     },
-    completed: false
 };
 
 
@@ -56,9 +55,6 @@ const Tbas = {
         div.append(plt);
         return div;
     },
-    completed: false
-};
-
 const Rinv = {
     title: "Ratio inversé",
     instructions: `<p>Ajuster le temps inspiratoire et la fréquence afin
@@ -77,7 +73,6 @@ const Rinv = {
             <strong>Ratio :</strong> ${ratio(vent.Ti, vent.Te)}`;
         return div;
     },
-    completed: false
 };
 
 const VT = {
@@ -88,10 +83,7 @@ const VT = {
         //return true;
         return vent.Vt == 300;
     },
-    completed: false
 };
-
-
 
 export const scenario = {
     title: 'Scenario test',

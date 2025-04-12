@@ -25,6 +25,7 @@ export function expRatio(data){
     }
     else return null;
 }
+
 const Tbas = {
     title: "Ajustement du T bas",
     instructions: `<p>Régler le T<sub>bas</sub> affin que le débit à la fin de
@@ -65,7 +66,6 @@ début de l'expiration (V'<sub>exp max</sub>).</p>`,
         div.append(plt);
         return div;
     },
-    completed: false
 };
 
 export const scenario = {
