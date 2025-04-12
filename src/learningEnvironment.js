@@ -24,6 +24,7 @@ export class simulator {
             debugMode: this.debugMode
         });
 
+
         if(this.scnDesc){
             this.scenario = new scenario(this.scnDesc);
             this.lung = this.scenario.lung;
@@ -42,6 +43,7 @@ export class simulator {
             lungControl: this.scenario == null,
             vent: this.scenario && this.scenario.vent?this.scenario.vent:null,
         }
+
         this.pannel = new basicPannel(panCnf);
         this.pannel.container.onchange = ()=>this.update();
 
@@ -54,7 +56,6 @@ export class simulator {
 
             // this.disp.data are data that have not
             // been plotted yet
-            // console.log(this.disp.data.length);
 
             if (this.disp.data.length < this.minData) {
                 this.pushNewData();
@@ -75,7 +76,9 @@ export class simulator {
         // -----------------------------------------
 
         if(this.scenario && this.scenario.ongoing){
-            let nCompl = this.scenario.check(nDat, this.vent, this.lung);
+            //let dat = [...this.disp.grData, ...this.disp.data];
+            let dat = [...this.disp.grData];
+            let nCompl = this.scenario.check(dat, this.vent, this.lung);
             if (nCompl) {
                 this.lung = this.scenario.lung;
                 this.updateModal();
@@ -95,14 +98,13 @@ export class simulator {
         let time = this.vent ? this.vent.time : 0;
         this.vent = this.pannel.ventCtl.obj;
         this.vent.time = time;
-
 		if(this.vent.Fconv){this.vent.Tvent = 60 / this.vent.Fconv};
+
         this.minData = this.minDatDur /this.vent.Tsampl;
         if(this.pannel.lungCtl) this.lung = this.pannel.lungCtl.obj;
     }
 
     newDataMsg () {
-        console.log("Generating new data");
         console.log(`Time: ${this.vent.time}`);
     }
 }

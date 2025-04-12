@@ -16,8 +16,9 @@ icon: Souflet
 
 <script type=module>
     import {simulator} from './src/learningEnvironment.js';
-    import {scenario} from './scenarios/test.js';
-    const scenarios = {test: scenario};
+    import {scenario as test} from './scenarios/test.js';
+    import {scenario as tbas} from './scenarios/tbas.js';
+    const scenarios = {test: test, tbas: tbas};
 
     const urlparams = new URLSearchParams(window.location.search);
 

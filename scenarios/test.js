@@ -32,7 +32,6 @@ const Tbas = {
     resultFn: (data, vent, lung) => {
         let [es] = data.filter(isExpStart).filter((d, i, a)=>i == a.length - 1);
         let [ee] = data.filter(isExpEnd).filter((d, i, a)=>i == a.length - 1);
-        console.log(ee);
         let r = expRatio(data);
 
         let pltConf = {
@@ -96,7 +95,7 @@ const VT = {
 
 export const scenario = {
     title: 'Scenario test',
-    lung: new SimpleLung({Raw: 20}),
+    lung: new SimpleLung({Raw: 10}),
     vent: new APRV(),
     intro: "<p>Ce scénario vise à démontrer les fonctionnalités de l'environnement d'apprentissage.</p>",
     tasks: [
