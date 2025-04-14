@@ -74,6 +74,7 @@ export class display {
         window.onresize = ()=>this.redraw();
         window.addEventListener('keyup', (e)=>{
             if(e.code == 'Space') {
+                e.preventDefault();
                 if(this.graphInt) this.stop();
                 else this.start();
             }

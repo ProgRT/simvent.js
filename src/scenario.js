@@ -105,7 +105,7 @@ function taskRow (task) {
     let tdState = document.createElement('td');
 
     //if(task.completed) tdState.append('✓');
-    if(task.completed) tdState.append('Fait');
+    if(task.completed) tdState.append('✓');
 
     row.appendChild(tdDesc);
     row.appendChild(tdState);

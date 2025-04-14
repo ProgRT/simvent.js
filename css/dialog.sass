@@ -7,8 +7,10 @@ dialog
   max-width: 800px
 
   div.dialogTitleBar
-    display: grid
-    grid-template-columns: 20% 60% 20%
+    display: flex
+    justify-content: space-between
+    align-items: flex-end
+    margin-bottom: 15px
 
   div.title
     text-align: center
@@ -17,7 +19,6 @@ dialog
 
   div.toolbar
     text-align: right
-    margin-bottom: 15px
 
 dialog:focus
   outline: none
@@ -42,6 +43,9 @@ dialog[open]
   .dialogContent
     overflow: auto
 
+  p
+    margin-top: 0.5em
+    margin-bottom: 0.5em
   table
     border-collapse: collapse
     width: 100%
@@ -61,14 +65,19 @@ dialog[open]
     width: 5em
     text-align: center
 
+  td:nth-child(2)
+    width: 5em
+    text-align: center
+    font-size: 160%
+
   details 
     p
-      margin-top: 0.5em
+      margin-top: .75em
       margin-bottom: 0em
       //border: 1px dashed blue
 
 
-    div
+    >div
       margin-top: 0.5em
       border: 1px solid silver
       border-radius: 6px
@@ -83,3 +92,13 @@ dialog[open]
       font-size: 90%
       font-weight: bold
 
+.dataDisplay
+  display: flex
+  flex-direction: row
+  justify-content: space-between
+
+  strong
+    font-size: 90%
+
+math[display=block]
+  margin: .75em

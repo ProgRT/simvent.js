@@ -17,6 +17,7 @@ const skeleton = {
 };
 
 
+/*
 const Tbas = {
     title: "Ajustement du T bas",
     instructions: `<p>Régler le T<sub>bas</sub> affin que le débit à la fin de
@@ -54,7 +55,9 @@ const Tbas = {
         ;
         div.append(plt);
         return div;
-    },
+    }
+}
+*/
 const Rinv = {
     title: "Ratio inversé",
     instructions: `<p>Ajuster le temps inspiratoire et la fréquence afin
@@ -93,6 +96,6 @@ export const scenario = {
     tasks: [
         //Rinv,
         //VT,
-        Tbas,
+        //Tbas,
     ]
 };
