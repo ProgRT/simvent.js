@@ -1,7 +1,7 @@
 import {fmt} from '../src/utils.js';
 import {SimpleLung, SptLung} from '../src/simvent-lungs.js';
 import {APRV} from '../src/simvent-ventilators.js';
-//import {ratio, expRatio, isExpStart, isExpEnd} from '../src/analysis.js';
+import {exalations} from '../src/deriv.js';
 import {plot, line, dot, areaY, tip} from "https://cdn.skypack.dev/@observablehq/plot@0.6.7";
 
 const Tbas = {
@@ -32,21 +32,17 @@ const Tbas = {
     </math>
     `,
     test: (data, vent, lung) => {
-        let r = expRatio(data);
-        return vent.constructor.name == 'APRV' &&
-             r > .5 &&
-             r < .75;
+        let ex = exalations(data).filter(flROk);
+        return ex.length > 0;
     },
     resultFn: (data, vent, lung) => {
-        let [es] = data.filter(isExpStart).slice(-1);
-        let [ee] = data.filter(isExpEnd).slice(-1);
-        let r = expRatio(data);
+        let [ex] = exalations(data).filter(flROk).slice(-1);
 
         let div = document.createElement('div');
         let dat = [
-            ['Débit exp. max.', fmt(es.Flung, 2)],
-            ['Débit fin exp.', fmt(ee.Flung, 2)],
-            ['Ratio', fmt(r, 2)]
+            ['Débit exp. max.', fmt(ex.start.Flung, 2)],
+            ['Débit fin exp.', fmt(ex.end.Flung, 2)],
+            ['Ratio', fmt(ex.flowRatio, 2)]
         ]
 
         div.append(dataDisplay(dat));
@@ -67,30 +63,39 @@ export const scenario = {
     </details>`,
     tasks: [Tbas],
     lung: new SimpleLung({Raw: 15, Crs: 20}),
-    vent: new APRV({Tlow: 1}),
+    vent: new APRV({Tlow: .2}),
 };
 
 function eFlowPlt(dat){
-    let [es] = dat.filter(isExpStart).slice(-1);
-    let [ee] = dat.filter(isExpEnd).slice(-1);
-    let r = expRatio(dat);
-    let etip = `V'fin exp: ${fmt(ee.Flung, 2)} l/s\nRatio: ${fmt(r,2)}`;
-    let stip = `V'exp max: ${fmt(es.Flung, 2)} l/s`;
-    dat = dat.filter((d, i, a)=>d.time > es.time - 2)
+    let [ex] = exalations(dat).filter(flROk).slice(-1);
+
+    let es = ex.start;
+    let ee = ex.end;
+    let fMax = es.Flung;
+    let fMin = ee.Flung;
+
+    dat = dat.filter((d, i, a)=>d.time > ex.start.time - 2)
 
     return plot({
         width: 350,
         height: 200,
         grid: true,
         x: {label: 'Temps (s)'},
-        y: {label: 'Débit (l/s)'},
+        y: {label: 'Débit (%)', reverse: true, tickFormat: d=>`${d} %`},
         marks: [
-            line(dat, {x: "time", y: "Flung"}),
-            dot([es, ee], {x: 'time', y:'Flung', stroke:'red'}),
-            tip([stip], {x: es.time, dx: 1, y: es.Flung, anchor: 'right', dx: -7}),
-            tip([etip], {x: ee.time, y: ee.Flung, anchor: 'left', dx: 7}),
+            line(dat, {x: "time", y: d=>100 * d.Flung/fMax}),
+            dot([ex.start, ex.end], {
+                x: 'time',
+                y:d=>100 * d.Flung/fMax,
+                stroke:'red',
+                tip: true,
+            }),
         ],
     });
+}
+
+function flROk(d){
+    return d.flowRatio >= .5 && d.flowRatio <= .75;
 }
 
 function dataDisplay(arr){
@@ -106,25 +111,3 @@ function dataDisplay(arr){
     }
     return container;
 }
-export function isExpStart(d, i, arr){
-    return d.Pao == 0 && arr[i-1].Pao > 0;
-}
-
-export function isExpEnd(d, i, arr){
-    return i < arr.length - 2 && d.Pao == 0 && arr[i+1].Pao > 0;
-}
-
-export function expRatio(data){
-    let expStart = data.filter(isExpStart);
-    let lastExpStart = expStart[expStart.length - 1];
-
-    let expEnd = data.filter(isExpEnd).filter((d,i,a)=>i==a.length-1);
-    let lastExpEnd = expEnd[expEnd.length - 1];
-
-    if(lastExpStart && lastExpEnd){
-        let ratio = lastExpEnd.Flung / lastExpStart.Flung;
-        return ratio;
-    }
-    else return null;
-}
-

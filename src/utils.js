@@ -1,4 +1,5 @@
 import {translate} from './translate.js';
+
 export function fmt(num, dec) {
     let conf = {maximumFractionDigits: dec};
     if (isNaN(num)) return '';
@@ -40,7 +41,6 @@ export function buttonOffOn(params){
     
     return btn;
 }
-
 
 export function icon(icon) {
     let use = document.createElementNS("http://www.w3.org/2000/svg", 'use');
@@ -137,16 +137,16 @@ export function ratio(c1, c2){
     return c3;
 }
 
-const cursParams = {
-    step: 2,
-    className: null,
-    label: null,
-    min: 0,
-    max: 1,
-    value: 0.5,
-}
-
 export function improvedRange(params={}) {
+    const cursParams = {
+        step: 2,
+        className: null,
+        label: null,
+        min: 0,
+        max: 1,
+        value: 0.5,
+    }
+
     let p = {...cursParams, ...params};
     let div = document.createElement('div');
     div.className = p.className;
@@ -169,12 +169,15 @@ export function improvedRange(params={}) {
 
     let plus = document.createElement('button');
     plus.textContent = '+';
+    plus.tabIndex = -1
     plus.onclick = ()=>{
         input.value = parseInt(input.value) + p.step;
         const evt = new Event('input');
         input.dispatchEvent(evt);
     }
+
     let minus = document.createElement('button');
+    minus.tabIndex = -1
     minus.onclick = ()=>{
         input.value -= p.step;
         const evt = new Event('input');

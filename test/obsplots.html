@@ -23,23 +23,29 @@ html {
 
 	import {APRV} from '../src/simvent-ventilators.js';
 	import {SimpleLung} from '../src/simvent-lungs.js';
-	import {plot, line, areaY} from "https://cdn.skypack.dev/@observablehq/plot@0.6";
+	import {plot, line, dot, areaY, axisY} from "https://cdn.skypack.dev/@observablehq/plot@0.6";
+    import {exalations} from '../src/deriv.js';
 
-	var vent = new APRV();
-
-	var lung = new SimpleLung();
-
+    var vent = new APRV({Tlow: 0.8, Tvent: 38});
+    var lung = new SimpleLung({Raw: 16});
 	var data = vent.ventilate(lung).timeData;
+    let ex = exalations(data);
+    let [e1] = ex.slice(-1);
 
+    function tFmt(d){
+        let r = d/e1.start.Flung;
+        return `${(100*r).toFixed(0)} %`;
+    }
     function tsPlot (conf=null) {
         conf = {
             width: document.documentElement.clientWidth,
             height: document.documentElement.clientWidth/4,
             x: {label: 'Temps (s)', line: true},
-            y: {grid: true},
+            y: {label: "Débit (l/s)", reverse: true},
             marks: [
-                line(data, {x: "time", y: "Flung"}),
-                areaY(data, {x: "time", y: "Flung", fillOpacity: 0.1}),
+                line(data, {x: "time", y: d=>d.Flung/e1.start.Flung}),
+                axisY({anchor: 'left', label: 'Débit (%)'}),
+                dot([e1], {x: d=>d.start.time, y: d=>1, stroke: 'red'})
                 ],
             ...conf
             };
@@ -57,17 +63,6 @@ html {
 			]
 	});
 
-
-//	const myplot = plot({
-//		width: document.documentElement.clientWidth,
-//		height: document.documentElement.clientWidth/4,
-//		x: {label: 'Temps (s)', line: true},
-//		y: {grid: true},
-//		marks: [
-//			line(data, {x: "time", y: "Flung"}),
-//			areaY(data, {x: "time", y: "Flung", fillOpacity: 0.1}),
-//			]
-//	});
 
     const myplot = tsPlot();
 	document.body.append(presplot);
