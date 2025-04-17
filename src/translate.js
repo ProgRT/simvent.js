@@ -74,3 +74,5 @@ export function translate(tag){
     }
     else return tag;
 }
+
+export default translate;

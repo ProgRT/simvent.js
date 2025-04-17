@@ -1,4 +1,4 @@
-import {translate} from './translate.js';
+import translate from './translate.js';
 
 export function fmt(num, dec) {
     let conf = {maximumFractionDigits: dec};
