@@ -247,13 +247,11 @@ export class display {
 	}
 
     waveformSelect () {
-        let cols = Object.keys(this.grData[0]);
-
-        let colFilter = (k)=>{
+        function cFilter(k) {
             return k != "time" && this.grData[5][k] != undefined;
         }
 
-        cols = cols.filter(colFilter)
+        let cols = Object.keys(this.grData[0]).filter(cFilter);
 
         let list = document.createElement('ol');
         list.id = 'wSelect';
