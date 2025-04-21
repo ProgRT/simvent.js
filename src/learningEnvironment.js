@@ -18,10 +18,13 @@ export class simulator {
         let params = {...simulator.defaults, ...parameters};
         for (let p in params) this[p] = params[p];
 
+        /// 
+        console.log(this.datasets);
         this.disp = new display({
             target: this.dispTarget,
             toolbar: this.toolbar,
-            debugMode: this.debugMode
+            debugMode: this.debugMode,
+            datasets: this.datasets
         });
 
 

@@ -4,29 +4,24 @@ title: Simulateur annimé
 icon: Souflet
 ---
 
-<link
-	rel="stylesheet"
-	href="{{ "/css/fp-scratch.css" | prepend: site.baseurl}}"
-	/>
-
-<link
-	rel="stylesheet"
-	href="https://progrt.github.io/graphsimple.js/css/gs-scratch.css"
-	/>
-
 <script type=module>
     import {simulator} from './src/learningEnvironment.js';
-//    import {scenario as test} from './scenarios/test.js';
     import {scenario as tbas} from './scenarios/tbas.js';
-    const scenarios = {tbas: tbas};
 
+    const scenarios = {tbas: tbas};
     const urlparams = new URLSearchParams(window.location.search);
 
-    const param = {
+    const wf = urlparams.get('waveforms') ?
+        urlparams.get('waveforms').split(',') :
+        ['Pao', 'Flung'];
+
+//
+    console.log(wf);
+
+    const sim = new simulator({
         debugMode: urlparams.has('debugMode'),
         scnDesc: scenarios[urlparams.get('scenario')],
-        dispTarget: document.querySelector("main")
-    };
-
-    const sim = new simulator(param);
+        dispTarget: document.querySelector("main"),
+        datasets: wf
+    });
 </script>
