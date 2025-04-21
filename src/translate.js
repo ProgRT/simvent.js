@@ -1,8 +1,9 @@
 export const units = {
-    //Flung: {unit: 'l/m', factor: 60},
-    Flung: {unit: 'l/s', factor: 1},
+    Flung: {unit: 'l/m', factor: 60},
+    //Flung: {unit: 'l/s', factor: 1},
     PCO2: {unit: 'mmHg', factor: 1},
     Pao: {unit: 'hPa', factor: 1},
+    Vte: {unit: 'ml', factor: 1000}
 }
 
 const uiFr = {

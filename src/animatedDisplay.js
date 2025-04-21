@@ -1,6 +1,6 @@
 import {graph} from "./moovingGraph.js";
 import {fmt, dialog, button, delta, ratio, improvedRange} from './utils.js';
-import {Vc, Ppeak} from './numDisplay.js';
+import {display as numDisp} from './numDisplay.js';
 import {pannelDiv} from './pannel.js';
 import {translate, units} from './translate.js';
 
@@ -18,7 +18,6 @@ export class display {
         restartNpts: 0,
 		toolbar: document.body,
 		datasets: ['Pao', 'Flung', 'PCO2'],
-        numData: [ Ppeak, Vc ],
         units: units
     };
    
@@ -28,9 +27,9 @@ export class display {
         for (let param in conf) this[param] = conf[param];
 
 		this.data = [];
+        this.wData = [];
 		this.grData = [];
 		this.graphStack = [];
-        this.numDisplay = [];
         this.cursors = [];
 		this.tStart = 0;
 
@@ -80,16 +79,7 @@ export class display {
             }
         });
 
-        if (this.numData.length > 0) {
-            this.dataTable = document.createElement('div');
-            this.dataTable.className = 'numDisplayContainer';
-            document.body.append(this.dataTable);
-
-            for (let d of this.numData) {
-                let conf = {...{containerTable: this.dataTable}, ...d};
-                this.numDisplay.push(new numDisplay(conf));
-            }
-        }
+        this.nDisp = new numDisp();
 	}
 
     initGrStack () {
@@ -156,7 +146,6 @@ export class display {
 
         this.setYscale();
         if (this.grData.length > 0) this.redraw();
-        //if (!this.graphInt) this.start();
     }
 
     display (data) {
@@ -200,6 +189,7 @@ export class display {
 	}
 
     whipe(){
+            this.wData = this.grData;
 			this.grData = [];
             this.restartNpts = 0;
 			this.loopStartTime = new Date().getTime();
@@ -235,11 +225,15 @@ export class display {
             this.whipe();
 		}
 
+        // Note to myself: this loop is updating coordinates and data one
+        // point at the time while there is about 10 missing point per
+        // interval.
+
 		while(this.grData.length < this.targNPts && this.data.length > 0){
             this.grData.push(this.data.shift());
             for(var g of this.graphStack) g.updateCoord(this.grData);
-            for(let nd of this.numDisplay) {
-                if (nd.updateCodition(this.grData)) nd.update(this.grData);
+            if(this.nDisp) {
+                this.nDisp.update([...this.wData, ...this.grData]);
             }
 		}
 
@@ -247,7 +241,7 @@ export class display {
 	}
 
     waveformSelect () {
-        function cFilter(k) {
+        let cFilter = (k)=> {
             return k != "time" && this.grData[5][k] != undefined;
         }
 
@@ -354,8 +348,9 @@ export class display {
         input.oninput = ()=>{
             this.cursors[n] = this.grData[input.value];
             this.fillCursTbl(n);
-            let time = this.grData[input.value].time - this.tStart;
-            for (let g of this.graphStack) g.cursors[n].move(this.cursors[n]);
+            let time = this.grData[input.value].time - this.tStart;//This line of code seem unused and should probably be removed
+            let c = this.cursors[n];
+            for (let g of this.graphStack) g.cursors[n].move(c);
         }
 
         this.cursCont.append(ctrl);
@@ -366,46 +361,19 @@ export class display {
     }
 }
 
-class numDisplay {
-    static defaults = {
-        containerTable: document.createElement('table'),
-        label: 'Volume courant',
-        unit: 'l',
-        updateCodition: (data)=>true,
-        value: data=>data[data.length].Vte,
-        dec: 0
-    }
-
-    constructor (conf) {
-        conf = {...numDisplay.defaults, ...conf};
-        for (let param in conf) this[param] = conf[param];
-
-        this.div = document.createElement('div');
-        this.div.innerHTML = `<div>${translate(this.label)} <small>(${this.unit})</small></div> <div class='value'> </div>`
-        this.containerTable.append(this.div);
-
-        this.valueDisp = this.div.querySelector('.value');
-    }
-
-    update (data) {
-        this.valueDisp.innerHTML = fmt(this.value(data), this.dec);
-    }
-}
-
 class cursTable {
     constructor (rows) {
         this.rows = rows;
 
         this.container = pannelDiv('Cursors', 'Curseur');
+
         let tbl = document.createElement('table');
         tbl.className = 'cursTbl';
-        //tbl.innerHTML = `<thead><tr>
-        //    <th></th><th>C1</th><th>C2</th><th>Δ</th><th>÷</th>
-        //    </tr></thead>`
         tbl.innerHTML = `<thead><tr>
             <th></th><th>Δ</th><th>÷</th>
             </tr></thead>`
         this.container.appendChild(tbl);
+
         let heads = this.container.querySelectorAll('thead tr th');
         this.corner = [...heads][0];
         this.cursHead = [...heads].splice(1,2);
@@ -434,12 +402,8 @@ class cursTable {
             let ds = this.rows[n];
             let row = this.tbody.childNodes[n];
 
-            let tdD = row.childNodes[1];
-            tdD.textContent = fmt(dif[ds], 2);
-            //if(ds in units) tdD.innerHTML += ` <small>${units[ds].unit}</small>`;
-
-            let tdR = row.childNodes[2];
-            tdR.textContent = fmt(R[ds], 2);
+            row.childNodes[1].textContent = fmt(dif[ds], 2);
+            row.childNodes[2].textContent = fmt(R[ds], 2);
         }
     }
 

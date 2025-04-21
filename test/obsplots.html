@@ -21,21 +21,28 @@ html {
 
 <script type=module>
 
-	import {APRV} from '../src/simvent-ventilators.js';
+	import {APRV, FlowControler} from '../src/simvent-ventilators.js';
 	import {SimpleLung} from '../src/simvent-lungs.js';
 	import {plot, line, dot, areaY, axisY} from "https://cdn.skypack.dev/@observablehq/plot@0.6";
+    import {getPeaks} from '../src/vdrSignalAnalysis.js';
     import {exalations} from '../src/deriv.js';
 
-    var vent = new APRV({Tlow: 0.8, Tvent: 38});
+    var vent = new FlowControler({Tlow: 0.8, Tvent: 38});
     var lung = new SimpleLung({Raw: 16});
 	var data = vent.ventilate(lung).timeData;
+
+    let peaks = getPeaks(data, d=>d.Vte).map(d=>d.Vte);
+    console.log(peaks);
+
     let ex = exalations(data);
+    console.log(ex.map(d=>d.end.Vte));
     let [e1] = ex.slice(-1);
 
     function tFmt(d){
         let r = d/e1.start.Flung;
         return `${(100*r).toFixed(0)} %`;
     }
+
     function tsPlot (conf=null) {
         conf = {
             width: document.documentElement.clientWidth,
@@ -67,6 +74,16 @@ html {
     const myplot = tsPlot();
 	document.body.append(presplot);
 	document.body.append(myplot);
+    document.body.append(plot({
+		width: document.documentElement.clientWidth,
+		height: document.documentElement.clientWidth/6,
+		x: {label: 'Temps (s)', line: true},
+		y: {grid: true},
+		marks: [
+			line(data, {x: "time", y: "Vte"}),
+			areaY(data, {x: "time", y: "Vte", fillOpacity: 0.1}),
+			]
+	}));
 
 </script>
 </body>

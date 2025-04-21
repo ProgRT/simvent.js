@@ -62,7 +62,7 @@ export class graph {
 
 	setNLf(){
 		this.lf = function(d){
-			const point = d[d.length -1];
+			const [point] = d.slice(-1);
             const prefix = d.length == 1 ? 'M' : 'L';
             const x = this.echellex(point.time - this.tStart);
             const y = this.echelley(point[this.dataName]);
