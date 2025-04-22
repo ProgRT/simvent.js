@@ -33,9 +33,13 @@ export class display {
         this.cursors = [];
 		this.tStart = 0;
 
+        this.container = document.createElement('div');
+        this.container.className = 'waveformsContainer';
+        this.target.append(this.container);
+
         this.cursCont = document.createElement('div');
         this.cursCont.className = 'cursCont';
-        this.target.append(this.cursCont);
+        this.container.append(this.cursCont);
 
         this.btnStop = button({
             icon: "Pause",
@@ -79,7 +83,9 @@ export class display {
             }
         });
 
-        this.nDisp = new numDisp();
+        this.nDisp = new numDisp({
+            target: this.target
+        });
 	}
 
     initGrStack () {
@@ -87,7 +93,7 @@ export class display {
         this.graphStack = [];
 
 		for(var ds of this.datasets){
-			let gr = new graph(ds, this.timePerScreen, this.target);
+			let gr = new graph(ds, this.timePerScreen, this.container);
             gr.tStart = this.tStart;
 			this.graphStack.push(gr);
 		}

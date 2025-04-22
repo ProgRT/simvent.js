@@ -21,7 +21,7 @@ export class graph {
 	}
 
 	setXscale(){
-		this.margeG = this.svg.style('font-size').slice(0,-2) * 2.1;
+		this.margeG = this.svg.style('font-size').slice(0,-2) * 3.1;
 		this.margeD = this.svg.style('font-size').slice(0,-2) * .8;
 		this.width = this.svg.style('width').slice(0, -2);
 

@@ -13,10 +13,7 @@ icon: Souflet
 
     const wf = urlparams.get('waveforms') ?
         urlparams.get('waveforms').split(',') :
-        ['Pao', 'Flung'];
-
-//
-    console.log(wf);
+        ['Pao', 'Flung', 'Vte'];
 
     const sim = new simulator({
         debugMode: urlparams.has('debugMode'),

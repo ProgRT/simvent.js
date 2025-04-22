@@ -1,20 +1,24 @@
 ---
 ---
 table
-  margin-left: none
+  margin-left: auto
   margin-right: auto
   border-collapse: collapse
-  //border: 1px solid black
+  border-bottom: 1px solid black
 
 td, th
   padding       : 3px
   padding-left  : 8px
   padding-right : 8px
   text-align    : left
-  border-bottom : 1px solid silver
 
 th
-  font-size: inherit
-  //border-top: 1px solid black
-  //background-color: silver
+  font-size: 90%
+  border-top : 1px solid black
+  border-bottom : 1px solid black
+
+tr:not(:last-child)
+  border-bottom : 1px solid gainsboro
   
+td:nth-child(2)
+  text-align: center

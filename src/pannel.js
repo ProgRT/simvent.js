@@ -56,7 +56,6 @@ export class basicPannel {
             label: "togglePannel",
             title: "Panneau de contrôle",
             callback: ()=>{
-                console.log("Allo");
                 let pannel = document.querySelector("#fpPanel");
                 pannel.classList.toggle("hidden");
             }

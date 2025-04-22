@@ -6,9 +6,9 @@ icon: Livre
 * Table des matières
 {:toc}
 
-## Modèles de ventilateurs
+## 1. Modèles de ventilateurs
 
-### PressureControler
+### 1.1 PressureControler
 
 Générateur de pression (pression constante) déclenché et cyclé par le temps.
 
@@ -18,7 +18,7 @@ Ventilateur: PressureControler
 
 <table id="PressureControlerDefaults"></table>
 
-### FlowControler
+### 1.2 FlowControler
 
 Générateur de débit (débit constant) déclenché et cyclé par le temps.
 
@@ -28,7 +28,7 @@ Ventilateur: FlowControler
 
 <table id="FlowControlerDefaults"></table>
 
-### PressureAssistor
+### 1.3 PressureAssistor
 
 Générateur de pression (pression constante) déclenché et cyclé par le débit.
 
@@ -40,7 +40,7 @@ Legende: "Ventilation spontanée avec aide inspiratoire"
 
 <table id="PressureAssistorDefaults"></table>
 
-### APRV
+### 1.4 APRV
 
 Générateur de pression (pression constante) déclenché et cyclé par le temps.
 
@@ -55,7 +55,7 @@ Legende: "Mode APRV avec ventilation spontanée superposée."
 
 <table id="APRVDefaults"></table>
 
-### IPV
+### 1.5 IPV
 
 Ventilateur à haute fréquence percussive.
 
@@ -68,7 +68,7 @@ Legende: "Ventilation à haute fréquence percussive superposée à une respirat
 
 <table id="IPVDefaults"></table>
 
-### VDR
+### 1.6 VDR
 
 Ventilateur à haute fréquence percussive biphadique.
 
@@ -79,7 +79,7 @@ Courbe: Pao
 
 <table id="VDRDefaults"></table>
 
-### PVCurve
+### 1.7 PVCurve
 
 Manoeuvre pression-volume quasi-statique destinée à mettre en lumière les caractéristiques mécaniques des différents modèles de poumon.
 
@@ -89,7 +89,7 @@ Ventilateur: PVCurve
 
 <table id="PVCurveDefaults"></table>
 
-## Modèles de poumon
+## 2. Modèles de poumon
 
 Les différents modèles de poumons partagent les mêmes caractéristiques
 en ce qui a trait à la concentration de CO₂ dans l'air expiré et son
@@ -114,7 +114,7 @@ Boucle:
     trgt.innerHTML = mkListTbl(SimpleLung.carbParams);
 </script>
 
-### SimpleLung
+### 2.1 SimpleLung
 
 Modèle simple de poumon avec une compliance linéaire.
 
@@ -126,7 +126,7 @@ Modèle simple de poumon avec une compliance linéaire.
 
 <table id="SimpleLungDefaults"></table>
 
-### SptLung
+### 2.2 SptLung
 
 Modèle de poumon présentant une respiration spontanée. Ses
 caractéristiques mécaniques sont identiques au modèle *SimpleLung*.
@@ -140,7 +140,7 @@ Courbes:
 
 <table id="SptLungDefaults"></table>
 
-### SygLung
+### 2.3 SygLung
 
 Modèle de poumon avec une courbe pression-volume de forme sygmoïde.
 
@@ -152,7 +152,7 @@ Modèle de poumon avec une courbe pression-volume de forme sygmoïde.
 
 <table id="SygLungDefaults"></table>
 
-### RLung
+### 2.4 RLung
 
 Modèle de poumon *recrutable*. Sa courbe presion-volume a une forme sygmoïde et présente une hystérèse.
 
@@ -167,6 +167,7 @@ Boucle:
 <table id="RLungDefaults"></table>
 
 <script src="{{ "/lib/yaml.min.js" | prepend: site.baseurl}}"></script>
+
 <script type="module">
 	import {ventyamlEverything} from "./src/ventyaml.js";
 	ventyamlEverything("pre");
@@ -177,38 +178,20 @@ Boucle:
     import * as lungs from "./src/simvent-lungs.js";
     import {mktbl, mkListTbl} from "./src/simvent-describe.js";
 
-    const ventlist = [
-        'PressureControler',
-        'FlowControler',
-        'PressureAssistor',
-        'APRV',
-        'IPV',
-        'VDR',
-        'PVCurve'
-    ];
-
-
-    for(let v of ventlist){
+    for(let v of Object.keys(ventilators)){
         let tbl = document.querySelector(`#${v}Defaults`);
         tbl.innerHTML = mkListTbl(ventilators[v].ventParams);
     }
 
-    var lunglist = [
-        'SimpleLung',
-//        'SptLung',
-        'SygLung',
-        'RLung',
-    ];
-
-    for(let l of lunglist){
+    for(let l of Object.keys(lungs)){
         let trgt = document.querySelector(`#${l}Defaults`);
         trgt.innerHTML = mkListTbl([
                 ...lungs[l].mechParams,
         ]);
     }
 
-var trgt = document.querySelector(`#SptLungDefaults`);
-trgt.innerHTML = mkListTbl(lungs.SptLung.respParams);
+//var trgt = document.querySelector(`#SptLungDefaults`);
+//trgt.innerHTML = mkListTbl(lungs.SptLung.respParams);
 
 
 </script>

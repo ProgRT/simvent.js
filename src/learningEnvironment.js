@@ -18,8 +18,15 @@ export class simulator {
         let params = {...simulator.defaults, ...parameters};
         for (let p in params) this[p] = params[p];
 
-        /// 
-        console.log(this.datasets);
+        let panCnf = {
+            lungControl: this.scenario == null,
+            vent: this.scenario && this.scenario.vent?this.scenario.vent:null,
+            target: this.dispTarget
+        }
+        this.pannel = new basicPannel(panCnf);
+        this.pannel.container.onchange = ()=>this.update();
+
+
         this.disp = new display({
             target: this.dispTarget,
             toolbar: this.toolbar,
@@ -41,14 +48,6 @@ export class simulator {
 
             this.updateModal();
         };
-
-        let panCnf = {
-            lungControl: this.scenario == null,
-            vent: this.scenario && this.scenario.vent?this.scenario.vent:null,
-        }
-
-        this.pannel = new basicPannel(panCnf);
-        this.pannel.container.onchange = ()=>this.update();
 
         //--------------------------//
         // New data generation loop //

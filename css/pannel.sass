@@ -7,16 +7,16 @@
   transition: 0.5s
   background-color: white
   box-shadow: 0px 0px 5px 0px gray
-  position: fixed
-  top: 55px
-  right: 0px
   max-height: calc(100vh - (47px + 15px))
-  overflow-x: hidden
+  height: min-content
+  width: max-content
+  flex-shrink: 0
+  margin-top: 10px
 
   details
     margin-bottom: 5px
 
-  h2, summary
+  summary
     background-color: hsl(0, 0%, 32%)
     color: white
     font-size: medium
@@ -60,7 +60,6 @@
 
     td
       height: 2em
-      //border-bottom: 1px solid silver
 
       &:not(:last-child)
         white-space: nowrap
