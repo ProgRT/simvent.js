@@ -18,3 +18,25 @@
     .value
       font-size: 2em
       text-align: right
+
+@media(width < 500px)
+  .numDisplayContainer
+    width: max-content
+    display: flex
+    gap: 5px
+    flex-shrink: 0
+    padding: 10px
+    height: max-content
+
+    >div
+      height: auto
+
+      div
+        display: inline
+
+      div:nth-child(1)::after
+        content: ' :'
+
+      .value
+        font-size: 1.5em
+        text-align: right

@@ -1,0 +1,35 @@
+---
+---
+
+#markdown-toc
+  line-height: 170%
+  counter-reset: section
+  list-style-type: none
+
+  ol, ul
+    counter-reset: section
+    list-style-type: none
+
+  a
+    text-decoration: none
+
+  li::before
+    margin-right: 0.5em
+    counter-increment: section
+    content: counters(section, '.', decimal) '. '
+
+  li li::before
+    counter-increment: section
+    content: counters(section, '.', decimal) ' '
+
+h1
+  counter-reset: title
+h2
+  counter-reset: subtitle
+h2::before
+  counter-increment: title
+  content: counter(title) '. '
+
+h3::before
+  counter-increment: subtitle
+  content: counter(title) '.'counter(subtitle) ' '

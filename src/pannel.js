@@ -54,7 +54,8 @@ export class basicPannel {
         let btn = button({
             icon: "Sliders", 
             label: "togglePannel",
-            title: "Panneau de contrôle",
+            title: 'Control pannel',
+            key: 'p',
             callback: ()=>{
                 let pannel = document.querySelector("#fpPanel");
                 pannel.classList.toggle("hidden");

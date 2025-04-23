@@ -18,8 +18,8 @@ main
   margin: 0px
 
   .waveformsContainer
+    height: calc(100vh - 70px)
     padding: 10px
-    height: calc(100vh - 50px)
     width: 100%
     max-width: 8in
     display: flex
@@ -27,10 +27,20 @@ main
 
     svg
       height: 100%
+      width: 100%
 
 @media(width < 900px)
   #fpPanel
     position: fixed
+    top: 50px
     right: 0px
+
   #fpPanel.hidden
     display: none
+
+@media(width < 500px)
+  main
+    flex-direction: column-reverse  
+
+    .waveformsContainer
+      height: calc(100vh - 150px)

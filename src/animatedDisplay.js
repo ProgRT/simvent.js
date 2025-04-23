@@ -43,8 +43,9 @@ export class display {
 
         this.btnStop = button({
             icon: "Pause",
-            label: "Interrompre",
-            title: "Interrompre",
+            label: "Pause",
+            title: "Pause",
+            keyLabel: 'Space',
             callback: ()=>{
                 if (this.graphInt)  this.stop()
             }
@@ -52,12 +53,21 @@ export class display {
 
         this.btnStart = button({
             icon: "Play",
-            label: "Reprendre",
-            title: "Reprendre",
+            label: "Resume",
+            title: "Resume",
+            keyLabel: 'Space',
             callback: ()=>{
                 this.start()
             }
         })
+
+        window.addEventListener('keyup', (e)=>{
+            if(e.code == 'Space') {
+                e.preventDefault();
+                if(this.graphInt) this.stop();
+                else this.start();
+            }
+        });
 
         this.toolbar.append(this.btnStop);
         this.toolbar.append(this.btnStart);
@@ -65,7 +75,8 @@ export class display {
         this.modal = new dialog({
             toolbar: this.toolbar,
             icon: "CourbesDeVentilation",
-            title: "Sélection des courbes"
+            title: "Waveforms",
+            key: 'w'
         });
 
         this.modal.onopen = ()=>{
@@ -75,13 +86,7 @@ export class display {
         this.initGrStack();
 
         window.onresize = ()=>this.redraw();
-        window.addEventListener('keyup', (e)=>{
-            if(e.code == 'Space') {
-                e.preventDefault();
-                if(this.graphInt) this.stop();
-                else this.start();
-            }
-        });
+
 
         this.nDisp = new numDisp({
             target: this.target
@@ -310,8 +315,10 @@ export class display {
             //console.log("Creating new interval");
             this.loopStartTime = new Date().getTime();
             this.graphInt = setInterval(()=>this.graphLoop(), this.graphLoopInt);
-            this.btnStart.style.display = 'none';
-            this.btnStop.style.display = 'inline';
+            //this.btnStart.style.display = 'none';
+            //this.btnStop.style.display = 'inline';
+            this.btnStart.disabled = true;
+            this.btnStop.disabled = false;
         }
 	}
 
@@ -319,13 +326,16 @@ export class display {
 		clearInterval(this.graphInt);
         this.graphInt = null;
         this.restartNpts = this.grData.length;
-        this.btnStart.style.display = 'inline';
-        this.btnStop.style.display = 'none';
+        //this.btnStart.style.display = 'inline';
+        //this.btnStop.style.display = 'none';
+        this.btnStart.disabled = false;
+        this.btnStop.disabled = true;
         
         if(this.grData.length > 2){
             this.cursTbl = new cursTable(this.datasets);
             this.addCursor(0);
             this.addCursor(1);
+            this.redraw();
             let pannel = document.querySelector("#fpPanel");
             this.fillCursTbl(0);
             this.fillCursTbl(1);

@@ -11,34 +11,25 @@ export function button(params){
     btn.insertAdjacentElement('afterbegin', icon(params.icon));
     let label = params.label[0].toUpperCase() + params.label.slice(1);
     btn.id = `btn${label}`;
-    btn.title = params.title;
+    btn.title = translate(params.title);
+    if(params.key) {
+        btn.title += ` (${translate(params.key)})`;
+    }
+    else if(params.keyLabel){
+        btn.title += ` (${translate(params.keyLabel)})`;
+    }
     btn.onclick = params.callback;
-    return btn;
-}
-
-export function buttonOffOn(params){
-    var btn = document.createElement("button");
-    let icnPause = icon("Pause");
-    let icnPlay = icon("Play");
-    icnPlay.style.display = 'none';
-
-    btn.insertAdjacentElement('afterbegin', icnPause);
-    btn.insertAdjacentElement('afterbegin', icnPlay);
-
-    let label = params.label[0].toUpperCase() + params.label.slice(1);
-    btn.id = `btn${label}`;
-    btn.title = "Interrompre/Reprendre";
-    btn.onclick = params.callback;
-    btn.addEventListener('click', ()=>{
-        if(icnPlay.style.display == 'none'){
-            icnPlay.style.display = 'inline';
-            icnPause.style.display = 'none';
-        } else{
-            icnPause.style.display = 'inline';
-            icnPlay.style.display = 'none';
-        }
-    })
-    
+    if(params.key){
+        addEventListener('keyup', e=>{
+            let concerned = e.key == params.key || e.code == params.key;
+            if (concerned) {
+                let b = document.querySelector('#' + btn.id);
+                if(b.disabled == false) {
+                    b.click();
+                }
+            }
+        });
+    }
     return btn;
 }
 
@@ -60,7 +51,6 @@ export class dialog{
         id: null
     }
 
-    //constructor (toolbar, icon="Carnet") {
     constructor (conf = null) {
         conf = {...dialog.defaults, ...conf};
         for (let param in conf) this[param] = conf[param];
@@ -72,7 +62,7 @@ export class dialog{
         let titlebar = document.createElement('div');
         titlebar.className = 'dialogTitleBar';
         titlebar.innerHTML = `<div></div>
-        <div class='title'>${this.title}</div>
+        <div class='title'>${translate(this.title)}</div>
         <div class='toolbar'></div>`
         this.dialog.append(titlebar);
 
@@ -95,7 +85,8 @@ export class dialog{
                 if (this.onopen) this.onopen();
                 this.dialog.showModal();
             },
-            label: "showDialog"
+            label: "showDialog",
+            key: this.key
         });
         this.toolbar.append(btnOpen);
     }

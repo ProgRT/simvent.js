@@ -6,9 +6,9 @@ icon: Livre
 * Table des matières
 {:toc}
 
-## 1. Modèles de ventilateurs
+## Modèles de ventilateurs
 
-### 1.1 PressureControler
+### PressureControler
 
 Générateur de pression (pression constante) déclenché et cyclé par le temps.
 
@@ -18,7 +18,7 @@ Ventilateur: PressureControler
 
 <table id="PressureControlerDefaults"></table>
 
-### 1.2 FlowControler
+### FlowControler
 
 Générateur de débit (débit constant) déclenché et cyclé par le temps.
 
@@ -28,7 +28,7 @@ Ventilateur: FlowControler
 
 <table id="FlowControlerDefaults"></table>
 
-### 1.3 PressureAssistor
+### PressureAssistor
 
 Générateur de pression (pression constante) déclenché et cyclé par le débit.
 
@@ -40,7 +40,7 @@ Legende: "Ventilation spontanée avec aide inspiratoire"
 
 <table id="PressureAssistorDefaults"></table>
 
-### 1.4 APRV
+### APRV
 
 Générateur de pression (pression constante) déclenché et cyclé par le temps.
 
@@ -55,7 +55,7 @@ Legende: "Mode APRV avec ventilation spontanée superposée."
 
 <table id="APRVDefaults"></table>
 
-### 1.5 IPV
+### IPV
 
 Ventilateur à haute fréquence percussive.
 
@@ -68,7 +68,7 @@ Legende: "Ventilation à haute fréquence percussive superposée à une respirat
 
 <table id="IPVDefaults"></table>
 
-### 1.6 VDR
+### VDR
 
 Ventilateur à haute fréquence percussive biphadique.
 
@@ -79,7 +79,7 @@ Courbe: Pao
 
 <table id="VDRDefaults"></table>
 
-### 1.7 PVCurve
+### PVCurve
 
 Manoeuvre pression-volume quasi-statique destinée à mettre en lumière les caractéristiques mécaniques des différents modèles de poumon.
 
@@ -89,7 +89,7 @@ Ventilateur: PVCurve
 
 <table id="PVCurveDefaults"></table>
 
-## 2. Modèles de poumon
+## Modèles de poumon
 
 Les différents modèles de poumons partagent les mêmes caractéristiques
 en ce qui a trait à la concentration de CO₂ dans l'air expiré et son
@@ -114,7 +114,7 @@ Boucle:
     trgt.innerHTML = mkListTbl(SimpleLung.carbParams);
 </script>
 
-### 2.1 SimpleLung
+### SimpleLung
 
 Modèle simple de poumon avec une compliance linéaire.
 
@@ -126,7 +126,7 @@ Modèle simple de poumon avec une compliance linéaire.
 
 <table id="SimpleLungDefaults"></table>
 
-### 2.2 SptLung
+### SptLung
 
 Modèle de poumon présentant une respiration spontanée. Ses
 caractéristiques mécaniques sont identiques au modèle *SimpleLung*.
@@ -140,7 +140,7 @@ Courbes:
 
 <table id="SptLungDefaults"></table>
 
-### 2.3 SygLung
+### SygLung
 
 Modèle de poumon avec une courbe pression-volume de forme sygmoïde.
 
@@ -152,7 +152,7 @@ Modèle de poumon avec une courbe pression-volume de forme sygmoïde.
 
 <table id="SygLungDefaults"></table>
 
-### 2.4 RLung
+### RLung
 
 Modèle de poumon *recrutable*. Sa courbe presion-volume a une forme sygmoïde et présente une hystérèse.
 

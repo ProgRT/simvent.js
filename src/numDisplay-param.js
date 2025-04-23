@@ -1,5 +1,6 @@
 import {exalations} from './deriv.js';
-import {getPeaks} from './vdrSignalAnalysis.js';
+import {getPeaks} from './analysis.js';
+
 export const Vt = {
     label: 'Vt',
     unit: 'l',

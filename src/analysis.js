@@ -13,3 +13,32 @@ export function ratio(Ti, Te) {
     }
 }
 
+export function getPeaks(data, accessor){
+	var signal = data.map(accessor);
+	var peaks = [];
+	for(var i=1; i<data.length; i++){
+		if(
+			signal[i] > signal[i-1] &&
+			signal[i] > signal[i+1] && (
+				signal[i] > 1.05 * signal[i-1] ||
+				signal[i] > 1.05 * signal[i+1] 
+			)
+		){
+			peaks.push(data[i]);
+		}
+	}
+	return peaks;
+}
+
+export function getFlats(data, accessor){
+	const signal = data.map(accessor);
+	var flats = [];
+	for(var i=1; i<signal.length; i++){
+		if(
+			signal[i] < signal[i-1] &&
+			signal[i] < signal[i+1]
+		){flats.push(data[i]) }
+	}
+	return flats;
+}
+

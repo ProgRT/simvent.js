@@ -8,13 +8,19 @@ export const units = {
 
 const uiFr = {
     Close: 'Fermer',
+    'Control pannel': 'Paneau de contrôle',
     'Completed tasks': 'Tâches complétées',
     Cursors: 'Curseurs',
     ESC: 'Échap',
     Lung: 'Poumons',
     'Ongoing tasks': 'Tâches en cours',
     Ventilator: 'Ventilateur',
+    Pause: 'Interrompre',
+    Resume: 'Reprendre',
+    Waveforms: 'Courbes',
+    Space: 'Espace',
 }
+
 const modelsFr = {
     APRV: 'APRV (PC-VOI)',
     IPV: 'Ventilation perc. (IPV)',
