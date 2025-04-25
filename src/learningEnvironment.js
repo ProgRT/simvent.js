@@ -11,7 +11,10 @@ export class simulator {
         debugMode: false,
         ventIntDur: 500,
         minDatDur: 3,
-        minData: 1
+        minData: 1,
+        debug: [
+            //'dataGenTime'
+        ]
     }
 
     constructor (parameters=null) {
@@ -70,7 +73,10 @@ export class simulator {
     pushNewData () {
         this.update();
         //if (this.debugMode) this.newDataMsg();
+        let tStart = new Date();
         const nDat = this.vent.ventilate(this.lung).timeData;
+        let tEnd = new Date();
+        if(this.debug.includes('dataGenTime')) console.log(`Nouvelles données générées en ${tEnd - tStart}`);
         this.disp.push(nDat);
         
         // -----------------------------------------
