@@ -1,5 +1,16 @@
 ---
 ---
+@keyframes flash
+  0%
+    border: 1px solid white
+    box-shadow: 1px 1px 2px white
+  50%
+    border: 1px solid gainsboro
+    box-shadow: 1px 1px 2px silver
+  100%
+    border: 1px solid white
+    box-shadow: 1px 1px 2px white
+
 nav
   position: sticky
   top: 0px
@@ -14,24 +25,28 @@ nav
   display: flex
   justify-content: space-between
 
-  button
+  button, a
+    border: 1px solid white
+    box-shadow: 1px 1px 2px white
     background: none
-    border: none
     border-radius: 5px
     padding: 5px
-    transition: 1s
+    transition: 0.9s
+  a
+    animation: flash 1.5s ease-in-out
 
-  button:hover
-    //box-shadow: 3px 3px 5px gainsboro
-    //border: 1px solid gainsboro
-    background: hsl(0, 0%, 90%)
-  button:disabled
+  button:hover, a:hover
+    border: 1px solid gainsboro
+    box-shadow: 1px 1px 2px silver
+
+  button:disabled, a.disabled
     display: none
 
   svg
     vertical-align: middle
     fill: black
     height: 1.8em
+    width: 1.8em
 
   div
     flex-basis: 500px
@@ -40,8 +55,10 @@ nav
   float: left
   text-align: left
 
+
 #rightControls
   display: flex
+  gap: 5px
   flex-direction: row-reverse
 
 menu

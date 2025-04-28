@@ -1,5 +1,5 @@
 import {graph} from "./moovingGraph.js";
-import {fmt, dialog, button, delta, ratio, improvedRange} from './utils.js';
+import {fmt, dialog, button, icon, delta, ratio, improvedRange} from './utils.js';
 import {display as numDisp} from './numDisplay.js';
 import {pannelDiv} from './pannel.js';
 import {translate, units} from './translate.js';
@@ -83,14 +83,17 @@ export class display {
             this.modal.setContent(this.waveformSelect());
         };
 
+        this.dwlLnk = dwlLnk()
+        this.toolbar.append(this.dwlLnk);
+
         this.initGrStack();
 
         window.onresize = ()=>this.redraw();
 
-
         this.nDisp = new numDisp({
             target: this.target
         });
+
 	}
 
     initGrStack () {
@@ -186,6 +189,7 @@ export class display {
             g.tStart = this.tStart;
             g.coord = '';
         }
+
 
         this.start();
     }
@@ -319,6 +323,7 @@ export class display {
             //this.btnStop.style.display = 'inline';
             this.btnStart.disabled = true;
             this.btnStop.disabled = false;
+            this.dwlLnk.classList.add('disabled');
         }
 	}
 
@@ -326,12 +331,15 @@ export class display {
 		clearInterval(this.graphInt);
         this.graphInt = null;
         this.restartNpts = this.grData.length;
-        //this.btnStart.style.display = 'inline';
-        //this.btnStop.style.display = 'none';
         this.btnStart.disabled = false;
         this.btnStop.disabled = true;
+        this.dwlLnk.disabled = false;
         
         if(this.grData.length > 2){
+
+            this.dwlLnk.classList.remove('disabled');
+            this.dwlLnk.href = this.dataUrl;
+
             this.cursTbl = new cursTable(this.datasets);
             this.addCursor(0);
             this.addCursor(1);
@@ -374,6 +382,12 @@ export class display {
 
     fillCursTbl(cursIndex){
         this.cursTbl.fill(cursIndex, this.cursors, this.tStart);
+    }
+
+    get dataUrl(){
+        let csv = toCsv(this.grData);
+        let bl = new Blob([csv]);
+        return URL.createObjectURL(bl);
     }
 }
 
@@ -424,4 +438,19 @@ class cursTable {
     }
 
     remove() { this.container.remove(); }
+}
+
+function toCsv(dat){
+    let hLine = Object.keys(dat[0]).join(',');
+    let dLines = dat.map(obj => Object.values(obj).join(',')).join('\n');
+    return hLine + '\n' + dLines;
+}
+
+function dwlLnk () {
+
+    let lnk = document.createElement('a');
+    lnk.append(icon('Télécharger'));
+    lnk.download = 'simvent_data.csv';
+
+    return lnk;
 }
