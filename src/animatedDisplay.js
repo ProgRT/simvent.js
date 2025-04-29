@@ -110,7 +110,6 @@ export class display {
 
         for(let c of this.cursors){
             let time = c.time - this.tStart;
-            //for (let g of this.graphStack) g.drawCursor(time);
             for (let g of this.graphStack) g.drawCursor(c);
         }
     }
@@ -348,7 +347,6 @@ export class display {
             this.fillCursTbl(0);
             this.fillCursTbl(1);
             pannel.append(this.cursTbl.container);
-            console.log("Redrawing");
             this.redraw();
         }
 	}
@@ -387,7 +385,7 @@ export class display {
     }
 
     get dataUrl(){
-        let csv = toCsv(this.grData);
+        let csv = toCsv([...this.wData, ...this.grData]);
         let bl = new Blob([csv]);
         return URL.createObjectURL(bl);
     }
