@@ -11,6 +11,7 @@ const uiFr = {
     'Control pannel': 'Paneau de contrôle',
     'Completed tasks': 'Tâches complétées',
     Cursors: 'Curseurs',
+    'Download data': 'Télécharger les données',
     ESC: 'Échap',
     Lung: 'Poumons',
     'Ongoing tasks': 'Tâches en cours',

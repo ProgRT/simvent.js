@@ -10,11 +10,11 @@ body
   padding: 0px
 
 main
-  overflow: hidden
   box-sizing: border-box
   display: flex
   justify-content: space-between
   flex-direction: row-reverse
+  flex-wrap: none
   margin: 0px
 
   .waveformsContainer
@@ -23,6 +23,7 @@ main
     width: 100%
     max-width: 8in
     display: flex
+    flex-shrink: 5
     flex-direction: column
 
     svg

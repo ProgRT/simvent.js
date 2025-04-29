@@ -2,6 +2,9 @@
 ---
 .numDisplayContainer
   width: max-content
+  display: flex
+  flex-direction: column
+  gap: 8px
   flex-shrink: 0
   padding: 10px
   height: max-content
@@ -12,7 +15,6 @@
     background: hsla(0, 0%, 100%, 0.9)
     padding: 8px
     border-radius: 8px
-    margin-bottom: 5px
     height: 3.5em
 
     .value
@@ -21,9 +23,7 @@
 
 @media(width < 500px)
   .numDisplayContainer
-    width: max-content
-    display: flex
-    gap: 5px
+    flex-direction: row
     flex-shrink: 0
     padding: 10px
     height: max-content

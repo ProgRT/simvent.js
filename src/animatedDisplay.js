@@ -339,7 +339,7 @@ export class display {
 
             this.dwlLnk.classList.remove('disabled');
             this.dwlLnk.href = this.dataUrl;
-
+10
             this.cursTbl = new cursTable(this.datasets);
             this.addCursor(0);
             this.addCursor(1);
@@ -348,6 +348,8 @@ export class display {
             this.fillCursTbl(0);
             this.fillCursTbl(1);
             pannel.append(this.cursTbl.container);
+            console.log("Redrawing");
+            this.redraw();
         }
 	}
 
@@ -451,6 +453,7 @@ function dwlLnk () {
     let lnk = document.createElement('a');
     lnk.append(icon('Télécharger'));
     lnk.download = 'simvent_data.csv';
+    lnk.title = translate('Download data');
 
     return lnk;
 }

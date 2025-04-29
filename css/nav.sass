@@ -1,15 +1,8 @@
 ---
 ---
 @keyframes flash
-  0%
-    border: 1px solid white
-    box-shadow: 1px 1px 2px white
-  50%
-    border: 1px solid gainsboro
-    box-shadow: 1px 1px 2px silver
   100%
-    border: 1px solid white
-    box-shadow: 1px 1px 2px white
+    fill: blue
 
 nav
   position: sticky
@@ -32,12 +25,18 @@ nav
     border-radius: 5px
     padding: 5px
     transition: 0.9s
+    text-align: center
+    svg
+      vertical-align: middle
+      fill: black
+      height: 30px
   a
-    animation: flash 1.5s ease-in-out
+    svg
+      animation: flash .75s linear alternate 4
 
   button:hover, a:hover
-    border: 1px solid gainsboro
-    box-shadow: 1px 1px 2px silver
+    svg
+      fill: navy
 
   button:disabled, a.disabled
     display: none
@@ -46,7 +45,6 @@ nav
     vertical-align: middle
     fill: black
     height: 1.8em
-    width: 1.8em
 
   div
     flex-basis: 500px
