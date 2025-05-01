@@ -60,6 +60,8 @@ export class display {
                 this.start()
             }
         })
+        this.btnStart.disabled = true;
+        this.btnStop.disabled = true;
 
         window.addEventListener('keyup', (e)=>{
             if(e.code == 'Space') {
@@ -91,7 +93,8 @@ export class display {
         window.onresize = ()=>this.redraw();
 
         this.nDisp = new numDisp({
-            target: this.target
+            target: this.target,
+            numData: this.numData
         });
 
 	}
@@ -166,6 +169,7 @@ export class display {
         let duration = d3.max(this.grData, d=>d.time);
         for (let g of this.graphStack) g.timePerScreen = duration;
         this.redraw();
+        this.dwlLnk.href = this.dataUrl;
     }
 
     animate (data) {

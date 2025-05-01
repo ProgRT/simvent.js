@@ -9,6 +9,7 @@ export class basicPannel {
     static defaults = {
         debugMode: false,
         target: document.body,
+        toolbar: document.querySelector("#rightControls"),
         startVentModel: "FlowControler",
         startLungModel: "SimpleLung",
         lungControl: true
@@ -49,7 +50,7 @@ export class basicPannel {
             });
         }
 
-        this.toolbar = document.querySelectorAll("nav div")[2];
+        //this.toolbar = document.querySelectorAll("nav div")[2];
 
         let btn = button({
             icon: "Sliders", 

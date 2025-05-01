@@ -4,16 +4,22 @@ import {basicPannel} from "./pannel.js";
 export class simulator {
     static defaults = {
         dispTarget: document.body,
-        animate: false
+        toolbar: document.querySelector("#rightControls"),
+        animate: false,
+        numData: [],
     }
 
     constructor (parameters=null) {
         let params = {...simulator.defaults, ...parameters};
         for (let p in params) this[p] = params[p];
 
-        this.disp = new display({target: this.dispTarget});
-        this.pannel = new basicPannel();
+        this.pannel = new basicPannel({target: this.dispTarget});
         this.pannel.container.onchange = ()=>this.update();
+        this.disp = new display({
+            target: this.dispTarget,
+            toolbar: this.toolbar,
+            numData: this.numData
+        });
         this.update();
     }
 

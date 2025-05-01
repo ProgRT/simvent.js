@@ -16,10 +16,12 @@ main
   flex-direction: row-reverse
   flex-wrap: none
   margin: 0px
+  gap: 10px
+  padding: 10px 0px 10px 10px
 
   .waveformsContainer
     height: calc(100vh - 70px)
-    padding: 10px
+    padding: 0px 5px 0px 0px
     width: 100%
     max-width: 8in
     display: flex
@@ -30,14 +32,21 @@ main
       height: 100%
       width: 100%
 
+#btnTogglePannel
+  display: none
+
 @media(width < 900px)
   #fpPanel
     position: fixed
-    top: 50px
+    top: 60px
     right: 0px
 
   #fpPanel.hidden
-    display: none
+    //display: none
+    transform: translate(100%)
+
+  #btnTogglePannel
+    display: block
 
 @media(width < 500px)
   main

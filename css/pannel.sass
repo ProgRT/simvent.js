@@ -3,22 +3,24 @@
 
 #fpPanel
   font-family: sans-serif
-  padding: 2px
-  transition: 0.5s
+  padding: 3px
+  transition: 0.35s ease-in-out
   background-color: white
   box-shadow: 0px 0px 5px 0px gray
+  border-radius: 5px
   max-height: calc(100vh - (47px + 15px))
   height: min-content
   width: max-content
   flex-shrink: 0
-  margin-top: 10px
-  overflow: auto
+  overflow-y: auto
+  overflow-x: hidden
 
   details
     margin-bottom: 5px
 
   summary
     background-color: hsl(0, 0%, 32%)
+    border-radius: 5px
     color: white
     font-size: medium
     padding-left: 6px

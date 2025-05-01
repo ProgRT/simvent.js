@@ -1,12 +1,12 @@
 import {translate} from './translate.js';
 import {fmt} from './utils.js';
-import {Vt, Ppeak} from './numDisplay-param.js';
+import * as params from './numDisplay-param.js';
 
 export class display {
     static defaults = {
         numData: [
-            Vt,
-            Ppeak
+            'Vt',
+            'Ppeak'
         ],
         target: document.body,
         graphLoopInt: 1000,
@@ -24,7 +24,7 @@ export class display {
         for (let d of this.numData) {
             let conf = {
                 ...{containerTable: this.container},
-                ...d
+                ...params[d]
             };
             this.cells.push(new cell(conf));
         }
