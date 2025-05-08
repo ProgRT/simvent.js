@@ -28,3 +28,5 @@ exclude:
   - postlist.html
   - ventyaml.md
   - todo.md
+include:
+  - node_modules

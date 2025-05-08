@@ -6,7 +6,6 @@
   flex-direction: column
   gap: 8px
   flex-shrink: 0
-  //padding: 10px
   height: max-content
 
   >div
@@ -21,15 +20,17 @@
       font-size: 2em
       text-align: right
 
-@media(width < 500px)
+@media(max-width: 500px)
   .numDisplayContainer
     flex-direction: row
     flex-shrink: 0
-    padding: 10px
+    padding: 2px
     height: max-content
+    font-size: 0.8em
 
     >div
       height: auto
+      padding: 4px 8px
 
       div
         display: inline
@@ -38,5 +39,5 @@
         content: ' :'
 
       .value
-        font-size: 1.5em
+        font-size: 1.3em
         text-align: right

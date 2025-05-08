@@ -1,6 +1,6 @@
 -[ ] Implémenter la taxonomie de chatburn
 
-	-[ ] Traduire en français
+	-[X] Traduire en français
 	-[ ] Réorganiser les modèles de ventilateurs en conséquence
 
 ## VDR

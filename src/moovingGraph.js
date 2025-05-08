@@ -10,6 +10,7 @@ export class graph {
 		this.svg = target.append('svg');
 
 		this.svg.attr('class', 'gs');
+
 		this.path = this.svg.append('path');
 		this.path.attr('class', 'gsPlotLine');
 		this.coord = '';
@@ -144,7 +145,6 @@ export class graph {
 
 class cursor {
     constructor (graph, data) {
-        //console.log(`Height: ${graph.height} Marge: ${graph.margeB}`);
         this.data = data;
         this.time = data.time - graph.tStart;
         this.graph = graph;

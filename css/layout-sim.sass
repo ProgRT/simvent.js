@@ -4,12 +4,15 @@
 html
   margin: 0px
   padding: 0px
+  overflow-x: hidden
 
 body
   margin: 0px
   padding: 0px
 
 main
+  position: relative
+  top: 0px
   box-sizing: border-box
   display: flex
   justify-content: space-between
@@ -35,10 +38,10 @@ main
 #btnTogglePannel
   display: none
 
-@media(width < 900px)
+@media (max-width: 900px)
   #fpPanel
-    position: fixed
-    top: 60px
+    position: absolute
+    top: 10px
     right: 0px
 
   #fpPanel.hidden
@@ -48,9 +51,14 @@ main
   #btnTogglePannel
     display: block
 
-@media(width < 500px)
+@media (max-width: 500px)
   main
     flex-direction: column-reverse  
 
     .waveformsContainer
       height: calc(100vh - 150px)
+
+  @media (max-height: 400px)
+    main
+      .waveformsContainer
+        height: auto
