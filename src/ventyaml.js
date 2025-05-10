@@ -1,6 +1,8 @@
 import * as vents from './simvent-ventilators.js';
 import * as lungs from './simvent-lungs.js';
 import {addGraph} from 'https://progrt.github.io/graphsimple.js/graphsimple.js';
+import {icon} from './utils.js';
+import {toCsv} from './animatedDisplay.js';
 //import {YAML} from "https://cdn.skypack.dev/@eemeli/YAML";
 
 const grconf =	{
@@ -9,7 +11,19 @@ const grconf =	{
 	margeH:10,
 	margeB:60,
 	padH : .1,
+    autoScale: true
 };
+
+const lConf = {
+	margeG:60,
+	margeD:10,
+	margeH:10,
+	margeB:60,
+	padH : .1,
+    autoScale: true,
+    class: "loop",
+    nticksX: 5
+}
 
 export class ventyaml {
 	constructor(sourceNode) {
@@ -20,29 +34,17 @@ export class ventyaml {
 		this.parentDiv = sourceNode.parentNode;
 
 		this.container = document.createElement("figure");
-		this.container.className =this.clsList;
+		this.container.className = this.clsList;
 		this.container.classList.add("ventyaml");
 
 		this.parentDiv.insertBefore(this.container, sourceNode);
 
-		if(sourceNode.tagName == "TEXTAREA"){
-			this.textarea = sourceNode;
-		}
-		else{
-			this.textarea = document.createElement("textarea");
-			this.textarea.value = sourceNode.textContent;
-			this.parentDiv.removeChild(sourceNode);
-		}
+        sourceNode.contentEditable = true;
+        sourceNode.classList.add('ventyamlSource');
+		this.container.appendChild(sourceNode);
+        this.textarea = sourceNode;
 
-		this.container.appendChild(this.textarea);
-
-		this.textarea.classList.add("ventyamlSource");
 		this.container.classList.add("hidden");
-		this.textarea.value = this.textarea.value.trim();
-		addEventListener('keyup', this.handleKeyup.bind(this));
-		addEventListener('keydown', this.handleKeydown.bind(this));
-		//this.createCM();
-
 
 		// Create waveform container div
 		this.waveformContainer = document.createElement("div");
@@ -56,48 +58,15 @@ export class ventyaml {
 		this.downloadsDiv.classList.add('downloads');
 		this.container.appendChild(this.downloadsDiv);
 
-		// Operate the magic
+		addEventListener('keydown', e=>{
+            if(e.ctrlKey & e.code =='Enter') this.update();
+        });
 
 		this.update();
 	}
 
-	handleKeydown(e){
-		  if(e.key == 'Control'){this.ctrlDown = true}
-		  if(e.key == 'Enter' && this.ctrlDown){this.update();}
-	}
-
-	handleKeyup(e){
-		  if(e.key == 'Control'){this.ctrlDown = false}
-	}
-
-	setValue(value){
-		this.textarea.value = value;
-		if('cm' in this){
-			console.log('We have a codemirror instance');
-			this.cm.setValue(value);
-		}
-	}
-
-	createCM(){
-
-		// Replace source element with codemirror if available
-
-		if(typeof window.CodeMirror !== "undefined"){
-			this.cm  = CodeMirror.fromTextArea(this.textarea,{
-				//keyMap: "vim",
-				theme: "midnight",
-				mode: "yaml",
-				matchBrackets: true,
-				showCursorWhenSelecting: true,
-				//lineNumbers: true
-			});
-		}
-		else{console.log("Codemirror not available");}
-	}
-
 	update(){
-//		this.cm.save();
-		this.yaml = this.textarea.value;
+		this.yaml = this.textarea.textContent;
 		this.json = YAML.parse(this.yaml);
 		this.updateLung();
 		this.updateVent();
@@ -193,40 +162,22 @@ export class ventyaml {
 
 	run(){
 		this.data = [];
-		while(this.downloadsDiv.firstChild){
-				  this.downloadsDiv.removeChild(this.downloadsDiv.firstChild);
-		}
+		this.downloadsDiv.childNodes.forEach(n=>n.remove());
 
-		for(var i in this.vents){
-			var vent = this.vents[i];
-			for(var i in this.lungs){
+		for(let vent of this.vents){
+
+			for(let lung of this.lungs){
 				vent.time = 0;
-				var data = vent.ventilate(this.lungs[i]).timeData;
+				var data = vent.ventilate(lung).timeData;
 				this.data.push(data);
-
-				var array = typeof data != 'object' ? JSON.parse(data) : data;
-				var str = '';
-
-				var line = '';
-				for (var index in array[0]) {
-					if(line != '') line += '\t ';
-					line += index;
-				}
-
-				str += line + '\r\n';
-				for (var i = 0; i < array.length; i++) {
-					var line = '';
-					for (var index in array[i]) {
-						if(line != '') line += '\t ';
-						line += array[i][index];
-					}
-					str += line + '\r\n';
-				}
+                let csv = toCsv(data);
 
 				var link = document.createElement('a');
-				link.download = 'simvent' + this.data.length + '.dat';
-				link.href = 'data:text/tsv;charset=utf-8,' + escape(str);
-				link.textContent = link.download + ' ';		
+                link.append(icon('Télécharger'));
+				link.download = 'simvent' + this.data.length + '.csv';
+				link.href = URL.createObjectURL(new Blob([csv]));;
+				link.append(link.download);		
+
 				this.downloadsDiv.appendChild(link);
 			}
 		}
@@ -234,10 +185,7 @@ export class ventyaml {
 
 	updateGraph(){
 		// 1- Clear all graph
-		var wc = this.waveformContainer;
-		while(wc.firstChild){
-			wc.removeChild(wc.firstChild);
-		}
+        this.waveformContainer.childNodes.forEach(n=>n.remove());
 
 		// 2- Check what must be ploted and plot it
 
@@ -277,9 +225,14 @@ export class ventyaml {
 		if(typeof courbe == "string"){
 			function fx(d){return d.time;}
 			function fy(d){return d[courbe];}
-			var graph = addGraph(this.waveformContainer.id, this.data[0], fx, fy, {...grconf, ...{autoScale: true}})
+
+			var graph = addGraph(
+                this.waveformContainer.id,
+                this.data[0], fx, fy, grconf
+            )
 				.setidx('Temps (s)')
 				.setidy(courbe);
+
 			if(this.data.length>1){
 				for(var i = 1; i< this.data.length;i++){
 					graph.tracer(this.data[i],fx,fy);
@@ -292,12 +245,28 @@ export class ventyaml {
 	}	
 
 	createLoop(boucle){
-		if( typeof boucle == "object" && 'x' in boucle && 'y' in boucle && boucle.x != null && boucle.y != null){
-			function fx(d){return d[boucle["x"]];}
+		if(
+            typeof boucle == "object"
+            && 'x' in boucle
+            && 'y' in boucle
+            && boucle.x != null
+            && boucle.y != null
+        ){
+			//function fx(d){return d[boucle["x"]];}
+            let fx = d=>d[boucle["x"]];
 			function fy(d){return d[boucle["y"]];}
-			var graph = addGraph(this.waveformContainer.id, this.data[0], fx, fy, {...grconf, ...{ class: "loop", nticksX: 5}});
+
+			var graph = addGraph(
+                this.waveformContainer.id,
+                this.data[0],
+                fx,
+                fy,
+                lConf
+            );
+
 			graph.setidx(boucle["x"]);
 			graph.setidy(boucle["y"]);
+
 			if(this.data.length>1){
 				for(var i = 1; i< this.data.length;i++){
 					graph.tracer(this.data[i],fx,fy);
@@ -310,6 +279,7 @@ export class ventyaml {
 	toggleSource(){
 		if(this.container.classList.contains("hidden")){
 			this.container.classList.remove("hidden");
+            this.textarea.focus();
 		}
 		else{
 			this.update();
@@ -322,9 +292,6 @@ export class ventyaml {
 		if(this.container.querySelector('caption')){
 			this.container.querySelector('caption').remove();
 		}
-
-
-
 		// Si ume legende est specifiee dans la source, en creer une
 		
 		if("Legende" in this.json){
@@ -337,6 +304,7 @@ export class ventyaml {
 
 export async function ventyamlEverything(selector){
 	var preS = document.querySelectorAll(selector);
+
 	for(var i in preS){
 		if(typeof preS[i].tagName != 'undefined'){//Why the hell must I filter this?
 			var ventyamlInstance = new ventyaml(preS[i]);
