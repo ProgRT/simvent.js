@@ -42,6 +42,7 @@ export class ventyaml {
         sourceNode.classList.add('ventyamlSource');
 		this.container.appendChild(sourceNode);
         this.textarea = sourceNode;
+        this.textarea.spellcheck = false;
 
 
 		// Create waveform container div
