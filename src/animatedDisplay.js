@@ -1,5 +1,5 @@
 import {graph} from "./moovingGraph.js";
-import {fmt, dialog, button, icon, delta, ratio, improvedRange} from './utils.js';
+import {fmt, dialog, button, icon, delta, ratio, improvedRange, csvUrl} from './utils.js';
 import {display as numDisp} from './numDisplay.js';
 import {pannelDiv} from './pannel.js';
 import {translate, units} from './translate.js';
@@ -169,7 +169,7 @@ export class display {
         let duration = d3.max(this.grData, d=>d.time);
         for (let g of this.graphStack) g.timePerScreen = duration;
         this.redraw();
-        this.dwlLnk.href = this.dataUrl;
+        this.dwlLnk.href = csvUrl([...this.wData, ...this.grData]);
     }
 
     animate (data) {
@@ -341,7 +341,7 @@ export class display {
         if(this.grData.length > 2){
 
             this.dwlLnk.classList.remove('disabled');
-            this.dwlLnk.href = this.dataUrl;
+            this.dwlLnk.href = csvUrl([...this.wData, ...this.grData]);
 10
             this.cursTbl = new cursTable(this.datasets);
             this.addCursor(0);
@@ -386,12 +386,6 @@ export class display {
 
     fillCursTbl(cursIndex){
         this.cursTbl.fill(cursIndex, this.cursors, this.tStart);
-    }
-
-    get dataUrl(){
-        let csv = toCsv([...this.wData, ...this.grData]);
-        let bl = new Blob([csv]);
-        return URL.createObjectURL(bl);
     }
 }
 
@@ -442,12 +436,6 @@ class cursTable {
     }
 
     remove() { this.container.remove(); }
-}
-
-export function toCsv(dat){
-    let hLine = Object.keys(dat[0]).join(',');
-    let dLines = dat.map(obj => Object.values(obj).join(',')).join('\n');
-    return hLine + '\n' + dLines;
 }
 
 function dwlLnk () {

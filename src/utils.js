@@ -184,3 +184,14 @@ export function improvedRange(params={}) {
     div.value = input.value;
     return div;
 }
+
+export function toCsv(dat){
+    let hLine = Object.keys(dat[0]).join(',');
+    let dLines = dat.map(obj => Object.values(obj).join(',')).join('\n');
+    return hLine + '\n' + dLines;
+}
+
+export function csvUrl(data){
+    let csv = toCsv(data);
+    return URL.createObjectURL(new Blob([csv]))
+}
