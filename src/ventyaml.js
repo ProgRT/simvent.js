@@ -27,16 +27,15 @@ const lConf = {
 
 export class ventyaml {
 	constructor(sourceNode) {
-		this.clsList = sourceNode.classList;
-
 		if (! YAML){throw "ventyaml: YAML library not loaded."}
 
+		this.clsList = sourceNode.classList;
 		this.parentDiv = sourceNode.parentNode;
 
 		this.container = document.createElement("figure");
 		this.container.className = this.clsList;
 		this.container.classList.add("ventyaml");
-
+		this.container.classList.add("hidden");
 		this.parentDiv.insertBefore(this.container, sourceNode);
 
         sourceNode.contentEditable = true;
@@ -44,7 +43,6 @@ export class ventyaml {
 		this.container.appendChild(sourceNode);
         this.textarea = sourceNode;
 
-		this.container.classList.add("hidden");
 
 		// Create waveform container div
 		this.waveformContainer = document.createElement("div");
@@ -223,8 +221,8 @@ export class ventyaml {
 
 	createWaveform(courbe){
 		if(typeof courbe == "string"){
-			function fx(d){return d.time;}
-			function fy(d){return d[courbe];}
+            let fx = d=>d.time;
+            let fy = d=>d[courbe];
 
 			var graph = addGraph(
                 this.waveformContainer.id,
@@ -252,20 +250,17 @@ export class ventyaml {
             && boucle.x != null
             && boucle.y != null
         ){
-			//function fx(d){return d[boucle["x"]];}
-            let fx = d=>d[boucle["x"]];
-			function fy(d){return d[boucle["y"]];}
+            let fx = d=>d[boucle.x];
+            let fy = d=>d[boucle.y];
 
 			var graph = addGraph(
                 this.waveformContainer.id,
                 this.data[0],
-                fx,
-                fy,
-                lConf
+                fx, fy, lConf
             );
 
-			graph.setidx(boucle["x"]);
-			graph.setidy(boucle["y"]);
+			graph.setidx(boucle.x);
+			graph.setidy(boucle.y);
 
 			if(this.data.length>1){
 				for(var i = 1; i< this.data.length;i++){

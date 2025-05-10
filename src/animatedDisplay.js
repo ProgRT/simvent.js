@@ -444,7 +444,7 @@ class cursTable {
     remove() { this.container.remove(); }
 }
 
-function toCsv(dat){
+export function toCsv(dat){
     let hLine = Object.keys(dat[0]).join(',');
     let dLines = dat.map(obj => Object.values(obj).join(',')).join('\n');
     return hLine + '\n' + dLines;

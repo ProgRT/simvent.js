@@ -184,14 +184,8 @@ Boucle:
     }
 
     for(let l of Object.keys(lungs)){
-        let trgt = document.querySelector(`#${l}Defaults`);
-        trgt.innerHTML = mkListTbl([
-                ...lungs[l].mechParams,
-        ]);
+        let tbl = document.querySelector(`#${l}Defaults`);
+        tbl.innerHTML = mkListTbl(lungs[l].mechParams);
     }
-
-//var trgt = document.querySelector(`#SptLungDefaults`);
-//trgt.innerHTML = mkListTbl(lungs.SptLung.respParams);
-
 
 </script>

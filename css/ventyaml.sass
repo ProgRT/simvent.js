@@ -6,7 +6,7 @@
   margin-left: auto
   margin-right: auto
   text-align: left
-  transition: all 1s allow-discrete
+  transition: all 1s
   line-height: 140%
   font-size: 105%
   text-wrap: wrap
@@ -16,13 +16,14 @@
 .ventyaml.hidden
   .ventyamlSource, .downloads
     transform: scaleY(0)
+    transition: all 1s linear allow-discrete
     height: 0
     margin: 0
     padding: 0
 
 .downloads
   overflow: hidden
-  transition: all 1s allow-discrete
+  transition: all 1s
 
   svg
     height: 1.2em
