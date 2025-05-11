@@ -22,6 +22,9 @@ export class basicPannel {
 		this.container = document.createElement('div');
 		this.container.id = 'fpPanel';
 		this.container.classList.add('hidden');
+        this.container.onmouseleave = ()=>{
+            this.container.classList.add('hidden');
+        };
 		this.target.appendChild(this.container);
         //makeSwipable("#fpPanel");
 

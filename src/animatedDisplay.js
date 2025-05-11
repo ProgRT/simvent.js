@@ -1,5 +1,6 @@
 import {graph} from "./moovingGraph.js";
-import {fmt, dialog, button, icon, delta, ratio, improvedRange, csvUrl} from './utils.js';
+import {fmt, delta, ratio, csvUrl} from './utils.js';
+import {dialog, button, icon, improvedRange} from './ui.js';
 import {display as numDisp} from './numDisplay.js';
 import {pannelDiv} from './pannel.js';
 import {translate, units} from './translate.js';
@@ -407,12 +408,17 @@ class cursTable {
         this.cursHead = [...heads].splice(1,2);
 
         this.tbody = document.createElement('tbody');
+
         for(let ds of rows){
             let row = document.createElement('tr');
             let label = translate(ds);
             row.innerHTML = `<th>${label}</th><td></td><td></td>`
 
-            if(ds in units) row.childNodes[0].innerHTML += ` <small>(${units[ds].unit})</small>`;
+            if(ds in units){
+                let unit = ` <small>(${units[ds].unit})</small>`;
+                row.childNodes[0].innerHTML +=  unit;
+            }
+
             this.tbody.append(row);
         }
         tbl.append(this.tbody);
