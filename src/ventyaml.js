@@ -265,7 +265,11 @@ export class ventyaml {
     toggleSource(){
         this.container.classList.toggle('hidden');
         let hidden = this.container.classList.contains('hidden')
-        if (!hidden) this.textarea.focus();
+        if (!hidden) {
+            this.textarea.focus();
+            let sel = window.getSelection();
+            sel.setPosition(this.textarea, 1);
+        }
     }
 
     updateCaption(){
