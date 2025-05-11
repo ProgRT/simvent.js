@@ -172,6 +172,7 @@ export class ventyaml {
 
                 var link = document.createElement('a');
                 link.append(icon('Télécharger'));
+                link.title = 'Télécharger les données';
                 link.download = 'simvent' + this.data.length + '.csv';
                 link.href = csvUrl(data);
                 link.append(link.download);		
