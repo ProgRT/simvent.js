@@ -1,7 +1,7 @@
 import * as simventVents from "./simvent-ventilators.js";
 import * as simventLungs from "./simvent-lungs.js";
-//import {makeSwipable} from "./swipe.js";
-import {icon, button} from "./utils.js";
+import {fmt} from "./utils.js";
+import {icon, button} from "./ui.js";
 import {translate} from './translate.js';
 
 export class basicPannel {
@@ -25,7 +25,8 @@ export class basicPannel {
         this.container.onmouseleave = ()=>{
             this.container.classList.add('hidden');
         };
-		this.target.appendChild(this.container);
+		//this.target.appendChild(this.container);
+		this.target.insertAdjacentElement('afterbegin', this.container);
         //makeSwipable("#fpPanel");
 
         this.lung = new simventLungs[this.startLungModel]();
@@ -55,7 +56,7 @@ export class basicPannel {
 
         //this.toolbar = document.querySelectorAll("nav div")[2];
 
-        let btn = button({
+        this.btn = button({
             icon: "Sliders", 
             label: "togglePannel",
             title: 'Control pannel',
@@ -66,7 +67,13 @@ export class basicPannel {
             }
         })
 
-        this.toolbar.appendChild(btn);
+        //this.toolbar.appendChild(this.btn);
+        this.toolbar.insertAdjacentElement('afterbegin', this.btn);
+    }
+
+    remove() {
+        this.container.remove();
+        this.btn.remove();
     }
 
 }
@@ -155,7 +162,8 @@ function paramTable(object, paramSet) {
         td.className = 'data';
 
         if (p.calculated == true){
-            let value = object[p.id].toLocaleString(navigator.language);
+            //let value = object[p.id].toLocaleString(navigator.language);
+            let value = fmt(object[p.id], 1);
             var dataSpan = document.createElement('span');
             dataSpan.id = 'data' + p.id;
             dataSpan.textContent = value;

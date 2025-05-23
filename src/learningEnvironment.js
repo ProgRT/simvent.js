@@ -13,6 +13,7 @@ export class simulator {
         minDatDur: 3,
         minData: 1,
         numData: ['Ppeak', 'Vt'],
+        scnConf: null,
         debug: [
             //'dataGenTime'
         ]
@@ -23,10 +24,11 @@ export class simulator {
         for (let p in params) this[p] = params[p];
 
         let panCnf = {
-            lungControl: this.scenario == null,
+            lungControl: this.scnDesc == null,
             vent: this.scenario && this.scenario.vent?this.scenario.vent:null,
             target: this.dispTarget
         }
+
         this.pannel = new basicPannel(panCnf);
         this.pannel.container.onchange = ()=>this.update();
 
@@ -41,7 +43,7 @@ export class simulator {
 
 
         if(this.scnDesc){
-            this.scenario = new scenario(this.scnDesc);
+            this.scenario = new scenario(this.scnDesc, this.scnConf);
             this.lung = this.scenario.lung;
 
             this.modal = new dialog({
@@ -104,7 +106,7 @@ export class simulator {
         closeCompletedTasks();
     }
 
-    update () {
+    update() {
         let time = this.vent ? this.vent.time : 0;
         this.vent = this.pannel.ventCtl.obj;
         this.vent.time = time;
@@ -112,6 +114,32 @@ export class simulator {
 
         this.minData = this.minDatDur /this.vent.Tsampl;
         if(this.pannel.lungCtl) this.lung = this.pannel.lungCtl.obj;
+    }
+
+    loadScenario(scnDesc) {
+        this.pannel.remove();
+        if(this.modal) this.modal.remove();
+        
+        this.scenario = new scenario(scnDesc);
+        this.lung = this.scenario.lung;
+
+        this.modal = new dialog({
+            toolbar: this.toolbar,
+            title: this.scenario.title,
+            id: 'tasks',
+            icon: "Carnet"
+        });
+
+        this.updateModal();
+
+        let panCnf = {
+            lungControl: false,
+            vent: this.scenario && this.scenario.vent?this.scenario.vent:null,
+            target: this.dispTarget
+        }
+
+        this.pannel = new basicPannel(panCnf);
+        this.pannel.container.onchange = ()=>this.update();
     }
 
     newDataMsg () {

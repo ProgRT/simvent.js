@@ -5,10 +5,6 @@ icon: Souflet
 ---
 <script type=module>
     import {simulator} from './src/learningEnvironment.js';
-    //import {scenario as tbas} from './scenarios/tbas.js';
-    const scenarios = {
-    //tbas: tbas
-    };
 
     const urlparams = new URLSearchParams(window.location.search);
 
@@ -16,10 +12,22 @@ icon: Souflet
         urlparams.get('waveforms').split(',') :
         ['Pao', 'Flung', 'Vt'];
 
-    const sim = new simulator({
+    const conf = {
         debugMode: urlparams.has('debugMode'),
-        scnDesc: scenarios[urlparams.get('scenario')],
         dispTarget: document.querySelector("main"),
+        scnConf: {
+            completed: urlparams.has('completed') 
+        },
         datasets: wf
-    });
+    };
+
+
+    const sim = new simulator(conf);
+
+    if (urlparams.has('scenario')){
+        let url = `./scenarios/${urlparams.get('scenario')}.js`;
+        import(url).then(r=>{
+            sim.loadScenario(r.scenario);
+        });
+    }
 </script>

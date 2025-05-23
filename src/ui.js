@@ -17,6 +17,7 @@ export function button(params){
         addEventListener('keyup', e=>{
             let concerned = e.key == params.key || e.code == params.key;
             if (concerned) {
+                e.stopImmediatePropagation();
                 let b = document.querySelector('#' + btn.id);
                 if(b.disabled == false) {
                     b.click();
@@ -72,7 +73,7 @@ export class dialog{
         btnClose.title = `${translate('Close')} (${translate('ESC')})`;
         menu.prepend(btnClose);
 
-        let btnOpen = button({
+        this.btnOpen = button({
             icon: this.icon,
             title: this.title,
             callback: ()=>{
@@ -82,7 +83,7 @@ export class dialog{
             label: "showDialog",
             key: this.key
         });
-        this.toolbar.append(btnOpen);
+        this.toolbar.append(this.btnOpen);
     }
 
     setContent (content) {
@@ -100,6 +101,11 @@ export class dialog{
 
     showModal () {
         this.dialog.showModal();
+    }
+
+    remove() {
+        this.dialog.remove();
+        this.btnOpen.remove();
     }
 }
 

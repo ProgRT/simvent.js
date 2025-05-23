@@ -2,7 +2,9 @@ import {fmt} from '../src/utils.js';
 import {SimpleLung, SptLung} from '../src/simvent-lungs.js';
 import {APRV} from '../src/simvent-ventilators.js';
 import {exalations} from '../src/deriv.js';
-import {plot, line, dot, areaY, tip} from "https://cdn.skypack.dev/@observablehq/plot@0.6.7";
+//import {plot, line, dot, areaY, tip} from "https://cdn.skypack.dev/@observablehq/plot@0.6.7";
+
+import("https://cdn.skypack.dev/@observablehq/plot@0.6.7").then(r=>window.Plot = r);
 
 const Tbas = {
     title: "Ajustement du T bas",
@@ -63,7 +65,7 @@ export const scenario = {
     </details>`,
     tasks: [Tbas],
     lung: new SimpleLung({Raw: 15, Crs: 20}),
-    vent: new APRV({Tlow: .2}),
+    vent: new APRV(),
 };
 
 function eFlowPlt(dat){
@@ -76,15 +78,15 @@ function eFlowPlt(dat){
 
     dat = dat.filter((d, i, a)=>d.time > ex.start.time - 2)
 
-    return plot({
+    return Plot.plot({
         width: 350,
         height: 200,
         grid: true,
         x: {label: 'Temps (s)'},
         y: {label: 'Débit (%)', reverse: true, tickFormat: d=>`${d} %`},
         marks: [
-            line(dat, {x: "time", y: d=>100 * d.Flung/fMax}),
-            dot([ex.start, ex.end], {
+            Plot.line(dat, {x: "time", y: d=>100 * d.Flung/fMax}),
+            Plot.dot([ex.start, ex.end], {
                 x: 'time',
                 y:d=>100 * d.Flung/fMax,
                 stroke:'red',

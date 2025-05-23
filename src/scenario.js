@@ -7,11 +7,14 @@ export class scenario {
         lung: new SimpleLung()
     }
 
-    constructor(scnDesc){
+    constructor(scnDesc, scnConf){
         let params = {...scenario.defaults, ...scnDesc};
         for (let p in params) this[p] = params[p];
 
-        this._tasks = this.tasks.map(t=>new task(t));
+        this.tasks = this.tasks.map(t=>new task(t));
+        if(scnConf && scnConf.completed){
+            this.tasks.forEach(t=>t.completed=true);
+        }
     }
 
     check(dat, vent, lung){
@@ -28,11 +31,11 @@ export class scenario {
     }
 
     get ongoing() {
-        return this._tasks.filter(t=>!t.completed)[0];
+        return this.tasks.filter(t=>!t.completed)[0];
     }
 
     get completed() {
-        return this._tasks.filter(t=>t.completed);
+        return this.tasks.filter(t=>t.completed);
     }
 }
 
@@ -64,9 +67,6 @@ export function scenarioTable (scenario) {
         let tbCompleted = document.createElement('tbody');
         tbCompleted.className = 'completed';
         table.append(tbCompleted);
-        //tbCompleted.innerHTML = `<tr><th colspan=2>
-        //${translate('Completed tasks')}
-        //</th></tr>`;
 
         for (let n in scenario.completed) {
             let task = scenario.completed[n];
@@ -80,10 +80,6 @@ export function scenarioTable (scenario) {
         let tbOngoing = document.createElement('tbody');
         tbOngoing.className = 'ongoing';
         table.append(tbOngoing);
-        //let h = `<tr><th colspan=2>
-        //  ${translate('Ongoing tasks')}
-        //  </th></tr>`;
-        //tbOngoing.innerHTML = h; 
 
         let task = scenario.ongoing;
         tbOngoing.append(taskRow(task));
@@ -104,7 +100,6 @@ function taskRow (task) {
     tdDesc.appendChild(taskDesc(task));
     let tdState = document.createElement('td');
 
-    //if(task.completed) tdState.append('✓');
     if(task.completed) tdState.append('✓');
 
     row.appendChild(tdDesc);
