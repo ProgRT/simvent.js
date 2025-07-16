@@ -4,6 +4,11 @@
   100%
     fill: blue
 
+@keyframes highlight
+  100%
+    border: 1px solid orange
+    box-shadow: 0px 0px 15px 0px orange
+
 nav
   position: sticky
   top: 0px
@@ -31,8 +36,8 @@ nav
       fill: black
       height: 30px
   a
-    svg
-      animation: flash .75s linear alternate 4
+    border-radius: 5px
+    animation: highlight .75s linear alternate 4
 
   button:hover, a:hover
     svg
@@ -40,6 +45,9 @@ nav
 
   button:disabled, a.disabled
     display: none
+
+  button.highlight
+    animation: highlight 1.25s linear alternate infinite
 
   svg
     vertical-align: middle

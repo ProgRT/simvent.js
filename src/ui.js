@@ -67,6 +67,10 @@ export class dialog{
         this.content.className = 'dialogContent';
         this.dialog.append(this.content);
 
+        this.footer = document.createElement('div');
+        this.footer.className = 'dialogFooter';
+        this.dialog.append(this.footer);
+
         var btnClose = document.createElement("button");
         btnClose.textContent = "X";
         btnClose.onclick = ()=>this.dialog.close();
@@ -82,6 +86,9 @@ export class dialog{
             },
             label: "showDialog",
             key: this.key
+        });
+        this.btnOpen.addEventListener('click', ()=>{
+            this.btnOpen.classList.remove('highlight');
         });
         this.toolbar.append(this.btnOpen);
     }

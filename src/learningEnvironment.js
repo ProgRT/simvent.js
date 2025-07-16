@@ -40,22 +40,7 @@ export class simulator {
             datasets: this.datasets,
             numData: this.numData
         });
-
-
-        if(this.scnDesc){
-            this.scenario = new scenario(this.scnDesc, this.scnConf);
-            this.lung = this.scenario.lung;
-
-            this.modal = new dialog({
-                toolbar: this.toolbar,
-                title: this.scenario.title,
-                id: 'tasks',
-                icon: "Carnet"
-            });
-
-            this.updateModal();
-        };
-
+        
         //--------------------------//
         // New data generation loop //
         //--------------------------//
@@ -76,12 +61,15 @@ export class simulator {
 
     pushNewData () {
         this.update();
-        //if (this.debugMode) this.newDataMsg();
         let tStart = new Date();
+
         const nDat = this.vent.ventilate(this.lung).timeData;
+        
+
+        this.disp.push(nDat);
+
         let tEnd = new Date();
         if(this.debug.includes('dataGenTime')) console.log(`Nouvelles données générées en ${tEnd - tStart}`);
-        this.disp.push(nDat);
         
         // -----------------------------------------
         // Let's check if a task have been completed 
@@ -103,6 +91,9 @@ export class simulator {
         this.modal.content.innerHTML = null;
         this.modal.content.innerHTML = this.scenario.intro;
         this.modal.content.append(scenarioTable(this.scenario));
+
+        this.progressIndicator.max = this.scenario.tasks.length;
+        this.progressIndicator.value = this.scenario.completed.length;
         closeCompletedTasks();
     }
 
@@ -129,7 +120,10 @@ export class simulator {
             id: 'tasks',
             icon: "Carnet"
         });
+        this.modal.btnOpen.classList.add("highlight");
 
+        this.progressIndicator = document.createElement('progress');
+        this.modal.footer.append(this.progressIndicator);
         this.updateModal();
 
         let panCnf = {

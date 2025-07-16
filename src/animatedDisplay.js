@@ -10,6 +10,9 @@ export class display {
     static defaults = {
 
 		debugMode: false,
+        debug: [
+//            'unitConvTime'
+        ],
         logPltTm: false,
         displayRemaining: false,
 		timePerScreen: 12,
@@ -142,6 +145,7 @@ export class display {
 	}
 
     convUnits(data){
+        let tStart = new Date();
         for(let c in this.units){
             let f = this.units[c].factor;
             data = data.map(d=>{
@@ -149,6 +153,8 @@ export class display {
                 return d;
             });
         }
+        let tEnd = new Date();
+        if(this.debug.includes('unitConvTime')) console.log(`Conversion des unitése de mesures en ${tEnd - tStart}`);
         return data;
     }
 

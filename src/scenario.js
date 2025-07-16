@@ -42,6 +42,9 @@ export class scenario {
 class task {
     static defaults = {
         lung: new SimpleLung(),
+        debug: [
+        //    'taskCheckTime'
+        ],
         resultFn: ()=>null
     }
 
@@ -51,7 +54,13 @@ class task {
     }
 
     check(d, v, l){
+        let tSsart = new Date();
         this.completed = this.test(d, v, l);
+        let tEnd = new Date();
+        if(this.debug.includes('taskCheckTime')) console.log(
+            `Task verified in ${tEnd - tSsart} ms`
+        );
+
         if(this.completed) this.result = this.resultFn(d, v, l);
     }
 }

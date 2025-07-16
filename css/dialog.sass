@@ -20,6 +20,12 @@ dialog
   div.toolbar
     text-align: right
 
+  .dialogFooter
+    margin-top: 1em
+
+    progress
+      width: 100%
+
 dialog:focus
   outline: none
 
@@ -46,11 +52,15 @@ dialog[open]
   p
     margin-top: 0.5em
     margin-bottom: 0.5em
+
   table
+    margin-top: 1em
     border-collapse: collapse
     width: 100%
+    border-bottom: 1px solid gray
 
   thead
+    border-top: 1px solid gray
     border-bottom: 1px solid gray
 
   th, td

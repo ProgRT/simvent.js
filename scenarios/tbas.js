@@ -6,6 +6,16 @@ import {exalations} from '../src/deriv.js';
 
 import("https://cdn.skypack.dev/@observablehq/plot@0.6.7").then(r=>window.Plot = r);
 
+const mVfin =`<msub>
+    <mover> <mi>V</mi> <mo>.</mo> </mover>
+    <mrow>fin exp</mrow>
+</msub>`;
+
+const mVmax =`<msub>
+    <mover> <mi>V</mi> <mo>.</mo> </mover>
+    <mrow>exp max</mrow>
+</msub>`;
+
 const Tbas = {
     title: "Ajustement du T bas",
     instructions: `
@@ -19,15 +29,15 @@ const Tbas = {
     50 % de la déformation totale.</p>
 
     <p>Régler le T<sub>bas</sub> affin que le débit à
-    la fin de l'expiration (V'<sub>fin exp</sub>) soit entre 50 et 75
-    % du débit au début de l'expiration (V'<sub>exp max</sub>).</p>
+    la fin de l'expiration (<math>${mVfin}</math>) soit entre 50 et 75
+    % du débit au début de l'expiration (<math>${mVfin}</math>).</p>
 
     <math display='block'>
         <mn>0,5</mn>
         <mo>&lt</mo>
         <mfrac>
-            <mi>V'<sub>fin exp</sub></mi>
-            <mn>V'<sub>exp max</sub></mi>
+            ${mVfin}
+            ${mVmax}
         </mfrac>
         <mo>&lt</mo>
         <mn>0,75</mn>
