@@ -51,7 +51,7 @@ function minDim(data, accessor) {
   return sigNegToPos(data, accessor).map((d) => data[d - 1]);
 }
 
-function deriv(data, accessor) {
+export function deriv(data, accessor) {
   return data.map(accessor).map((d, i, t) => {
     return i > 0 ? t[i] - t[i - 1] : 0;
   });
