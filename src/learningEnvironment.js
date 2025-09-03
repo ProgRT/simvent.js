@@ -37,6 +37,7 @@ export class simulator {
             target: this.dispTarget,
             toolbar: this.toolbar,
             debugMode: this.debugMode,
+            debug: this.debug,
             datasets: this.datasets,
             numData: this.numData
         });
@@ -69,7 +70,9 @@ export class simulator {
         this.disp.push(nDat);
 
         let tEnd = new Date();
-        if(this.debug.includes('dataGenTime')) console.log(`Nouvelles données générées en ${tEnd - tStart}`);
+        if(this.debug.includes('dataGenTime')) {
+            console.log(`Nouvelles données générées en ${tEnd - tStart} ms`);
+        }
         
         // -----------------------------------------
         // Let's check if a task have been completed 
@@ -136,7 +139,4 @@ export class simulator {
         this.pannel.container.onchange = ()=>this.update();
     }
 
-    newDataMsg () {
-        console.log(`Time: ${this.vent.time}`);
-    }
 }

@@ -21,69 +21,88 @@ html {
 
 <script type=module>
 
-	import {APRV, FlowControler} from '../src/simvent-ventilators.js';
+	import {FlowControler} from '../src/simvent-ventilators.js';
 	import {SimpleLung} from '../src/simvent-lungs.js';
-	import {plot, line, dot, areaY, axisY} from "https://cdn.skypack.dev/@observablehq/plot@0.6";
-    import {getPeaks} from '../src/vdrSignalAnalysis.js';
-    import {exalations} from '../src/deriv.js';
+	import {plot, line, lineY, dot, areaY, axisY, ruleX, text} from "https://cdn.skypack.dev/@observablehq/plot@0.6";
 
-    var vent = new FlowControler({Tlow: 0.8, Tvent: 38});
-    var lung = new SimpleLung({Raw: 16});
-	var data = vent.ventilate(lung).timeData;
+    function getPhase2(data){
+        data = data.map((d,i,a)=>{
+            d.dCO2 = i == 0 ? 0 : d.PCO2 - a[i-1].PCO2;
+            d.dVte = i == 0 ? 0 : d.Vte - a[i-1].Vte;
+            d.slCO2 = d.dCO2 != 0 && d.dVte != 0 ? d.dCO2/d.dVte : 0 ;
+            return d;
+        });
 
-    let peaks = getPeaks(data, d=>d.Vte).map(d=>d.Vte);
-    console.log(peaks);
+        let maxSlope = Math.max(...data.map(d=>d.slCO2));
 
-    let ex = exalations(data);
-    console.log(ex.map(d=>d.end.Vte));
-    let [e1] = ex.slice(-1);
+        data = data.map(d=>{
+            d.slCO2 = d.slCO2/maxSlope;
+            return d;
+        });
 
-    function tFmt(d){
-        let r = d/e1.start.Flung;
-        return `${(100*r).toFixed(0)} %`;
+        return data.filter(d=>d.slCO2 > 0.1);
     }
 
-    function tsPlot (conf=null) {
-        conf = {
+    function vCapLabels(data){
+        let phase2 = getPhase2(data);
+        let sl = phase2.map(d=>d.slCO2);
+        let slMax = Math.max(...sl);
+        let VdawPos = sl.indexOf(slMax);
+        let Vdaw = phase2[VdawPos].Vte;
+
+        let x0 = data[0].Vte;
+        let x1 = phase2[0].Vte;
+        let x2 = phase2[phase2.length - 1].Vte;
+        let xmax = data[data.length - 1].Vte;
+
+        let xI = x0 + 0.5 * (x1 - x0);
+        let xII = Vdaw;
+        let xIII = x2 + 0.5 * (xmax - x2);
+
+        let EtCO2 = Math.max(...data.map(d=>d.PCO2));
+
+        return [
+            [xI, 2.5],
+            [xII, phase2[VdawPos].PCO2],
+            [xIII, EtCO2 - 5]
+        ];
+    }
+
+    const conf = {
+        labText: (d, i) => `Phase ${"I".repeat(i+1)}`,
+        mksConf: {
+            fontSize: 16,
+            fontWeight: "bold",
+            stroke: "white",
+            fill: "black"
+        }
+    }
+
+    function vCapnogram(data, {mksConf, labText}=conf){
+
+        let labels = vCapLabels(data);
+
+        return plot({
             width: document.documentElement.clientWidth,
-            height: document.documentElement.clientWidth/4,
-            x: {label: 'Temps (s)', line: true},
-            y: {label: "Débit (l/s)", reverse: true},
+            height: document.documentElement.clientWidth/2,
+            grid: true,
             marks: [
-                line(data, {x: "time", y: d=>d.Flung/e1.start.Flung}),
-                axisY({anchor: 'left', label: 'Débit (%)'}),
-                dot([e1], {x: d=>d.start.time, y: d=>1, stroke: 'red'})
-                ],
-            ...conf
-            };
-        return plot(conf);
+                line(data, {x: "Vte", y: "PCO2"}),
+                text(labels, {x: "0", y: "1", text: labText, ...mksConf}),
+                ]
+        });
     }
 
-	const presplot = plot({
-		width: document.documentElement.clientWidth,
-		height: document.documentElement.clientWidth/6,
-		x: {label: 'Temps (s)', line: true},
-		y: {grid: true},
-		marks: [
-			line(data, {x: "time", y: "Pao"}),
-			areaY(data, {x: "time", y: "Pao", fillOpacity: 0.1}),
-			]
-	});
+    var vent = new FlowControler({Tlow: 0.8, Tvent: 5, PEEP: 0});
+    var lung = new SimpleLung({
+        PACO2: 40,
+        Vdaw: 0.150,
+        Slope2: .02,
+        Slope3: 20
+    });
+    var data = vent.ventilate(lung).timeData;
 
-
-    const myplot = tsPlot();
-	document.body.append(presplot);
-	document.body.append(myplot);
-    document.body.append(plot({
-		width: document.documentElement.clientWidth,
-		height: document.documentElement.clientWidth/6,
-		x: {label: 'Temps (s)', line: true},
-		y: {grid: true},
-		marks: [
-			line(data, {x: "time", y: "Vte"}),
-			areaY(data, {x: "time", y: "Vte", fillOpacity: 0.1}),
-			]
-	}));
+    document.body.append(vCapnogram(data));
 
 </script>
 </body>

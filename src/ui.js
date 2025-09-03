@@ -93,17 +93,26 @@ export class dialog{
         this.toolbar.append(this.btnOpen);
     }
 
-    setContent (content) {
+    setContent (content, title) {
         this.content.innerHTML = null;
+        this.append(content, title);
+    }
+
+    append (content, title=null) {
+        if(title) {
+            let h2 = document.createElement('h2');
+            h2.textContent = translate(title);
+            this.content.append(h2);
+        }
         switch (typeof content) {
             case 'string':
+                // This will not produce the indended effect of appending to actual content.
                 this.content.innerHTML = content;
                 break;
             case 'object':
                 this.content.append(content);
                 break;
         }
-
     }
 
     showModal () {

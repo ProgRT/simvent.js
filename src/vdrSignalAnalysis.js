@@ -1,5 +1,5 @@
 import {mean} from "https://cdn.jsdelivr.net/npm/d3-array@3/+esm";
-import {getPeaks, getFlats] from './analysis.js';
+import {getPeaks, getFlats} from './analysis.js';
 
 export function analyse(data, label){
 	var peaks = getPeaks(data, d=>d.Pao);

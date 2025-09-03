@@ -2,6 +2,7 @@ import {graph} from "./moovingGraph.js";
 import {fmt, delta, ratio, csvUrl} from './utils.js';
 import {dialog, button, icon, improvedRange} from './ui.js';
 import {display as numDisp} from './numDisplay.js';
+import * as ndParams from './numDisplay-param.js';
 import {pannelDiv} from './pannel.js';
 import {translate, units} from './translate.js';
 
@@ -22,6 +23,7 @@ export class display {
         restartNpts: 0,
 		toolbar: document.body,
 		datasets: ['Pao', 'Flung', 'PCO2'],
+        availableNumParams: ['Ppeak', 'Vt', 'Fratio'],
         units: units
     };
    
@@ -81,12 +83,13 @@ export class display {
         this.modal = new dialog({
             toolbar: this.toolbar,
             icon: "CourbesDeVentilation",
-            title: "Waveforms",
+            title: "Displayed data",
             key: 'w'
         });
 
         this.modal.onopen = ()=>{
-            this.modal.setContent(this.waveformSelect());
+            this.modal.setContent(this.waveformSelect(), 'Waveforms');
+            this.modal.append(this.nDisp.numSelect(), 'Numeric values');
         };
 
         this.dwlLnk = dwlLnk()
@@ -98,7 +101,8 @@ export class display {
 
         this.nDisp = new numDisp({
             target: this.target,
-            numData: this.numData
+            //numData: this.numData,
+            debug: this.debug
         });
 
 	}
@@ -329,8 +333,6 @@ export class display {
             //console.log("Creating new interval");
             this.loopStartTime = new Date().getTime();
             this.graphInt = setInterval(()=>this.graphLoop(), this.graphLoopInt);
-            //this.btnStart.style.display = 'none';
-            //this.btnStop.style.display = 'inline';
             this.btnStart.disabled = true;
             this.btnStop.disabled = false;
             this.dwlLnk.classList.add('disabled');

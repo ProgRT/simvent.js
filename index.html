@@ -3,6 +3,7 @@ layout: simulateur
 title: Simulateur annimé
 icon: Souflet
 ---
+
 <script type=module>
     import {simulator} from './src/learningEnvironment.js';
 
@@ -12,13 +13,17 @@ icon: Souflet
         urlparams.get('waveforms').split(',') :
         ['Pao', 'Flung', 'Vt'];
 
+    const np = [...['Ppeak', 'Vt'], ...urlparams.getAll('extraCell')];
+
     const conf = {
         debugMode: urlparams.has('debugMode'),
+        debug: urlparams.getAll('debug'),
         dispTarget: document.querySelector("main"),
         scnConf: {
             completed: urlparams.has('completed') 
         },
-        datasets: wf
+        datasets: wf,
+        numData: np
     };
 
 
