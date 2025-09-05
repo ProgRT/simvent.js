@@ -9,26 +9,28 @@ html {
     font-family: sans-serif;
 }
 </style>
+
 <script type=module>
     import {simulator} from './src/learningEnvironment.js';
 
     const urlparams = new URLSearchParams(window.location.search);
 
+    //** Not the most useful option **//
+
     const wf = urlparams.get('waveforms') ?
         urlparams.get('waveforms').split(',') :
         ['Pao', 'Flung', 'Vt'];
 
-    //const np = [...['Ppeak', 'Vt'], ...urlparams.getAll('extraCell')];
+    const np = [...['Ppeak', 'Vt'], ...urlparams.getAll('extraNumParam')];
 
     const conf = {
-        debugMode: urlparams.has('debugMode'),
         debug: urlparams.getAll('debug'),
         dispTarget: document.querySelector("main"),
         scnConf: {
             completed: urlparams.has('completed') 
         },
         datasets: wf,
-     //   numData: np
+        activeNumParams: np
     };
 
 

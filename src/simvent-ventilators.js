@@ -68,10 +68,11 @@ class Ventilator {
 			// Ventilator variables
 
 			time   : this.time,
+            phase  : this.phase,
 			Pao    : this.Pao,
-			Fip    : this.Fip,
-			Fop    : this.Fop,
-			stateP : this.stateP,
+			//Fip    : this.Fip,
+			//Fop    : this.Fop,
+			//stateP : this.stateP,
 
 			// Lung variables
 
@@ -195,6 +196,7 @@ class Controler extends Ventilator{
 			this.time < tStop && this.time <= this.simulationStop;
 			this.time += this.Tsampl
 		){
+            this.phase = 'insp';
 			this.applyControledParameter(lung);
 			this.log(lung);
 		}
@@ -206,6 +208,7 @@ class Controler extends Ventilator{
 			this.time < tStop && this.time <= this.simulationStop;
 			this.time += this.Tsampl
 		){
+            this.phase = 'exp';
 			lung.appliquer_pression(this.Pao, this.Tsampl)
 			this.log(lung);
 		}
@@ -300,6 +303,7 @@ export class APRV extends Ventilator {
 		){
 			this.Pao = this.Phigh;
 			lung.appliquer_pression(this.Phigh, this.Tsampl);
+            this.phase = 'insp';
 			this.log(lung);
 		}
 
@@ -310,6 +314,7 @@ export class APRV extends Ventilator {
 			this.time < tStop && this.time <= this.simulationStop;
 			this.time += this.Tsampl
 		){
+            this.phase = 'exp';
 			lung.appliquer_pression(this.Plow, this.Tsampl)
 			this.log(lung);
 		}

@@ -1,5 +1,5 @@
 import {exalations} from './deriv.js';
-import {getPeaks} from './analysis.js';
+import {getPeaks, getFlats} from './analysis.js';
 
 export const Ppeak = {
     id: 'Ppeak',
@@ -46,10 +46,9 @@ export const Fratio = {
         }
     },
     value: d=>{
-
-        // This is taking 50 to 100 ms to execute. Something more efficient should be finded.
-        let ex = exalations(d);
-        let e = ex[ex.length-1];
-        return e.flowRatio;
+        let end = d[d.length-2];
+        let Pefs = getFlats(d, d=>d.Flung);
+        let Pef = Pefs[Pefs.length -1];
+        return end.Flung/Pef.Flung;
     }
 }

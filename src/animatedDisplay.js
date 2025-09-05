@@ -24,6 +24,7 @@ export class display {
 		toolbar: document.body,
 		datasets: ['Pao', 'Flung', 'PCO2'],
         availableNumParams: ['Ppeak', 'Vt', 'Fratio'],
+        activeNumParams: ['Ppeak', 'Vt'],
         units: units
     };
    
@@ -101,7 +102,8 @@ export class display {
 
         this.nDisp = new numDisp({
             target: this.target,
-            //numData: this.numData,
+            availableParams: this.availableNumParams,
+            activeParams: this.activeNumParams,
             debug: this.debug
         });
 

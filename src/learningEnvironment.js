@@ -12,7 +12,7 @@ export class simulator {
         ventIntDur: 500,
         minDatDur: 3,
         minData: 1,
-        numData: ['Ppeak', 'Vt'],
+        activeNumParams: ['Ppeak', 'Vt'],
         scnConf: null,
         debug: [
             //'dataGenTime'
@@ -36,10 +36,9 @@ export class simulator {
         this.disp = new display({
             target: this.dispTarget,
             toolbar: this.toolbar,
-            debugMode: this.debugMode,
             debug: this.debug,
             datasets: this.datasets,
-            numData: this.numData
+            activeNumParams: this.activeNumParams
         });
         
         //--------------------------//
