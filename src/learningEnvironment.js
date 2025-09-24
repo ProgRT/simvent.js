@@ -13,6 +13,7 @@ export class simulator {
         minDatDur: 3,
         minData: 1,
         activeNumParams: ['Ppeak', 'Vt'],
+        availableNumParams: ['Ppeak', 'Vt', 'Fratio'],
         scnConf: null,
         debug: [
             //'dataGenTime'
@@ -33,11 +34,13 @@ export class simulator {
         this.pannel.container.onchange = ()=>this.update();
 
 
+        console.log(this.availableNumParams);
         this.disp = new display({
             target: this.dispTarget,
             toolbar: this.toolbar,
             debug: this.debug,
             datasets: this.datasets,
+            availableNumParams: this.availableNumParams,
             activeNumParams: this.activeNumParams
         });
         

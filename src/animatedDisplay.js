@@ -90,7 +90,7 @@ export class display {
 
         this.modal.onopen = ()=>{
             this.modal.setContent(this.waveformSelect(), 'Waveforms');
-            this.modal.append(this.nDisp.numSelect(), 'Numeric values');
+            if(this.availableNumParams.length > 0 ) this.modal.append(this.nDisp.numSelect(), 'Numeric values');
         };
 
         this.dwlLnk = dwlLnk()
@@ -100,12 +100,15 @@ export class display {
 
         window.onresize = ()=>this.redraw();
 
-        this.nDisp = new numDisp({
-            target: this.target,
-            availableParams: this.availableNumParams,
-            activeParams: this.activeNumParams,
-            debug: this.debug
-        });
+        console.log(this.availableNumParams);
+        if (this.availableNumParams.length > 0){
+            this.nDisp = new numDisp({
+                target: this.target,
+                params: this.availableNumParams,
+                activeParams: this.activeNumParams,
+                debug: this.debug
+            });
+        }
 
 	}
 
