@@ -38,6 +38,7 @@ export class simulator {
         this.disp = new display({
             target: this.dispTarget,
             toolbar: this.toolbar,
+            cursTblTarget: this.pannel.container,
             debug: this.debug,
             datasets: this.datasets,
             availableNumParams: this.availableNumParams,

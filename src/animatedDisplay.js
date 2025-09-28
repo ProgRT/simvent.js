@@ -22,6 +22,7 @@ export class display {
 		target: document.body,
         restartNpts: 0,
 		toolbar: document.body,
+        cursTblTarget: document.body,
 		datasets: ['Pao', 'Flung', 'PCO2'],
         availableNumParams: ['Ppeak', 'Vt', 'Fratio'],
         activeNumParams: ['Ppeak', 'Vt'],
@@ -155,6 +156,7 @@ export class display {
 
     convUnits(data){
         let tStart = new Date();
+
         for(let c in this.units){
             let f = this.units[c].factor;
             data = data.map(d=>{
@@ -162,8 +164,10 @@ export class display {
                 return d;
             });
         }
+        
         let tEnd = new Date();
         if(this.debug.includes('unitConvTime')) console.log(`Conversion des unitése de mesures en ${tEnd - tStart}`);
+
         return data;
     }
 
@@ -306,13 +310,12 @@ export class display {
 
             if(this.cursTbl) {
                 this.cursTbl.remove();
-                let pannel = document.querySelector("#fpPanel");
                 this.cursTbl = new cursTable(this.datasets);
                 this.cursTbl.fill(0, this.cursors);
                 this.cursTbl.fill(1, this.cursors);
                 this.fillCursTbl(0);
                 this.fillCursTbl(1);
-                pannel.append(this.cursTbl.container);
+                this.cursTblTarget.append(this.cursTbl.container);
             }
         }
 
@@ -361,10 +364,9 @@ export class display {
             this.addCursor(0);
             this.addCursor(1);
             this.redraw();
-            let pannel = document.querySelector("#fpPanel");
             this.fillCursTbl(0);
             this.fillCursTbl(1);
-            pannel.append(this.cursTbl.container);
+            this.cursTblTarget.append(this.cursTbl.container);
             this.redraw();
         }
 	}
