@@ -1,6 +1,7 @@
 import * as vents from './simvent-ventilators.js';
 import * as lungs from './simvent-lungs.js';
-import {addGraph} from 'https://progrt.github.io/graphsimple.js/graphsimple.js';
+//import {addGraph} from 'https://progrt.github.io/graphsimple.js/graphsimple.js';
+import {addGraph} from 'https://cdn.jsdelivr.net/gh/progrt/graphsimple.js@d97e5d7/graphsimple.js';
 import {icon, csvUrl} from './utils.js';
 //import {YAML} from "https://cdn.skypack.dev/@eemeli/YAML";
 
